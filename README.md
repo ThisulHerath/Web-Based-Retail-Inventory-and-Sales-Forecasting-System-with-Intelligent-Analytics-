@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png" alt="Shopping Cart" width="40" height="40" /> 
+
 # 7 Super City - Retail Inventory and Sales Forecasting System
 
 A modern, full-stack retail management system built with **Supabase (PostgreSQL)**, Express.js, React.js, and Node.js.
