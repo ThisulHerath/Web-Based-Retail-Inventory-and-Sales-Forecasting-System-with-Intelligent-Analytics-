@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">7 Super City Logo</title>
+  <desc id="logoDesc">Green and yellow 7 Super City brand logo</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E7A34"/>
+      <stop offset="100%" stop-color="#155C27"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="948" height="348" rx="60" fill="url(#bg)"/>
+  <rect x="6" y="6" width="948" height="348" rx="60" fill="none" stroke="#0F4A21" stroke-width="12"/>
+  <path d="M190 62h214v48L282 296h-74l109-164H190z" fill="#F5D800" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round"/>
+  <text x="408" y="162" font-family="Arial, sans-serif" font-size="126" font-weight="800" fill="#FFFFFF" stroke="#F5D800" stroke-width="10" paint-order="stroke">Super</text>
+  <text x="458" y="286" font-family="Arial, sans-serif" font-size="126" font-weight="800" fill="#FFFFFF" stroke="#F5D800" stroke-width="10" paint-order="stroke">City</text>
+</svg>

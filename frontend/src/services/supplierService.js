@@ -1,0 +1,34 @@
+import api from './api';
+
+export const getAllSuppliers = async (page = 1, limit = 10, search = '', isActive = '') => {
+    const params = { page, limit };
+    if (search) params.search = search;
+    if (isActive !== '') params.isActive = isActive;
+    const response = await api.get('/suppliers', { params });
+    return response.data;
+};
+
+export const getSupplierById = async (id) => {
+    const response = await api.get(`/suppliers/${id}`);
+    return response.data;
+};
+
+export const createSupplier = async (data) => {
+    const response = await api.post('/suppliers', data);
+    return response.data;
+};
+
+export const updateSupplier = async (id, data) => {
+    const response = await api.put(`/suppliers/${id}`, data);
+    return response.data;
+};
+
+export const deleteSupplier = async (id) => {
+    const response = await api.delete(`/suppliers/${id}`);
+    return response.data;
+};
+
+export const getSupplierStats = async () => {
+    const response = await api.get('/suppliers/stats/summary');
+    return response.data;
+};
