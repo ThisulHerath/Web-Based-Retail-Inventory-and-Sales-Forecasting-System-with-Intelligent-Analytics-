@@ -140,7 +140,7 @@ const CustomerLogin = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             icon={Lock}
                             autoComplete="new-password"
-                            placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                            placeholder="Enter your password"
                         />
 
                         {/* Remember / Staff row */}
