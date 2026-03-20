@@ -1,4 +1,6 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import DashboardLayout from './layouts/DashboardLayout';
 import PublicLayout from './layouts/PublicLayout';
 import { useAuth } from './context/AuthContext';
@@ -31,12 +33,14 @@ import Categories from './pages/categories/Categories';
 import CreateCategory from './pages/categories/CreateCategory';
 import EditCategory from './pages/categories/EditCategory';
 import Inventory from './pages/inventory/Inventory';
+import InventoryReports from './pages/inventory/InventoryReports';
 import Customers from './pages/customers/Customers';
 import EditCustomer from './pages/customers/EditCustomer';
 import ValidateCoupon from './pages/coupons/ValidateCoupon';
 
 // Public pages
 import Home from './pages/public/Home';
+import Feedback from './pages/public/Feedback';
 import PublicProducts from './pages/public/PublicProducts';
 import Cart from './pages/public/Cart';
 import CustomerLogin from './pages/customer/CustomerLogin';
@@ -45,6 +49,14 @@ import CustomerDashboard from './pages/customer/CustomerDashboard';
 
 function App() {
     const { user, loading } = useAuth();
+    const { i18n } = useTranslation();
+
+    useEffect(() => {
+        document.documentElement.lang = i18n.language;
+        document.body.style.fontFamily = i18n.language === 'si'
+            ? "'Noto Sans Sinhala', sans-serif"
+            : "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif";
+    }, [i18n.language]);
 
     if (loading) {
         return (
@@ -59,6 +71,7 @@ function App() {
             {/* ========== PUBLIC WEBSITE ROUTES ========== */}
             <Route element={<PublicLayout />}>
                 <Route path="/" element={<Home />} />
+                <Route path="/feedback" element={<Feedback />} />
                 <Route path="/products" element={<PublicProducts />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/my-account" element={<CustomerDashboard />} />
@@ -225,6 +238,14 @@ function App() {
                     element={
                         <ProtectedRoute allowedRoles={['admin', 'manager']}>
                             <StockHistory />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="inventory/reports"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin', 'manager']}>
+                            <InventoryReports />
                         </ProtectedRoute>
                     }
                 />

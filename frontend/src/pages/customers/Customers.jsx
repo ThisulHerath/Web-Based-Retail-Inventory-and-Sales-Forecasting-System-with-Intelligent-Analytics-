@@ -1,13 +1,14 @@
 ﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Search, Plus, Eye, Edit, Trash2, ChevronLeft, ChevronRight, Gift } from 'lucide-react';
+import { Users, Search, Edit, Trash2, ChevronLeft, ChevronRight, Gift, MessageSquare, CheckCircle2, XCircle } from 'lucide-react';
 import { getAllCustomers, deleteCustomer } from '../../services/customerService';
 import { getCustomerCoupons } from '../../services/couponService';
+import { getCustomerFeedbacks, updateFeedbackStatus, deleteFeedbackById } from '../../services/feedbackService';
 import { useAuth } from '../../context/AuthContext';
 import Toast from '../../components/Toast';
 
 const Customers = () => {
-    const { isAdmin } = useAuth();
+    const { isAdmin, hasRole } = useAuth();
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -19,6 +20,9 @@ const Customers = () => {
     const [coupons, setCoupons] = useState([]);
     const [showCoupons, setShowCoupons] = useState(false);
     const [isDeletingCustomer, setIsDeletingCustomer] = useState(false);
+    const [feedbacks, setFeedbacks] = useState([]);
+    const [showFeedbacks, setShowFeedbacks] = useState(false);
+    const [feedbackLoading, setFeedbackLoading] = useState(false);
 
     useEffect(() => {
         fetchCustomers();
@@ -60,6 +64,44 @@ const Customers = () => {
             setShowCoupons(true);
         } catch (error) {
             setToast({ message: 'Failed to load coupons', type: 'error' });
+        }
+    };
+
+    const handleViewFeedbacks = async (customer) => {
+        try {
+            setFeedbackLoading(true);
+            const data = await getCustomerFeedbacks(customer._id);
+            setFeedbacks(data || []);
+            setSelectedCustomer(customer);
+            setShowFeedbacks(true);
+        } catch (error) {
+            setToast({ message: 'Failed to load customer feedbacks', type: 'error' });
+        } finally {
+            setFeedbackLoading(false);
+        }
+    };
+
+    const handleFeedbackStatusUpdate = async (feedbackId, status) => {
+        try {
+            await updateFeedbackStatus(feedbackId, status);
+            setFeedbacks((prev) => prev.map((item) => (
+                item._id === feedbackId ? { ...item, status } : item
+            )));
+            setToast({ message: `Feedback marked as ${status}`, type: 'success' });
+        } catch (error) {
+            setToast({ message: error.response?.data?.message || 'Failed to update feedback status', type: 'error' });
+        }
+    };
+
+    const handleDeleteFeedback = async (feedbackId) => {
+        if (!window.confirm('Delete this feedback permanently?')) return;
+
+        try {
+            await deleteFeedbackById(feedbackId);
+            setFeedbacks((prev) => prev.filter((item) => item._id !== feedbackId));
+            setToast({ message: 'Feedback deleted successfully', type: 'success' });
+        } catch (error) {
+            setToast({ message: error.response?.data?.message || 'Failed to delete feedback', type: 'error' });
         }
     };
 
@@ -137,7 +179,7 @@ const Customers = () => {
                                         <td className="px-6 py-4 text-gray-600 text-sm">{customer.phone}</td>
                                         <td className="px-6 py-4 text-center">
                                             <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-sm font-semibold">
-                                                â­ {customer.loyaltyPoints}
+                                                 {customer.loyaltyPoints}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-center font-medium text-gray-700">{customer.totalPurchases}</td>
@@ -155,6 +197,15 @@ const Customers = () => {
                                                 >
                                                     <Gift className="w-4 h-4" />
                                                 </button>
+                                                {hasRole('admin', 'manager') && (
+                                                    <button
+                                                        onClick={() => handleViewFeedbacks(customer)}
+                                                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                        title="Manage Feedback"
+                                                    >
+                                                        <MessageSquare className="w-4 h-4" />
+                                                    </button>
+                                                )}
                                                 <Link
                                                     to={`/admin/customers/edit/${customer._id}`}
                                                     className="p-1.5 text-[#f5d800] hover:bg-[#1a6e30]/30 rounded-lg transition-colors"
@@ -241,6 +292,76 @@ const Customers = () => {
                         </div>
                         <div className="p-4 border-t border-gray-100 flex justify-end">
                             <button onClick={() => setShowCoupons(false)} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Feedback Modal */}
+            {showFeedbacks && selectedCustomer && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowFeedbacks(false)}>
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6 border-b border-gray-100">
+                            <h3 className="text-xl font-bold text-gray-800">
+                                Feedbacks from {selectedCustomer.firstName} {selectedCustomer.lastName}
+                            </h3>
+                        </div>
+                        <div className="p-6">
+                            {feedbackLoading ? (
+                                <div className="flex justify-center py-8">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                                </div>
+                            ) : feedbacks.length === 0 ? (
+                                <p className="text-gray-500 text-center py-4">No feedbacks found</p>
+                            ) : (
+                                <div className="space-y-4">
+                                    {feedbacks.map((feedback) => (
+                                        <div key={feedback._id} className="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm font-semibold text-gray-700">Rating:</span>
+                                                        <span className="text-sm font-bold text-amber-700">{feedback.rating}/5</span>
+                                                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${feedback.status === 'approved' ? 'bg-green-100 text-green-700' : feedback.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                                            {feedback.status}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-gray-700 text-sm leading-relaxed">{feedback.comment}</p>
+                                                    <p className="text-xs text-gray-500">Submitted: {new Date(feedback.createdAt).toLocaleString()}</p>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => handleFeedbackStatusUpdate(feedback._id, 'approved')}
+                                                        className="p-1.5 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
+                                                        title="Approve"
+                                                    >
+                                                        <CheckCircle2 className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleFeedbackStatusUpdate(feedback._id, 'rejected')}
+                                                        className="p-1.5 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors"
+                                                        title="Reject"
+                                                    >
+                                                        <XCircle className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteFeedback(feedback._id)}
+                                                        className="p-1.5 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-4 border-t border-gray-100 flex justify-end">
+                            <button onClick={() => setShowFeedbacks(false)} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
                                 Close
                             </button>
                         </div>

@@ -14,41 +14,16 @@ export const useTheme = () => {
 export const ThemeProvider = ({ children }) => {
     const location = useLocation();
     const isAdminRoute = location?.pathname?.startsWith('/admin');
-    
-    // Customer theme (only affects public pages)
-    const [customerTheme, setCustomerTheme] = useState(() => {
-        // Check local storage or system preference for customer theme
-        const savedTheme = localStorage.getItem('customerTheme');
-        if (savedTheme) return savedTheme;
-        
-        // Check system preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-        }
-        return 'light';
-    });
-
-    // Admin is always light mode
-    const theme = isAdminRoute ? 'light' : customerTheme;
+    const [theme] = useState('dark');
 
     useEffect(() => {
-        // Update DOM
+        // Force dark mode globally.
         const root = document.documentElement;
         root.classList.remove('light', 'dark');
-        root.classList.add(theme);
-        
-        // Save customer theme to localStorage (admin theme is not saved, always light)
-        if (!isAdminRoute) {
-            localStorage.setItem('customerTheme', customerTheme);
-        }
-    }, [theme, customerTheme, isAdminRoute]);
+        root.classList.add('dark');
+    }, [theme, isAdminRoute]);
 
-    const toggleTheme = () => {
-        // Only toggle customer theme (admin remains light)
-        if (!isAdminRoute) {
-            setCustomerTheme(prev => prev === 'light' ? 'dark' : 'light');
-        }
-    };
+    const toggleTheme = () => {};
 
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme, isAdminRoute }}>

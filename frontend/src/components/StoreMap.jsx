@@ -3,6 +3,7 @@ import { MapPin, Navigation, Loader, AlertCircle } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Fix default marker icon issue in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -25,6 +26,7 @@ const userMarkerIcon = new L.Icon({
 const STORE_COORDINATES = [6.709753, 80.065837];
 
 const StoreMap = () => {
+    const { t } = useTranslation();
     const [userLocation, setUserLocation] = useState(null);
     const [locationLoading, setLocationLoading] = useState(false);
     const [locationError, setLocationError] = useState(null);
@@ -72,11 +74,11 @@ const StoreMap = () => {
         );
     }, []);
     return (
-        <section id="location" className="py-24 bg-[var(--color-bg-secondary)] relative z-10">
+        <section id="location" className="py-24 bg-[var(--color-bg-secondary)] relative z-10 reveal-on-scroll">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">Find Our Store</h2>
-                    <p className="text-[var(--color-text-secondary)] mt-2 text-lg">Visit us at 7 Super City, Horana</p>
+                    <h2 className="text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">{t('location.title')}</h2>
+                    <p className="text-[var(--color-text-secondary)] mt-2 text-lg">{t('location.subtitle')}</p>
                 </div>
 
                 {/* Location Permission Alert */}
@@ -84,7 +86,7 @@ const StoreMap = () => {
                     <div className="mb-6 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 rounded-xl p-4 flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                         <div>
-                            <h3 className="font-semibold text-red-800 dark:text-red-300">Location Error</h3>
+                            <h3 className="font-semibold text-red-800 dark:text-red-300">{t('common.location_error')}</h3>
                             <p className="text-sm text-red-700 dark:text-red-400 mt-1">{locationError}</p>
                         </div>
                     </div>
@@ -92,7 +94,7 @@ const StoreMap = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Map */}
-                    <div className="lg:col-span-2 rounded-2xl overflow-hidden shadow-lg border border-[var(--color-border)] relative z-10" style={{ height: '450px' }}>
+                    <div className="lg:col-span-2 rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-[var(--color-border)] relative z-10" style={{ height: '450px' }}>
                         <MapContainer
                             center={userLocation ? [userLocation.lat, userLocation.lng] : STORE_COORDINATES}
                             zoom={userLocation ? 15 : 16}
@@ -110,7 +112,7 @@ const StoreMap = () => {
                                 <Marker position={[userLocation.lat, userLocation.lng]} icon={userMarkerIcon}>
                                     <Popup>
                                         <div className="text-center p-2">
-                                            <h3 className="font-bold text-gray-800 dark:text-gray-100">Your Location</h3>
+                                            <h3 className="font-bold text-gray-800 dark:text-gray-100">{t('location_extra.your_location')}</h3>
                                             <p className="text-xs text-gray-500 dark:text-gray-300 mt-1">
                                                 {userLocation.lat.toFixed(5)}, {userLocation.lng.toFixed(5)}
                                             </p>
@@ -146,7 +148,7 @@ const StoreMap = () => {
                     </div>
 
                     {/* Store Info Card */}
-                    <div className="bg-[var(--color-card-bg)] rounded-2xl shadow-lg p-8 border border-[var(--color-border)] flex flex-col justify-between">
+                    <div className="bg-[var(--color-card-bg)] rounded-2xl shadow-lg p-8 border border-[var(--color-border)] border-l-[3px] border-l-[#f5d800] flex flex-col justify-between">
                         <div>
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="bg-[#d4e8d0] dark:bg-[#0d3d1a]/30 p-3 rounded-lg">
@@ -154,28 +156,28 @@ const StoreMap = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-[var(--color-text-primary)]">7 Super City</h3>
-                                    <p className="text-sm text-[var(--color-text-secondary)]">Retail Store</p>
+                                    <p className="text-sm text-[var(--color-text-secondary)]">{t('location_extra.retail_store')}</p>
                                 </div>
                             </div>
 
                             <div className="space-y-4 text-sm">
                                 <div>
-                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1">Address</h4>
+                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.address')}</h4>
                                     <p className="text-[var(--color-text-secondary)]">Horana - Anguruwatota - Mathugama - Aluthgama Road, Horana</p>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1">Coordinates</h4>
+                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1">{t('location.coordinates')}</h4>
                                     <p className="text-[var(--color-text-secondary)] font-mono text-xs">6°42'35.1"N 80°03'57.0"E</p>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1">Opening Hours</h4>
+                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.opening_hours')}</h4>
                                     <div className="text-[var(--color-text-secondary)] space-y-0.5">
-                                        <p>Mon - Sat: 8:00 AM - 9:00 PM</p>
-                                        <p>Sunday: 8:00 AM - 6:00 PM</p>
+                                        <p>{t('location.weekdays')}</p>
+                                        <p>{t('location.sunday')}</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1">Contact</h4>
+                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.contact')}</h4>
                                     <p className="text-[var(--color-text-secondary)]">+94 34 220 0000</p>
                                     <p className="text-[var(--color-text-secondary)]">hello@7supercity.lk</p>
                                 </div>
@@ -192,12 +194,12 @@ const StoreMap = () => {
                                 {locationLoading ? (
                                     <>
                                         <Loader className="w-5 h-5 animate-spin" />
-                                        Getting Location...
+                                        {t('location_extra.getting_location')}
                                     </>
                                 ) : (
                                     <>
                                         <MapPin className="w-5 h-5" />
-                                        {userLocation ? 'Update Location' : 'Get My Location'}
+                                        {userLocation ? t('location_extra.update_location') : t('location.get_location')}
                                     </>
                                 )}
                             </button>
@@ -210,7 +212,7 @@ const StoreMap = () => {
                                 className="flex items-center justify-center gap-2 bg-[#f5d800] text-[#155c27] font-weight-600 px-6 py-3 rounded-xl font-semibold hover:bg-[#e6c700] transition-colors w-full"
                             >
                                 <Navigation className="w-5 h-5" />
-                                {userLocation ? 'Get Directions' : 'Get Directions (Generic)'}
+                                {userLocation ? t('shop.get_directions') : t('location.get_directions')}
                             </a>
 
                             {/* Location Status */}

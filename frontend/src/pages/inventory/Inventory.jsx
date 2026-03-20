@@ -48,6 +48,14 @@ const Inventory = () => {
                     <h1 className="text-3xl font-bold text-gray-800">Inventory</h1>
                     <p className="text-gray-600 mt-1">Stock levels and transaction management</p>
                 </div>
+                {(isAdmin || isManager) && (
+                    <Link
+                        to="/admin/inventory/reports"
+                        className="px-4 py-2 bg-[#155c27] text-white rounded-lg hover:bg-[#10481f] transition-colors text-sm font-medium"
+                    >
+                        Inventory Reports
+                    </Link>
+                )}
             </div>
 
             <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
@@ -108,9 +116,9 @@ const Inventory = () => {
                                             <tr key={inv._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                                 <td className="py-3 px-4">
                                                     <p className="font-medium text-gray-800">{inv.product?.productName}</p>
-                                                    {!inv.product?.isActive && <span className="text-xs text-gray-400">(Inactive)</span>}
+                                                    {!inv.product?.isActive && <span className="text-xs text-red-400">(Inactive)</span>}
                                                 </td>
-                                                <td className="py-3 px-4 font-mono text-xs text-gray-500">{inv.product?.sku || 'â€”'}</td>
+                                                <td className="py-3 px-4 font-mono text-xs text-gray-500">{inv.product?.sku || '—'}</td>
                                                 <td className="py-3 px-4">
                                                     {inv.product?.category ? (
                                                         <span className="px-2 py-2 bg-[#1a6e30ad] text-[#ffffff] rounded-full text-xs font-medium">{inv.product.category.categoryName}</span>

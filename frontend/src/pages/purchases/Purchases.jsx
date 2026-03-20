@@ -218,7 +218,7 @@ const Purchases = () => {
                                     <tbody>
                                         {purchases.map((p) => (
                                             <tr key={p._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                                <td className="py-3 px-4 font-mono text-sm font-medium text-[#000000]">{p.purchaseNumber}</td>
+                                                <td className="py-3 px-4 font-mono text-m font-bold text-[#000000]">{p.purchaseNumber}</td>
                                                 <td className="py-3 px-4 text-gray-800">{p.supplier?.supplierName || 'â€”'}</td>
                                                 <td className="py-3 px-4 text-gray-600">{new Date(p.purchaseDate).toLocaleDateString('en-LK')}</td>
                                                 <td className="py-3 px-4">

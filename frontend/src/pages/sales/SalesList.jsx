@@ -518,7 +518,7 @@ const SalesList = () => {
                                                 key={sale._id}
                                                 className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                                             >
-                                                <td className="py-3 px-4 font-medium text-[#f5d800]">
+                                                <td className="py-3 px-4 font-bold  text-[#026b43]">
                                                     {sale.invoiceNumber}
                                                 </td>
                                                 <td className="py-3 px-4">{sale.customerName}</td>

@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCustomer } from '../../context/CustomerContext';
 import { Mail, Lock, User, Phone, Eye, EyeOff, X } from 'lucide-react';
 import Toast from '../../components/Toast';
@@ -42,7 +43,8 @@ const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoCompl
                         onBlur={() => setFocused(false)}
                         autoComplete={autoComplete}
                         placeholder={lifted ? placeholder : ''}
-                        className="w-full pl-3 pr-4 py-3 bg-[var(--color-search-bg)] dark:bg-[var(--color-card-bg)] text-sm text-[var(--color-search-text)] dark:text-white focus:outline-none"
+                        className="w-full pl-3 pr-4 py-3 bg-[var(--color-search-bg)] dark:bg-[var(--color-card-bg)] text-sm text-[var(--color-text-primary)] focus:outline-none"
+                        style={{ WebkitTextFillColor: 'var(--color-text-primary)' }}
                     />
                 </div>
             </div>
@@ -89,7 +91,8 @@ const PasswordInput = ({ id, label, value, onChange, autoComplete, placeholder, 
                         onBlur={() => setFocused(false)}
                         autoComplete={autoComplete}
                         placeholder={lifted ? placeholder : ''}
-                        className="w-full pl-3 pr-10 py-3 bg-[var(--color-search-bg)] dark:bg-[var(--color-card-bg)] text-sm text-[var(--color-search-text)] dark:text-white focus:outline-none"
+                        className="w-full pl-3 pr-10 py-3 bg-[var(--color-search-bg)] dark:bg-[var(--color-card-bg)] text-sm text-[var(--color-text-primary)] focus:outline-none"
+                        style={{ WebkitTextFillColor: 'var(--color-text-primary)' }}
                     />
                 </div>
                 <button
@@ -106,6 +109,7 @@ const PasswordInput = ({ id, label, value, onChange, autoComplete, placeholder, 
 };
 
 const CustomerRegister = () => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -126,17 +130,17 @@ const CustomerRegister = () => {
 
     const validateFields = () => {
         const errors = {};
-        if (!formData.firstName.trim()) errors.firstName = 'First name is required';
-        if (!formData.lastName.trim()) errors.lastName = 'Last name is required';
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) errors.email = 'Please enter a valid email';
+        if (!formData.firstName.trim()) errors.firstName = t('register.validation.first_name_required');
+        if (!formData.lastName.trim()) errors.lastName = t('register.validation.last_name_required');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) errors.email = t('register.validation.email_invalid');
         if (formData.phone) {
             const cleaned = formData.phone.replace(/[\s\-()]/g, '');
             if (!/^(?:0[1-9][0-9]{8}|\+?94[1-9][0-9]{8})$/.test(cleaned))
-                errors.phone = 'Use a valid Sri Lankan number (e.g., 07X XXXXXXX)';
+                errors.phone = t('register.validation.phone_invalid');
         }
-        if (!formData.password || formData.password.length < 6) errors.password = 'Password must be at least 6 characters';
-        if (formData.password !== formData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
-        if (!agreedToTerms) errors.terms = 'Please agree to the Terms & Conditions';
+        if (!formData.password || formData.password.length < 6) errors.password = t('register.validation.password_min');
+        if (formData.password !== formData.confirmPassword) errors.confirmPassword = t('register.validation.password_mismatch');
+        if (!agreedToTerms) errors.terms = t('register.validation.terms_required');
         return errors;
     };
 
@@ -157,15 +161,19 @@ const CustomerRegister = () => {
                 phone: formData.phone,
                 password: formData.password,
             });
-            setToast({ message: 'Registration successful! Welcome coupon has been generated.', type: 'success' });
+            setToast({ message: t('register.validation.register_success'), type: 'success' });
             setTimeout(() => navigate('/my-account'), 1500);
         } catch (error) {
+            if (error.response?.data?.code === 'EMAIL_EXISTS') {
+                setFieldErrors((prev) => ({ ...prev, email: t('register.validation.email_exists') }));
+                return;
+            }
             if (error.response?.data?.code === 'VALIDATION_ERROR') {
                 const serverErrs = {};
                 error.response.data.errors?.forEach((e) => { serverErrs[e.field] = e.message; });
                 setFieldErrors((prev) => ({ ...prev, ...serverErrs }));
             } else {
-                setToast({ message: error.response?.data?.message || 'Registration failed', type: 'error' });
+                setToast({ message: t('register.validation.register_failed'), type: 'error' });
             }
         } finally {
             setLoading(false);
@@ -182,7 +190,7 @@ const CustomerRegister = () => {
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
                         {/* Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-                            <h2 className="text-2xl font-bold text-[var(--color-text-primary)] dark:text-white">Terms & Conditions</h2>
+                            <h2 className="text-2xl font-bold text-[var(--color-text-primary)] dark:text-white">{t('terms.title')}</h2>
                             <button
                                 onClick={() => setShowTermsModal(false)}
                                 className="p-2 hover:bg-[var(--color-bg-primary)] dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -194,53 +202,53 @@ const CustomerRegister = () => {
                         {/* Content */}
                         <div className="overflow-y-auto flex-1 p-6 text-sm text-gray-700 dark:text-gray-300 space-y-4">
                             <section>
-                                <h3 className="font-bold text-[var(--color-text-primary)] dark:text-white mb-2">1. Account Registration</h3>
-                                <p>By creating an account with 7 Super City, you agree to provide accurate, complete, and current information. You are responsible for maintaining the confidentiality of your login credentials and are fully liable for all activities that occur under your account.</p>
+                                <h3 className="font-bold text-[var(--color-text-primary)] dark:text-white mb-2">{t('terms.s1_title')}</h3>
+                                <p>{t('terms.s1_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-[var(--color-text-primary)] dark:text-white mb-2">2. Loyalty Program</h3>
-                                <p>Upon registration, you automatically enroll in our Loyalty Program. Your account will be credited with a welcome discount. Loyalty points are earned on eligible purchases and can be redeemed for discounts or exclusive offers. Points are non-transferable and may expire according to our loyalty policy.</p>
+                                <h3 className="font-bold text-[var(--color-text-primary)] dark:text-white mb-2">{t('terms.s2_title')}</h3>
+                                <p>{t('terms.s2_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-[var(--color-text-primary)] dark:text-white mb-2">3. User Responsibilities</h3>
-                                <p>You agree not to use your account for unlawful purposes or in any way that violates these terms. You must maintain the security of your account and notify us immediately of any unauthorized use. You are solely responsible for any actions taken using your credentials.</p>
+                                <h3 className="font-bold text-[var(--color-text-primary)] dark:text-white mb-2">{t('terms.s3_title')}</h3>
+                                <p>{t('terms.s3_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">4. Product Information</h3>
-                                <p>While we strive to provide accurate product information, descriptions, and prices, we do not warrant that all content is accurate, complete, or error-free. We reserve the right to modify product information and correct pricing errors without notice.</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t('terms.s4_title')}</h3>
+                                <p>{t('terms.s4_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">5. Limitation of Liability</h3>
-                                <p>To the fullest extent permitted by law, 7 Super City and its affiliates shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of our service or products purchased.</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t('terms.s5_title')}</h3>
+                                <p>{t('terms.s5_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">6. Privacy Policy</h3>
-                                <p>Your use of our service is also governed by our Privacy Policy. We collect and process personal data in accordance with applicable data protection laws. Your data will be used solely for providing services, improving our offerings, and communicating promotions.</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t('terms.s6_title')}</h3>
+                                <p>{t('terms.s6_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">7. Modifications to Terms</h3>
-                                <p>We reserve the right to modify these Terms & Conditions at any time. Changes will be effective immediately upon posting. Your continued use of the service constitutes acceptance of the modified terms.</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t('terms.s7_title')}</h3>
+                                <p>{t('terms.s7_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">8. Termination of Account</h3>
-                                <p>We may suspend or terminate your account at any time for violation of these terms or for other legitimate reasons. Upon termination, your right to use the service will immediately cease. Outstanding loyalty points will be forfeited unless otherwise stated.</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t('terms.s8_title')}</h3>
+                                <p>{t('terms.s8_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">9. Governing Law</h3>
-                                <p>These Terms & Conditions are governed by and construed in accordance with the laws of Sri Lanka. Any disputes arising shall be subject to the exclusive jurisdiction of the courts located in Sri Lanka.</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t('terms.s9_title')}</h3>
+                                <p>{t('terms.s9_body')}</p>
                             </section>
 
                             <section>
-                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">10. Contact Us</h3>
-                                <p>If you have questions about these Terms & Conditions, please contact our customer support team at support@7supercity.com or visit our Location page for more information.</p>
+                                <h3 className="font-bold text-gray-900 dark:text-white mb-2">{t('terms.s10_title')}</h3>
+                                <p>{t('terms.s10_body')}</p>
                             </section>
                         </div>
 
@@ -250,7 +258,7 @@ const CustomerRegister = () => {
                                 onClick={() => setShowTermsModal(false)}
                                 className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold transition-colors"
                             >
-                                I'll Review Later
+                                {t('terms.review_later')}
                             </button>
                             <button
                                 onClick={() => {
@@ -259,7 +267,7 @@ const CustomerRegister = () => {
                                 }}
                                 className="flex-1 px-4 py-3 bg-[#f5d800] text-[#155c27] rounded-lg hover:bg-[#e6c700] font-semibold transition-colors"
                             >
-                                I Agree & Accept
+                                {t('terms.agree_accept')}
                             </button>
                         </div>
                     </div>
@@ -278,18 +286,18 @@ const CustomerRegister = () => {
 
                 {/* Form */}
                 <div className="max-w-sm w-full mx-auto">
-                    <h1 className="text-3xl font-bold text-[var(--color-text-primary)] dark:text-white mb-1">Join Us!</h1>
-                    <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-8">Create your account and enjoy exclusive benefits & a welcome discount!</p>
+                    <h1 className="text-3xl font-bold text-[var(--color-text-primary)] dark:text-white mb-1">{t('auth.join_title')}</h1>
+                    <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-8">{t('auth.join_sub')}</p>
 
                     <form onSubmit={handleSubmit} noValidate className="space-y-4">
                         {/* Name Fields Grid */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">First Name</label>
+                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.first_name')}</label>
                                 <FloatingInput
                                     id="firstName"
                                     type="text"
-                                    label="First Name"
+                                    label={t('auth.first_name')}
                                     value={formData.firstName}
                                         onChange={(e) => { setFormData({ ...formData, firstName: e.target.value }); clearFieldError('firstName'); }}
                                     icon={User}
@@ -299,11 +307,11 @@ const CustomerRegister = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">Last Name</label>
+                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.last_name')}</label>
                                 <FloatingInput
                                     id="lastName"
                                     type="text"
-                                    label="Last Name"
+                                    label={t('auth.last_name')}
                                     value={formData.lastName}
                                         onChange={(e) => { setFormData({ ...formData, lastName: e.target.value }); clearFieldError('lastName'); }}
                                     icon={User}
@@ -316,11 +324,11 @@ const CustomerRegister = () => {
 
                         {/* Email */}
                         <div>
-                            <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">Email Address</label>
+                            <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.email')}</label>
                             <FloatingInput
                                 id="email"
                                 type="email"
-                                label="Email"
+                                label={t('auth.email')}
                                 value={formData.email}
                                     onChange={(e) => { setFormData({ ...formData, email: e.target.value }); clearFieldError('email'); }}
                                 icon={Mail}
@@ -332,11 +340,11 @@ const CustomerRegister = () => {
 
                         {/* Phone */}
                         <div>
-                            <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">Phone Number</label>
+                            <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.phone')}</label>
                             <FloatingInput
                                 id="phone"
                                 type="tel"
-                                label="Phone"
+                                label={t('auth.phone')}
                                 value={formData.phone}
                                     onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); clearFieldError('phone'); }}
                                 icon={Phone}
@@ -349,10 +357,10 @@ const CustomerRegister = () => {
                         {/* Password Fields Grid */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">Password</label>
+                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.password')}</label>
                                 <PasswordInput
                                     id="password"
-                                    label="Password"
+                                    label={t('auth.password')}
                                     value={formData.password}
                                         onChange={(e) => { setFormData({ ...formData, password: e.target.value }); clearFieldError('password'); }}
                                     autoComplete="new-password"
@@ -361,10 +369,10 @@ const CustomerRegister = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">Confirm</label>
+                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.confirm')}</label>
                                 <PasswordInput
                                     id="confirmPassword"
-                                    label="Confirm"
+                                    label={t('auth.confirm')}
                                     value={formData.confirmPassword}
                                         onChange={(e) => { setFormData({ ...formData, confirmPassword: e.target.value }); clearFieldError('confirmPassword'); }}
                                     autoComplete="new-password"
@@ -392,13 +400,13 @@ const CustomerRegister = () => {
                                         ? 'text-[#155c27] dark:text-[#f5d800]' 
                                         : 'text-amber-800 dark:text-amber-200'
                                 }`}>
-                                    I have read and agree to the{' '}
+                                    {t('auth.terms')}{' '}
                                     <button
                                         type="button"
                                         onClick={() => setShowTermsModal(true)}
                                         className="text-[var(--color-link)] dark:text-[var(--color-link)] hover:text-[var(--color-button-primary)] dark:hover:text-[var(--color-accent)] hover:underline font-semibold"
                                     >
-                                        Terms & Conditions
+                                        {t('auth.terms_link')}
                                     </button>
                                 </label>
                                 {fieldErrors.terms && (
@@ -413,14 +421,14 @@ const CustomerRegister = () => {
                             disabled={loading}
                             className="w-full bg-[var(--color-button-primary)] text-[var(--color-button-text)] dark:bg-[var(--color-accent)] dark:text-[var(--color-text-body)] hover:bg-[var(--color-button-primary-hover)] dark:hover:bg-[#e6c700] py-3 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
                         >
-                            {loading ? 'Creating Accountâ€¦' : 'Create Account'}
+                            {loading ? `${t('auth.create_account')}...` : t('auth.create_account')}
                         </button>
                     </form>
 
                     <p className="mt-6 text-xs text-center text-gray-500 dark:text-gray-400">
-                        Already have an account?{' '}
+                        {t('auth.have_account')}{' '}
                         <Link to="/login" className="text-[var(--color-link)] dark:text-[var(--color-link)] font-semibold hover:text-[var(--color-button-primary)] dark:hover:text-[var(--color-accent)] hover:underline">
-                            Sign In
+                            {t('auth.sign_in')}
                         </Link>
                     </p>
                 </div>

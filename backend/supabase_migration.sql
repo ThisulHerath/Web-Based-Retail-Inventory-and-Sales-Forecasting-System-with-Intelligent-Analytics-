@@ -66,6 +66,19 @@ CREATE TABLE IF NOT EXISTS suppliers (
 );
 
 -- =====================================================
+-- 4A. CUSTOMER FEEDBACKS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS customer_feedbacks (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- =====================================================
 -- 5. PRODUCTS TABLE
 -- =====================================================
 CREATE TABLE IF NOT EXISTS products (
@@ -125,7 +138,7 @@ CREATE TABLE IF NOT EXISTS coupons (
     discount_value NUMERIC(10, 2) NOT NULL CHECK (discount_value >= 0),
     expiry_date TIMESTAMPTZ NOT NULL,
     is_used BOOLEAN DEFAULT false,
-    customer_id UUID NOT NULL REFERENCES customers(id),
+    customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -173,7 +186,7 @@ CREATE TABLE IF NOT EXISTS sales (
     total_cost NUMERIC(12, 2) DEFAULT 0,
     total_profit NUMERIC(12, 2) DEFAULT 0,
     payment_method VARCHAR(20) NOT NULL CHECK (payment_method IN ('Cash', 'Card')),
-    coupon_used UUID REFERENCES coupons(id),
+    coupon_used UUID REFERENCES coupons(id) ON DELETE SET NULL,
     points_earned INTEGER DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -230,6 +243,30 @@ CREATE INDEX idx_coupons_customer ON coupons(customer_id);
 CREATE INDEX idx_coupons_code ON coupons(code);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_customers_email ON customers(email);
+CREATE INDEX idx_feedback_customer ON customer_feedbacks(customer_id);
+CREATE INDEX idx_feedback_status ON customer_feedbacks(status);
+
+-- =====================================================
+-- 16. INVENTORY REPORTS TABLE
+-- =====================================================
+CREATE TABLE IF NOT EXISTS inventory_reports (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title VARCHAR(255) NOT NULL,
+    from_date TIMESTAMPTZ NOT NULL,
+    to_date TIMESTAMPTZ NOT NULL,
+    notes TEXT DEFAULT '',
+    summary JSONB NOT NULL DEFAULT '{}'::jsonb,
+    transactions JSONB NOT NULL DEFAULT '[]'::jsonb,
+    created_by UUID NOT NULL REFERENCES users(id),
+    updated_by UUID REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT inventory_reports_valid_range CHECK (from_date <= to_date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_inventory_reports_created_at ON inventory_reports(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_inventory_reports_from_to ON inventory_reports(from_date, to_date);
+CREATE INDEX IF NOT EXISTS idx_inventory_reports_created_by ON inventory_reports(created_by);
 
 -- =====================================================
 -- FUNCTION: Auto-update updated_at timestamp
@@ -247,12 +284,14 @@ CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON categories FOR EACH
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_customers_updated_at BEFORE UPDATE ON customers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_suppliers_updated_at BEFORE UPDATE ON suppliers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_customer_feedbacks_updated_at BEFORE UPDATE ON customer_feedbacks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON products FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_inventory_updated_at BEFORE UPDATE ON inventory FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_coupons_updated_at BEFORE UPDATE ON coupons FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_purchases_updated_at BEFORE UPDATE ON purchases FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_sales_updated_at BEFORE UPDATE ON sales FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_stock_transactions_updated_at BEFORE UPDATE ON stock_transactions FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_inventory_reports_updated_at BEFORE UPDATE ON inventory_reports FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- =====================================================
 -- OLD MONGO ID MAPPING TABLE (for data migration)
@@ -315,3 +354,35 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_user ON audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_entity ON audit_logs(entity_type);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_created ON audit_logs(created_at DESC);
+
+-- =====================================================
+-- PATCH: COUPONS FK CASCADE FOR CUSTOMER DELETE
+-- =====================================================
+DO $$
+BEGIN
+    ALTER TABLE coupons DROP CONSTRAINT IF EXISTS coupons_customer_id_fkey;
+EXCEPTION
+    WHEN undefined_table THEN NULL;
+END $$;
+
+ALTER TABLE IF EXISTS coupons
+    ADD CONSTRAINT coupons_customer_id_fkey
+    FOREIGN KEY (customer_id)
+    REFERENCES customers(id)
+    ON DELETE CASCADE;
+
+-- =====================================================
+-- PATCH: SALES COUPON FK SET NULL ON COUPON DELETE
+-- =====================================================
+DO $$
+BEGIN
+    ALTER TABLE sales DROP CONSTRAINT IF EXISTS sales_coupon_used_fkey;
+EXCEPTION
+    WHEN undefined_table THEN NULL;
+END $$;
+
+ALTER TABLE IF EXISTS sales
+    ADD CONSTRAINT sales_coupon_used_fkey
+    FOREIGN KEY (coupon_used)
+    REFERENCES coupons(id)
+    ON DELETE SET NULL;

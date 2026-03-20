@@ -267,10 +267,44 @@ export const updateCustomerProfile = async (req, res) => {
 // Helper: delete related records before deleting a customer
 const deleteCustomerRelatedData = async (customerId) => {
     const { supabase } = await import('../config/db.js');
+
+    // Find customer coupon ids so we can detach sales.coupon_used references first.
+    const { data: customerCoupons, error: couponFetchError } = await supabase
+        .from('coupons')
+        .select('id')
+        .eq('customer_id', customerId);
+    if (couponFetchError) {
+        throw new Error(`Failed to fetch customer coupons: ${couponFetchError.message}`);
+    }
+
+    const couponIds = (customerCoupons || []).map((coupon) => coupon.id);
+    if (couponIds.length > 0) {
+        const { error: salesCouponUnlinkError } = await supabase
+            .from('sales')
+            .update({ coupon_used: null })
+            .in('coupon_used', couponIds);
+        if (salesCouponUnlinkError) {
+            throw new Error(`Failed to unlink coupons from sales: ${salesCouponUnlinkError.message}`);
+        }
+    }
+
     // Delete coupons belonging to the customer
-    await supabase.from('coupons').delete().eq('customer_id', customerId);
+    const { error: couponDeleteError } = await supabase
+        .from('coupons')
+        .delete()
+        .eq('customer_id', customerId);
+    if (couponDeleteError) {
+        throw new Error(`Failed to delete customer coupons: ${couponDeleteError.message}`);
+    }
+
     // Nullify customer_id on sales so sales history is preserved
-    await supabase.from('sales').update({ customer_id: null }).eq('customer_id', customerId);
+    const { error: salesUpdateError } = await supabase
+        .from('sales')
+        .update({ customer_id: null })
+        .eq('customer_id', customerId);
+    if (salesUpdateError) {
+        throw new Error(`Failed to unlink customer from sales: ${salesUpdateError.message}`);
+    }
 };
 
 // @desc    Delete own account (Customer self-delete)

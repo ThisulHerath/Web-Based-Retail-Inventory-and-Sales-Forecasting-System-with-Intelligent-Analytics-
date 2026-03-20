@@ -23,6 +23,11 @@ export const validateUUIDParam = [
     handleValidation,
 ];
 
+export const validateCustomerUUIDParam = [
+    param('customerId').isUUID().withMessage('Invalid customer id format'),
+    handleValidation,
+];
+
 export const validateProductIdParam = [
     param('productId').isUUID().withMessage('Invalid product id format'),
     handleValidation,
@@ -152,5 +157,21 @@ export const validateStockMovement = [
     body('productId').isUUID().withMessage('Valid product id is required'),
     body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
     body('notes').optional().trim().isLength({ max: 500 }).withMessage('Notes must be less than 500 characters'),
+    handleValidation,
+];
+
+export const validateCreateFeedback = [
+    body('rating').isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
+    body('comment')
+        .trim()
+        .isLength({ min: 5, max: 500 })
+        .withMessage('Feedback comment must be between 5 and 500 characters'),
+    handleValidation,
+];
+
+export const validateFeedbackStatusUpdate = [
+    body('status')
+        .isIn(['pending', 'approved', 'rejected'])
+        .withMessage('Status must be pending, approved, or rejected'),
     handleValidation,
 ];

@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCustomer } from '../../context/CustomerContext';
 import { Mail, Lock } from 'lucide-react';
 import Toast from '../../components/Toast';
@@ -40,7 +41,8 @@ const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoCompl
                         onBlur={() => setFocused(false)}
                         autoComplete={autoComplete}
                         placeholder={lifted ? placeholder : ''}
-                        className="w-full pl-3 pr-4 py-3 bg-[var(--color-search-bg)] dark:bg-[var(--color-card-bg)] text-sm text-[var(--color-search-text)] dark:text-white focus:outline-none"
+                        className="w-full pl-3 pr-4 py-3 bg-[var(--color-search-bg)] dark:bg-[var(--color-card-bg)] text-sm text-[var(--color-text-primary)] focus:outline-none"
+                        style={{ WebkitTextFillColor: 'var(--color-text-primary)' }}
                     />
                 </div>
             </div>
@@ -49,6 +51,7 @@ const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoCompl
 };
 
 const CustomerLogin = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
@@ -70,12 +73,12 @@ const CustomerLogin = () => {
         e.preventDefault();
 
         if (!email.trim()) {
-            setToast({ message: 'Please enter your email address', type: 'error' });
+            setToast({ message: t('auth_extra.enter_email'), type: 'error' });
             return;
         }
 
         if (!password) {
-            setToast({ message: 'Please enter your password', type: 'error' });
+            setToast({ message: t('auth_extra.enter_password'), type: 'error' });
             return;
         }
 
@@ -92,7 +95,7 @@ const CustomerLogin = () => {
             
             navigate('/my-account');
         } catch (error) {
-            setToast({ message: error.response?.data?.message || 'Login failed', type: 'error' });
+            setToast({ message: error.response?.data?.message || t('auth_extra.login_failed'), type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -114,14 +117,14 @@ const CustomerLogin = () => {
 
                 {/* Form */}
                 <div className="max-w-sm w-full mx-auto">
-                    <h1 className="text-3xl font-bold text-[var(--color-text-primary)] dark:text-white mb-1">Welcome!</h1>
-                    <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-8">Sign in by entering the information below</p>
+                    <h1 className="text-3xl font-bold text-[var(--color-text-primary)] dark:text-white mb-1">{t('auth.welcome')}</h1>
+                    <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-8">{t('auth.sign_in_sub')}</p>
 
                     <form onSubmit={handleSubmit} noValidate className="space-y-5">
                         <FloatingInput
                             id="email"
                             type="email"
-                            label="Email Address"
+                            label={t('auth.email')}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             icon={Mail}
@@ -132,7 +135,7 @@ const CustomerLogin = () => {
                         <FloatingInput
                             id="password"
                             type="password"
-                            label="Password"
+                            label={t('auth.password')}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             icon={Lock}
@@ -154,10 +157,10 @@ const CustomerLogin = () => {
                                     }}
                                     className="w-3.5 h-3.5 accent-[var(--color-button-primary)] rounded cursor-pointer" 
                                 />
-                                Remember Me
+                                {t('auth.remember_me')}
                             </label>
                             <Link to="/admin/login" className="text-[var(--color-text-secondary)] dark:text-[var(--color-link)] hover:text-[var(--color-link)] dark:hover:text-[var(--color-accent)] transition-colors">
-                                Staff Login
+                                {t('auth.staff_login')}
                             </Link>
                         </div>
 
@@ -167,14 +170,14 @@ const CustomerLogin = () => {
                             disabled={loading}
                             className="w-full bg-[var(--color-button-primary)] text-[var(--color-button-text)] dark:bg-[var(--color-accent)] dark:text-[var(--color-button-text)] hover:bg-[var(--color-button-primary-hover)] dark:hover:bg-[#e6c700] py-3 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {loading ? 'Signing inâ€¦' : 'Continue'}
+                            {loading ? `${t('auth.sign_in')}...` : t('auth.continue')}
                         </button>
                     </form>
 
                     <p className="mt-6 text-xs text-center text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)]">
-                        Don't have an account?{' '}
+                        {t('auth.no_account')}{' '}
                         <Link to="/register" className="text-[var(--color-link)] dark:text-[var(--color-link)] font-semibold hover:text-[var(--color-link-hover)] dark:hover:text-[var(--color-accent)] hover:underline">
-                            Create one here.
+                            {t('auth.create_here')}
                         </Link>
                     </p>
                 </div>
