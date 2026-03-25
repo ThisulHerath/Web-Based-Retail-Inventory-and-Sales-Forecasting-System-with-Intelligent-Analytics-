@@ -1,10 +1,11 @@
 <div align="center">
 
-<h1>🏪 7 Super City</h1>
+<img src="https://capsule-render.vercel.app/api?type=waving&height=180&color=0:0ea5e9,50:22c55e,100:f59e0b&text=7%20Super%20City&fontAlign=50&fontAlignY=34&fontSize=52&desc=Retail%20Inventory%20%7C%20Sales%20Forecasting%20%7C%20Intelligent%20Analytics&descAlign=50&descAlignY=56&animation=fadeIn" alt="7 Super City Banner"/>
+
 <h2>Retail Inventory & Sales Forecasting System</h2>
 
 <p>
-  <strong>A powerful, modern full-stack retail management solution with AI-driven insights</strong>
+  <strong>A full-stack retail platform that combines operations, finance, and AI forecasting in one experience.</strong>
 </p>
 
 [![React](https://img.shields.io/badge/Frontend-React%2018-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
@@ -12,7 +13,24 @@
 [![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Cloud-3ecf8e?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
 [![Express](https://img.shields.io/badge/API-Express.js-90C53F?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![AI Enabled](https://img.shields.io/badge/AI-Forecasting-F59E0B?style=for-the-badge&logo=scikitlearn&logoColor=white)](#-key-features)
+[![Tests](https://img.shields.io/badge/Tested-Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)](#-testing)
+[![Status](https://img.shields.io/badge/Status-Active-16A34A?style=for-the-badge)](#-quick-start-guide)
+
+<p>
+  <a href="#-quick-start-guide"><strong>Get Started</strong></a> •
+  <a href="#-key-features"><strong>Features</strong></a> •
+  <a href="#-api-endpoints-overview"><strong>API</strong></a> •
+  <a href="#-project-structure"><strong>Architecture</strong></a>
+</p>
+
+<table>
+  <tr>
+    <td align="center"><strong>Inventory Accuracy</strong><br/>Real-time stock visibility</td>
+    <td align="center"><strong>Sales Intelligence</strong><br/>Trend-aware business decisions</td>
+    <td align="center"><strong>Operational Speed</strong><br/>From purchase to invoice</td>
+  </tr>
+</table>
 
 ---
 
@@ -28,6 +46,16 @@
 - ✅ Multi-user role-based access
 
 Perfect for **supermarkets, convenience stores, and retail chains** that want to scale their operations with confidence.
+
+<details>
+<summary><strong>Why teams choose this system</strong></summary>
+
+- Centralizes products, suppliers, stock flow, customer loyalty, and sales in one platform
+- Reduces manual reporting with ready-to-use dashboards and summaries
+- Supports role-specific workflows for admin, manager, and cashier users
+- Adds forecasting support via Python + scikit-learn without changing your core stack
+
+</details>
 
 ---
 
@@ -114,6 +142,18 @@ Perfect for **supermarkets, convenience stores, and retail chains** that want to
 | **AI/ML** | <img src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white" alt="Python"/> <img src="https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white" alt="scikit-learn"/> <img src="https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white" alt="Flask"/> |
 
 </div>
+
+## 🧭 System Flow
+
+```mermaid
+flowchart LR
+  A[Cashier / Manager / Admin] --> B[React Frontend]
+  B --> C[Express API Layer]
+  C --> D[(Supabase PostgreSQL)]
+  C --> E[AI Forecast Service\nFlask + scikit-learn]
+  E --> C
+  C --> F[Dashboards, Reports, Invoices]
+```
 
 ---
 
