@@ -1,680 +1,526 @@
-# 7 Super City - Retail Inventory and Sales Forecasting System
+<div align="center">
 
-A modern, full-stack retail management system built with **Supabase (PostgreSQL)**, Express.js, React.js, and Node.js.
+<h1>🏪 7 Super City</h1>
+<h2>Retail Inventory & Sales Forecasting System</h2>
 
----
+<p>
+  <strong>A powerful, modern full-stack retail management solution with AI-driven insights</strong>
+</p>
 
-## Features
-
-- Secure JWT-based authentication with role-based access (Admin, Manager, Cashier)
-- Real-time dashboard with sales statistics
-- Full CRUD for Sales, Products, Categories, Suppliers, Purchases, Users
-- Inventory & stock management with transaction history
-- Customer portal with loyalty points & coupons
-- Professional printable invoices
-
----
-
-## Prerequisites
-
-- **Node.js** (v18 or higher) — [Download](https://nodejs.org/)
-- **npm** package manager (comes with Node.js)
-- **Supabase account** (free tier works) — [supabase.com](https://supabase.com)
+[![React](https://img.shields.io/badge/Frontend-React%2018-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js%20v18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Cloud-3ecf8e?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
+[![Express](https://img.shields.io/badge/API-Express.js-90C53F?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 ---
 
-## Database Setup (Supabase)
+</div>
 
-### Step 1: Create a Supabase Project
+## 📌 About 7 Super City
 
-1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
-2. Click **"New Project"**
-3. Fill in:
-   - **Name**: `7supercity` (or any name you prefer)
-   - **Database Password**: Choose a strong password (save it!)
-   - **Region**: Pick the closest to you
-4. Click **"Create new project"** and wait for it to finish provisioning
+7 Super City is a **comprehensive retail management system** designed specifically for retail businesses that need:
+- ✅ Complete inventory control
+- ✅ Real-time sales analytics
+- ✅ AI-powered sales forecasting
+- ✅ Customer loyalty management
+- ✅ Multi-user role-based access
 
-### Step 2: Get Your Credentials
-
-Once the project is ready, go to **Project Settings → API** and copy:
-
-| Setting | Where to find it |
-|---|---|
-| **Project URL** | `Settings → API → Project URL` |
-| **anon (public) key** | `Settings → API → Project API keys → anon public` |
-| **service_role key** | `Settings → API → Project API keys → service_role secret` |
-
-### Step 3: Run the Database Migration
-
-1. In your Supabase Dashboard, go to **SQL Editor** (left sidebar)
-2. Click **"New query"**
-3. Open the file `backend/supabase_migration.sql` from this project
-4. **Copy the entire contents** and paste it into the SQL Editor
-5. Click **"Run"** (or press `Ctrl+Enter`)
-6. You should see "Success. No rows returned" — this means all tables were created
-
-> **What this creates:** 15 tables including users, products, categories, sales, inventory, stock_transactions, customers, coupons, suppliers, purchases, and their relationship tables, plus indexes and triggers.
+Perfect for **supermarkets, convenience stores, and retail chains** that want to scale their operations with confidence.
 
 ---
 
-## Installation & Setup
+## ⭐ Key Features
 
-### Step 1: Install Backend Dependencies
+<table>
+<tr>
+<td>
 
-```powershell
-cd backend
-npm install
-```
-
-### Step 2: Configure Environment Variables
-
-Create/edit the file `backend/.env` with your Supabase credentials:
-
-```env
-PORT=5000
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-CUSTOMER_JWT_SECRET=customer_portal_secret_key_change_this
-NODE_ENV=development
-
-# Supabase Configuration (replace with YOUR values from Step 2 above)
-SUPABASE_URL=https://your-project-id.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
-SUPABASE_ANON_KEY=your-anon-key-here
-DATABASE_URL=postgresql://postgres:YOUR-PASSWORD@db.your-project-id.supabase.co:5432/postgres
-```
-
-**Important:**
-- Replace `your-project-id` with your actual Supabase project ID
-- Replace `your-service-role-key-here` with the service_role key from Supabase
-- Replace `YOUR-PASSWORD` with the database password you set when creating the project
-- Change `JWT_SECRET` and `CUSTOMER_JWT_SECRET` to unique random strings in production
-
-### Step 3: Seed the Admin User
-
-```powershell
-cd backend
-npm run seedAdmin
-```
-
-You should see:
-```
- Admin user created successfully
- Email: admin@7supercity.com
- Password: admin123
-```
-
-> **Optional:** Run `npm run seedData` to also create sample Manager and Cashier users.
-
-### Step 4: Install Frontend Dependencies
-
-Open a **new terminal**:
-
-```powershell
-cd frontend
-npm install
-```
-
----
-
-## Running the Application
-
-You need **two terminals** — one for backend, one for frontend.
-
-### Terminal 1: Start Backend
-
-```powershell
-cd backend
-npm run dev
-```
-
-You should see:
-```
- Supabase Connected: https://your-project-id.supabase.co
- Server running on port 5000
- http://localhost:5000
-```
-
-### Terminal 2: Start Frontend
-
-```powershell
-cd frontend
-npm run dev
-```
-
-You should see:
-```
-  VITE v5.x.x  ready in xxx ms
-  ➜  Local:   http://localhost:5173/
-```
-
-### Open the App
-
-Go to **http://localhost:5173** in your browser.
-
----
-
-##  Login Credentials
-
-| Role | Email | Password |
-|---|---|---|
-| **Admin** | `admin@7supercity.com` | `admin123` |
-| **Manager** | `manager@7supercity.com` | `manager123` |
-| **Cashier** | `cashier@7supercity.com` | `cashier123` |
-
-> Manager and Cashier accounts are only available if you ran `npm run seedData`.
-
----
-
-##  API Endpoints
-
-### Authentication
-- `POST /api/auth/login` — User login
-
-### Products
-- `GET /api/products` — List all products
-- `POST /api/products` — Create product
-- `PUT /api/products/:id` — Update product
-- `DELETE /api/products/:id` — Delete product
-
-### Categories
-- `GET /api/categories` — List categories
-- `POST /api/categories` — Create category
-- `PUT /api/categories/:id` — Update category
-- `DELETE /api/categories/:id` — Delete category
-
-### Sales
-- `GET /api/sales` — List sales (pagination, search, date filter)
-- `GET /api/sales/stats/summary` — Dashboard statistics
-- `GET /api/sales/:id` — Single sale with items
-- `POST /api/sales` — Create sale
-- `PUT /api/sales/:id` — Update sale
-- `DELETE /api/sales/:id` — Delete sale
-
-### Inventory
-- `GET /api/inventory` — All inventory records
-- `GET /api/inventory/stats/summary` — Inventory stats
-
-### Stock
-- `POST /api/stock/in` — Stock in
-- `POST /api/stock/out` — Stock out
-- `GET /api/stock/transactions` — Transaction history
-- `GET /api/stock/history/:productId` — Product stock history
-
-### Suppliers & Purchases
-- `GET /api/suppliers` — List suppliers
-- `GET /api/purchases` — List purchases
-
-### Customers & Coupons
-- `GET /api/customers` — List customers
-- `POST /api/customers/login` — Customer portal login
-- `POST /api/coupons/validate` — Validate coupon
-- `POST /api/coupons/generate` — Generate coupon
-
----
-
-## 🛠️ Troubleshooting
-
-### "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY"
-
-Your `.env` file is missing or has incorrect values. Double-check:
-1. The file is at `backend/.env` (not the project root)
-2. `SUPABASE_URL` starts with `https://`
-3. `SUPABASE_SERVICE_ROLE_KEY` is the **service_role** key (not the anon key)
-
-### "Supabase Connection Error"
-
-1. Check your internet connection
-2. Verify your Supabase project is active (not paused) at [supabase.com/dashboard](https://supabase.com/dashboard)
-3. Confirm you ran the SQL migration (Step 3 of Database Setup)
-
-### "relation does not exist" errors
-
-You haven't run the migration SQL. Go to Supabase SQL Editor and run `backend/supabase_migration.sql`.
-
-### Port 5000 Already in Use
-
-Change the port in `backend/.env`:
-```env
-PORT=5001
-```
-Then update `frontend/src/services/api.js` — change `http://localhost:5000/api` to `http://localhost:5001/api`.
-
-### Frontend Build/Install Errors
-
-```powershell
-cd frontend
-Remove-Item -Recurse -Force node_modules
-Remove-Item package-lock.json
-npm install
-```
-
----
-
-## Evaluation Resources
-
-- `EVALUATION_EXECUTION_PACK.md` - Day-by-day delivery board, 20-minute presentation script, and rubric mapping
-- `TEST_CASES_TEMPLATE.csv` - Ready-to-fill test evidence sheet for module, validation, and security test cases
-
-### Run Backend Tests
-
-```powershell
-cd backend
-npm test
-```
-
----
-
-##  Production Build
-
-### Backend
-```powershell
-cd backend
-npm start
-```
-
-### Frontend
-```powershell
-cd frontend
-npm run build
-npm run preview
-```
-
----
-
-##  Security Features
-
-- Password hashing with bcrypt
-- JWT token authentication (30-day expiry)
-- Role-based access control (Admin/Manager/Cashier)
+### 🔐 Security & Access
+- JWT-based authentication
+- Role-based access control
+- Admin/Manager/Cashier roles
+- Secure password hashing
 - Protected API routes
-- CORS enabled
-- Input validation
-- Error handling middleware
-- Supabase Row Level Security compatible
+
+</td>
+<td>
+
+### 📊 Business Intelligence
+- Real-time dashboard
+- Sales analytics & reports
+- Inventory forecasting
+- Sales predictions (AI)
+- Performance metrics
+
+</td>
+<td>
+
+### 📦 Inventory Management
+- Product CRUD operations
+- Stock tracking
+- Transaction history
+- Low stock alerts
+- Supplier management
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 💰 Sales & Finance
+- Point of Sale (POS)
+- Invoice generation
+- Payment tracking
+- Sales reports
+- Revenue analytics
+
+</td>
+<td>
+
+### 👥 Customer Management
+- Customer profiles
+- Loyalty points system
+- Coupon management
+- Customer analytics
+- Portal login
+
+</td>
+<td>
+
+### 🚀 Enterprise Features
+- Multi-user support
+- Audit logging
+- Data export (CSV/PDF)
+- Supabase RLS
+- Scalable architecture
+
+</td>
+</tr>
+</table>
 
 ---
 
-##  Tech Stack
+## 🏗️ Tech Stack
 
-| Layer | Technology |
+<div align="center">
+
+| Category | Technologies |
 |---|---|
-| **Frontend** | React 18, Vite, Tailwind CSS, React Router v6, Axios, Lucide Icons |
-| **Backend** | Node.js, Express.js, JWT, bcryptjs |
-| **Database** | Supabase (PostgreSQL) |
-| **Hosting** | Supabase Cloud (database), local dev server |
+| **Frontend** | <img src="https://img.shields.io/badge/React%2018-61DAFB?logo=react&logoColor=white" alt="React"/> <img src="https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white" alt="Vite"/> <img src="https://img.shields.io/badge/Tailwind%20CSS-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind"/> |
+| **Backend** | <img src="https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white" alt="Node.js"/> <img src="https://img.shields.io/badge/Express.js-90C53F?logo=express&logoColor=white" alt="Express"/> <img src="https://img.shields.io/badge/JWT-000000?logo=JSON%20web%20tokens&logoColor=white" alt="JWT"/> |
+| **Database** | <img src="https://img.shields.io/badge/PostgreSQL-336791?logo=postgresql&logoColor=white" alt="PostgreSQL"/> <img src="https://img.shields.io/badge/Supabase-3ecf8e?logo=supabase&logoColor=white" alt="Supabase"/> |
+| **AI/ML** | <img src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white" alt="Python"/> <img src="https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white" alt="scikit-learn"/> <img src="https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white" alt="Flask"/> |
+
+</div>
 
 ---
 
-##  License
+## 🚀 Quick Start Guide
 
-This project is created for 7 Super City organization.
+### ⚙️ Prerequisites
 
----
+Before you begin, make sure you have:
 
-**Built with  for 7 Super City**
+- **Node.js v18+** → [Download Here](https://nodejs.org/)
+- **Git** → [Download Here](https://git-scm.com/)
+- **Supabase Account** → [Free Tier](https://supabase.com) (takes 2 minutes!)
+- **Python 3.9+** (optional, for AI forecasting)
 
-# 7 Super City - Retail Inventory and Sales Forecasting System
-
-A modern, full-stack retail management system built with **Supabase (PostgreSQL)**, Express.js, React.js, and Node.js.
-
----
-
-## Features
-
-- Secure JWT-based authentication with role-based access (Admin, Manager, Cashier)
-- Real-time dashboard with sales statistics
-- Full CRUD for Sales, Products, Categories, Suppliers, Purchases, Users
-- Inventory & stock management with transaction history
-- Customer portal with loyalty points & coupons
-- Professional printable invoices
+> 💡 **Tip:** Supabase free tier is perfect for development and small businesses!
 
 ---
 
-## Prerequisites
+### 📦 Step-by-Step Installation
 
-- **Node.js** (v18 or higher) — [Download](https://nodejs.org/)
-- **npm** package manager (comes with Node.js)
-- **Supabase account** (free tier works) — [supabase.com](https://supabase.com)
+#### **Step 1️⃣: Clone the Project**
 
----
+```bash
+git clone <repository-url>
+cd Web-Based-Retail-Inventory-and-Sales-Forecasting-System-with-Intelligent-Analytics
+```
 
-## Database Setup (Supabase)
+#### **Step 2️⃣: Set Up Supabase Database**
 
-### Step 1: Create a Supabase Project
+1. **Create a Project** at [supabase.com/dashboard](https://supabase.com/dashboard)
+2. **Get Your Credentials:**
+   - Project URL → `Settings → API → Project URL`
+   - Service Role Key → `Settings → API → Project API keys → service_role`
+   - Anon Key → `Settings → API → Project API keys → anon public`
 
-1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
-2. Click **"New Project"**
-3. Fill in:
-   - **Name**: `7supercity` (or any name you prefer)
-   - **Database Password**: Choose a strong password (save it!)
-   - **Region**: Pick the closest to you
-4. Click **"Create new project"** and wait for it to finish provisioning
+3. **Run the Database Migration:**
+   - Go to **SQL Editor** in Supabase
+   - Create a **New Query**
+   - Open `backend/supabase_migration.sql` and copy-paste the contents
+   - Click **Run** (Ctrl+Enter)
+   - ✅ You should see "Success. No rows returned"
 
-### Step 2: Get Your Credentials
+> Creates: 15 tables with relationships, indexes, triggers, and sample data
 
-Once the project is ready, go to **Project Settings → API** and copy:
+#### **Step 3️⃣: Configure Backend**
 
-| Setting | Where to find it |
-|---|---|
-| **Project URL** | `Settings → API → Project URL` |
-| **anon (public) key** | `Settings → API → Project API keys → anon public` |
-| **service_role key** | `Settings → API → Project API keys → service_role secret` |
-
-### Step 3: Run the Database Migration
-
-1. In your Supabase Dashboard, go to **SQL Editor** (left sidebar)
-2. Click **"New query"**
-3. Open the file `backend/supabase_migration.sql` from this project
-4. **Copy the entire contents** and paste it into the SQL Editor
-5. Click **"Run"** (or press `Ctrl+Enter`)
-6. You should see "Success. No rows returned" — this means all tables were created
-
-> **What this creates:** 15 tables including users, products, categories, sales, inventory, stock_transactions, customers, coupons, suppliers, purchases, and their relationship tables, plus indexes and triggers.
-
----
-
-## Installation & Setup
-
-### Step 1: Install Backend Dependencies
-
-```powershell
+```bash
 cd backend
 npm install
 ```
 
-### Step 2: Configure Environment Variables
-
-Create/edit the file `backend/.env` with your Supabase credentials:
+Create a `.env` file in `backend/` with:
 
 ```env
+# Server Configuration
 PORT=5000
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-CUSTOMER_JWT_SECRET=customer_portal_secret_key_change_this
 NODE_ENV=development
 
-# Supabase Configuration (replace with YOUR values from Step 2 above)
+# JWT Secrets (Change in Production!)
+JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
+CUSTOMER_JWT_SECRET=customer_portal_secret_key_change_this
+
+# Supabase (Replace with YOUR values)
 SUPABASE_URL=https://your-project-id.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 SUPABASE_ANON_KEY=your-anon-key-here
 DATABASE_URL=postgresql://postgres:YOUR-PASSWORD@db.your-project-id.supabase.co:5432/postgres
+
+# Email Configuration (Optional)
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
 ```
 
-**Important:**
-- Replace `your-project-id` with your actual Supabase project ID
-- Replace `your-service-role-key-here` with the service_role key from Supabase
-- Replace `YOUR-PASSWORD` with the database password you set when creating the project
-- Change `JWT_SECRET` and `CUSTOMER_JWT_SECRET` to unique random strings in production
+**Seed Admin User:**
 
-### Step 3: Seed the Admin User
-
-```powershell
-cd backend
+```bash
 npm run seedAdmin
 ```
 
-You should see:
+Output:
 ```
- Admin user created successfully
- Email: admin@7supercity.com
- Password: admin123
+✓ Admin user created successfully
+  Email: admin@7supercity.com
+  Password: admin123
 ```
 
-> **Optional:** Run `npm run seedData` to also create sample Manager and Cashier users.
+#### **Step 4️⃣: Configure Frontend**
 
-### Step 4: Install Frontend Dependencies
-
-Open a **new terminal**:
-
-```powershell
+```bash
 cd frontend
 npm install
 ```
 
-### Step 5: Set Up Python Environment for AI Forecast Server
+#### **Step 5️⃣: Setup Python Environment (Optional - for AI Forecasting)**
 
-The AI server (`backend/ai_server.py`) uses Flask + scikit-learn and has its own Python dependencies.
-
-```powershell
+```bash
 cd backend
 python -m venv ..\.venv
 ..\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-Why `scikit-learn==1.7.2` is pinned:
-The file `backend/super_city_rf_ai_bundle.pkl` was created with this version, so pinning avoids model deserialization compatibility warnings.
-
 ---
 
-## Running the Application
+### 🎬 Running the Application
 
-You need **two terminals** — one for backend, one for frontend.
+You'll need **2-3 terminal windows**:
 
-### Terminal 1: Start Backend
+#### **Terminal 1 - Backend Server**
 
-```powershell
+```bash
 cd backend
 npm run dev
 ```
 
-You should see:
+Expected output:
 ```
- Supabase Connected: https://your-project-id.supabase.co
- Server running on port 5000
- http://localhost:5000
+✓ Supabase Connected: https://your-project-id.supabase.co
+✓ Server running on port 5000
+  http://localhost:5000
 ```
 
-### Terminal 2: Start Frontend
+#### **Terminal 2 - Frontend App**
 
-```powershell
+```bash
 cd frontend
 npm run dev
 ```
 
-You should see:
+Expected output:
 ```
   VITE v5.x.x  ready in xxx ms
   ➜  Local:   http://localhost:5173/
+  ➜  press h to show help
 ```
 
-### Terminal 3 (Optional): Start AI Forecast Server
+#### **Terminal 3 - AI Forecast Server (Optional)**
 
-```powershell
+```bash
 cd backend
 ..\.venv\Scripts\Activate.ps1
 python ai_server.py
 ```
 
-Or run a one-command setup + start script on Windows:
+Or use the PowerShell script:
 
-```powershell
-cd backend
+```bash
 .\run_ai_server.ps1
 ```
 
-You should see:
-```
-Server is awake on http://localhost:5001
-Running on http://127.0.0.1:5001
-```
+#### **🌐 Open in Browser**
 
-### Open the App
-
-Go to **http://localhost:5173** in your browser.
+Navigate to: **[http://localhost:5173](http://localhost:5173)**
 
 ---
 
-##  Login Credentials
+## 🔐 Default Login Credentials
 
 | Role | Email | Password |
 |---|---|---|
-| **Admin** | `admin@7supercity.com` | `admin123` |
-| **Manager** | `manager@7supercity.com` | `manager123` |
-| **Cashier** | `cashier@7supercity.com` | `cashier123` |
+| 👨‍💼 **Admin** | `admin@7supercity.com` | `admin123` |
+| 👤 **Manager** | `manager@7supercity.com` | `manager123` |
+| 💳 **Cashier** | `cashier@7supercity.com` | `cashier123` |
 
-> Manager and Cashier accounts are only available if you ran `npm run seedData`.
+> 💡 Manager and Cashier accounts only available if you run `npm run seedData`
 
 ---
 
-##  API Endpoints
+## 📡 API Endpoints Overview
 
 ### Authentication
-- `POST /api/auth/login` — User login
+```
+POST   /api/auth/login                    User login
+```
 
-### Products
-- `GET /api/products` — List all products
-- `POST /api/products` — Create product
-- `PUT /api/products/:id` — Update product
-- `DELETE /api/products/:id` — Delete product
+### Products & Categories
+```
+GET    /api/products                      List products
+POST   /api/products                      Create product
+PUT    /api/products/:id                  Update product
+DELETE /api/products/:id                  Delete product
 
-### Categories
-- `GET /api/categories` — List categories
-- `POST /api/categories` — Create category
-- `PUT /api/categories/:id` — Update category
-- `DELETE /api/categories/:id` — Delete category
+GET    /api/categories                    List categories
+POST   /api/categories                    Create category
+```
 
 ### Sales
-- `GET /api/sales` — List sales (pagination, search, date filter)
-- `GET /api/sales/stats/summary` — Dashboard statistics
-- `GET /api/sales/:id` — Single sale with items
-- `POST /api/sales` — Create sale
-- `PUT /api/sales/:id` — Update sale
-- `DELETE /api/sales/:id` — Delete sale
+```
+GET    /api/sales                         List all sales (with filters)
+POST   /api/sales                         Create new sale
+GET    /api/sales/:id                     Get sale details
+PUT    /api/sales/:id                     Update sale
+GET    /api/sales/stats/summary           Dashboard statistics
+```
 
-### Inventory
-- `GET /api/inventory` — All inventory records
-- `GET /api/inventory/stats/summary` — Inventory stats
-
-### Stock
-- `POST /api/stock/in` — Stock in
-- `POST /api/stock/out` — Stock out
-- `GET /api/stock/transactions` — Transaction history
-- `GET /api/stock/history/:productId` — Product stock history
+### Inventory & Stock
+```
+GET    /api/inventory                     Inventory records
+GET    /api/stock/transactions            Stock transaction history
+POST   /api/stock/in                      Stock in (receive)
+POST   /api/stock/out                     Stock out (dispense)
+```
 
 ### Suppliers & Purchases
-- `GET /api/suppliers` — List suppliers
-- `GET /api/purchases` — List purchases
+```
+GET    /api/suppliers                     List suppliers
+GET    /api/purchases                     List purchases
+POST   /api/purchases                     Create purchase order
+```
 
-### Customers & Coupons
-- `GET /api/customers` — List customers
-- `POST /api/customers/login` — Customer portal login
-- `POST /api/coupons/validate` — Validate coupon
-- `POST /api/coupons/generate` — Generate coupon
+### Customers & Loyalty
+```
+GET    /api/customers                     List customers
+POST   /api/customers/login               Customer portal login
+GET    /api/coupons                       Available coupons
+POST   /api/coupons/validate              Validate coupon
+```
+
+> Full API documentation available in code comments
+
+---
+
+## 🧪 Testing
+
+### Run Backend Tests
+
+```bash
+cd backend
+npm test
+```
+
+Includes tests for:
+- ✅ Authentication & Authorization
+- ✅ Product & Inventory Management
+- ✅ Sales Operations
+- ✅ Security Middleware
+- ✅ Input Validation
+
+---
+
+## 📦 Production Deployment
+
+### Build Backend
+```bash
+cd backend
+npm run build
+npm start
+```
+
+### Build Frontend
+```bash
+cd frontend
+npm run build
+```
+
+Generates optimized `dist/` folder for deployment.
 
 ---
 
 ## 🛠️ Troubleshooting
 
-### "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY"
+### ❌ "Missing SUPABASE_URL or Key"
 
-Your `.env` file is missing or has incorrect values. Double-check:
-1. The file is at `backend/.env` (not the project root)
-2. `SUPABASE_URL` starts with `https://`
-3. `SUPABASE_SERVICE_ROLE_KEY` is the **service_role** key (not the anon key)
+**Solution:**
+- ✓ Verify `.env` file is in `backend/` directory
+- ✓ Check `SUPABASE_URL` starts with `https://`
+- ✓ Confirm you copied `service_role` key (not anon key)
 
-### "Supabase Connection Error"
+### ❌ "Supabase Connection Error"
 
-1. Check your internet connection
-2. Verify your Supabase project is active (not paused) at [supabase.com/dashboard](https://supabase.com/dashboard)
-3. Confirm you ran the SQL migration (Step 3 of Database Setup)
+**Solution:**
+- ✓ Check internet connection
+- ✓ Verify Supabase project is active (not paused)
+- ✓ Ensure SQL migration was completed
 
-### "relation does not exist" errors
+### ❌ "relation does not exist"
 
-You haven't run the migration SQL. Go to Supabase SQL Editor and run `backend/supabase_migration.sql`.
+**Solution:**
+- ✓ Go to Supabase SQL Editor
+- ✓ Run `backend/supabase_migration.sql` again
 
-### Port 5000 Already in Use
+### ❌ "Port 5000 Already in Use"
 
-Change the port in `backend/.env`:
-```env
-PORT=5001
-```
-Then update `frontend/src/services/api.js` — change `http://localhost:5000/api` to `http://localhost:5001/api`.
+**Solution:**
+- ✓ Change `PORT=5001` in `.env`
+- ✓ Update `frontend/src/services/api.js` base URL
 
-### Frontend Build/Install Errors
+### ❌ Frontend Build Errors
 
-```powershell
+**Solution:**
+```bash
 cd frontend
 Remove-Item -Recurse -Force node_modules
 Remove-Item package-lock.json
 npm install
-```
-
-### Welcome Email Not Sending (SMTP)
-
-If user creation works but welcome emails are not sent:
-
-1. Verify `SMTP_USER` and `SMTP_PASS` in `backend/.env`.
-2. For Gmail, use an App Password (16 characters). Spaces in the copied value are acceptable in this project and are normalized automatically.
-3. If logs show `self-signed certificate in certificate chain`, your network is intercepting TLS. Set:
-
-```env
-SMTP_TLS_REJECT_UNAUTHORIZED=false
-```
-
-Use `false` only when needed for local/dev environments.
-
----
-
-## Evaluation Resources
-
-- `EVALUATION_EXECUTION_PACK.md` - Day-by-day delivery board, 20-minute presentation script, and rubric mapping
-- `TEST_CASES_TEMPLATE.csv` - Ready-to-fill test evidence sheet for module, validation, and security test cases
-
-### Run Backend Tests
-
-```powershell
-cd backend
-npm test
+npm run dev
 ```
 
 ---
 
-##  Production Build
+## 📚 Documentation
 
-### Backend
-```powershell
-cd backend
-npm start
-```
-
-### Frontend
-```powershell
-cd frontend
-npm run build
-npm run preview
-```
-
----
-
-##  Security Features
-
-- Password hashing with bcrypt
-- JWT token authentication (30-day expiry)
-- Role-based access control (Admin/Manager/Cashier)
-- Protected API routes
-- CORS enabled
-- Input validation
-- Error handling middleware
-- Supabase Row Level Security compatible
-
----
-
-##  Tech Stack
-
-| Layer | Technology |
+| Document | Purpose |
 |---|---|
-| **Frontend** | React 18, Vite, Tailwind CSS, React Router v6, Axios, Lucide Icons |
-| **Backend** | Node.js, Express.js, JWT, bcryptjs |
-| **Database** | Supabase (PostgreSQL) |
-| **Hosting** | Supabase Cloud (database), local dev server |
+| `EVALUATION_EXECUTION_PACK.md` | Delivery timeline, presentation script, rubric mapping |
+| `TEST_CASES_TEMPLATE.csv` | Test evidence sheet (module, validation, security) |
+| `IMPLEMENTATION_NOTES.md` | Technical implementation details |
+| `backend/supabase_migration.sql` | Database schema & initial setup |
 
 ---
 
-##  License
+## 🔒 Security Features
 
-This project is created for 7 Super City organization.
+✅ **Password Security**
+- Bcrypt hashing with salt rounds
+- Minimum password requirements
+
+✅ **Authentication**
+- JWT tokens (30-day expiry)
+- Refresh token mechanism
+- Secure logout
+
+✅ **Authorization**
+- Role-based access control (RBAC)
+- Protected API routes
+- Middleware validation
+
+✅ **Database**
+- Supabase Row Level Security (RLS)
+- SQL injection prevention
+- Parameterized queries
+
+✅ **Network**
+- CORS enabled
+- Input validation on all endpoints
+- Error handling middleware
 
 ---
 
-**Built with  for 7 Super City**
+## 📊 Project Structure
+
+```
+7 Super City/
+├── backend/
+│   ├── controllers/        # Business logic
+│   ├── routes/            # API endpoints
+│   ├── models/            # Database models
+│   ├── middleware/        # Auth, validation
+│   ├── tests/             # Jest test suites
+│   ├── ai_server.py       # Python forecast engine
+│   ├── server.js          # Express app
+│   └── .env               # Configuration
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Page components
+│   │   ├── services/      # API calls
+│   │   ├── context/       # State management
+│   │   └── App.jsx        # Main app
+│   └── vite.config.js     # Vite configuration
+│
+└── README.md              # This file
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! To contribute:
+
+1. **Fork** this repository
+2. **Create** a feature branch: `git checkout -b feature/your-feature`
+3. **Commit** changes: `git commit -m 'Add feature'`
+4. **Push** to branch: `git push origin feature/your-feature`
+5. **Open** a pull request
+
+---
+
+## 📜 License
+
+This project is created for **7 Super City** organization.
+
+---
+
+## 💡 Quick Tips
+
+> 🚀 **First Time Setup?** Follow the Quick Start Guide above - takes about 10 minutes!
+
+> 🔑 **Password Issues?** For Gmail SMTP, use an **App Password** (16 chars), not your regular password
+
+> 📱 **Mobile Friendly?** Yes! Responsive design works on desktop, tablet, and mobile
+
+> 🌍 **Internationalization?** System includes i18n support for multiple languages
+
+> 🎨 **Customization?** All UI components are built with Tailwind CSS - easy to theme!
+
+---
+
+<div align="center">
+
+### ⭐ If this project helps you, please give it a star! ⭐
+
+**Built with ❤️ for 7 Super City**
+
+[⬆ Back to top](#-7-super-city)
+
+</div>
