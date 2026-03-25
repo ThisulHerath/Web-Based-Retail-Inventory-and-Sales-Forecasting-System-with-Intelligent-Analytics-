@@ -14,6 +14,7 @@ const PublicLayout = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     const toggleLanguage = () => {
         const newLang = i18n.language === 'en' ? 'si' : 'en';
@@ -67,6 +68,21 @@ const PublicLayout = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, [location.pathname]);
+
+    const requestLogout = () => {
+        setShowLogoutConfirm(true);
+    };
+
+    const confirmLogout = () => {
+        logout();
+        setShowLogoutConfirm(false);
+        setMobileMenuOpen(false);
+        navigate('/');
+    };
+
+    const cancelLogout = () => {
+        setShowLogoutConfirm(false);
+    };
 
     return (
         <div className="min-h-screen flex flex-col font-sans bg-[var(--color-bg-primary)] transition-colors duration-300 animate-page-fade">
@@ -132,7 +148,7 @@ const PublicLayout = () => {
                                         <span className="hidden sm:inline">{t('nav.hi')}, {customer.firstName}</span>
                                     </Link>
                                     <button
-                                        onClick={() => { logout(); navigate('/'); }}
+                                        onClick={requestLogout}
                                         className="text-sm text-white hover:text-red-400 transition-colors px-3 py-2 rounded-lg hover:bg-[rgba(245,216,0,0.1)]"
                                     >
                                         {t('nav.logout')}
@@ -168,10 +184,49 @@ const PublicLayout = () => {
                                     <Link to="/register" className="block px-4 py-2 bg-[#f5d800] text-[#155c27] rounded-lg text-center font-medium font-weight-600" onClick={() => setMobileMenuOpen(false)}>{t('nav.join_points')}</Link>
                                 </>
                             )}
+                            {isCustomerAuthenticated() && (
+                                <button
+                                    onClick={requestLogout}
+                                    className="block w-full text-left px-4 py-2 text-white hover:text-red-400 hover:bg-[rgba(245,216,0,0.1)] rounded-lg transition-colors"
+                                >
+                                    {t('nav.logout')}
+                                </button>
+                            )}
                         </div>
                     )}
                 </nav>
             </header>
+
+            {showLogoutConfirm && (
+                <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-[2px] flex items-center justify-center p-4">
+                    <div className="w-full max-w-sm rounded-2xl border border-[#f5d800]/40 bg-[#0f4a21] text-white shadow-2xl">
+                        <div className="p-5 border-b border-[#f5d800]/20">
+                            <h3 className="text-lg font-semibold">
+                                {t('nav.logout_confirm_title', { defaultValue: 'Confirm Logout' })}
+                            </h3>
+                            <p className="mt-1 text-sm text-gray-200">
+                                {t('nav.logout_confirm_message', { defaultValue: 'Are you sure you want to log out from your account?' })}
+                            </p>
+                        </div>
+                        <div className="p-4 flex items-center justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={cancelLogout}
+                                className="px-4 py-2 rounded-lg border border-white/25 text-white hover:bg-white/10 transition-colors"
+                            >
+                                {t('common.cancel', { defaultValue: 'Cancel' })}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmLogout}
+                                className="px-4 py-2 rounded-lg bg-[#f5d800] text-[#155c27] font-semibold hover:bg-[#e6c700] transition-colors"
+                            >
+                                {t('nav.logout', { defaultValue: 'Logout' })}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Main Content Area */}
             <main className="flex-grow">

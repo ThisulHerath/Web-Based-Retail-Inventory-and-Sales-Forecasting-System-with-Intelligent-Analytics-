@@ -35,6 +35,9 @@ export const login = async (req, res) => {
             return res.status(403).json({ message: 'Account has been disabled by the admin' });
         }
 
+        // Update last login date
+        await User.updateLastLoginDate(user._id);
+
         const token = generateToken(user._id);
 
         res.status(200).json({

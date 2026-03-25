@@ -9,6 +9,10 @@ import {
     deleteSale,
     getSalesStats,
     getSalesAnalytics,
+    exportSaleAsPDF,
+    exportSalesAsExcel,
+    getSaleAuditTrail,
+    getAllSalesAuditLogs,
 } from '../controllers/salesController.js';
 import {
     validateUUIDParam,
@@ -26,6 +30,14 @@ router.get('/stats/summary', getSalesStats);
 
 // Sales analytics (charts + top products)
 router.get('/analytics', getSalesAnalytics);
+
+// Export routes
+router.get('/export/excel', exportSalesAsExcel); // Export all sales as Excel
+router.get('/:id/export/pdf', validateUUIDParam, exportSaleAsPDF); // Export single invoice as PDF
+
+// Audit trail routes
+router.get('/audit/all', verifyRole('admin'), getAllSalesAuditLogs); // View all audit logs
+router.get('/:id/audit', validateUUIDParam, verifyRole('admin', 'manager'), getSaleAuditTrail); // View audit for specific sale
 
 // Sales CRUD routes
 router

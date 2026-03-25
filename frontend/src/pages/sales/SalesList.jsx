@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Eye, Trash2, Calendar, BarChart2, X, TrendingUp, DollarSign, ShoppingCart, Package } from 'lucide-react';
 import { getAllSales, deleteSale, getSalesAnalytics } from '../../services/salesService';
@@ -10,6 +10,7 @@ import {
 } from 'recharts';
 
 const PIE_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const INVOICE_SEARCH_PATTERN = /^$|^I?$|^IN?$|^INV?$|^INV-?$|^INV-\d{0,6}$/;
 
 const SalesList = () => {
     const { isAdmin } = useAuth();
@@ -19,6 +20,7 @@ const SalesList = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [dateError, setDateError] = useState('');
+    const [searchError, setSearchError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [toast, setToast] = useState(null);
@@ -27,13 +29,16 @@ const SalesList = () => {
     const [showAnalytics, setShowAnalytics] = useState(false);
     const [analyticsData, setAnalyticsData] = useState(null);
     const [analyticsLoading, setAnalyticsLoading] = useState(false);
+    const latestFetchIdRef = useRef(0);
     const today = new Date().toISOString().slice(0, 10);
 
     useEffect(() => {
+        const invoiceError = validateInvoiceSearch(search);
         const validationError = validateDateRange(startDate, endDate);
+        setSearchError(invoiceError);
         setDateError(validationError);
 
-        if (validationError) {
+        if (invoiceError || validationError) {
             setSales([]);
             setTotalPages(1);
             setLoading(false);
@@ -61,23 +66,37 @@ const SalesList = () => {
         return '';
     };
 
+    const validateInvoiceSearch = (value) => {
+        if (!value) return '';
+        if (!INVOICE_SEARCH_PATTERN.test(value)) {
+            return 'Use invoice format INV-000001 (INV- followed by up to 6 digits).';
+        }
+        return '';
+    };
+
     const fetchSales = async () => {
+        const fetchId = ++latestFetchIdRef.current;
+
         try {
             setLoading(true);
             const params = {
                 page: currentPage,
                 limit: 10,
-                search,
+                search: search.trim(),
                 startDate,
                 endDate,
             };
             const data = await getAllSales(params);
+            if (fetchId !== latestFetchIdRef.current) return;
             setSales(data.sales);
             setTotalPages(data.totalPages);
         } catch (error) {
+            if (fetchId !== latestFetchIdRef.current) return;
             setToast({ message: 'Error fetching sales', type: 'error' });
         } finally {
-            setLoading(false);
+            if (fetchId === latestFetchIdRef.current) {
+                setLoading(false);
+            }
         }
     };
 
@@ -142,7 +161,9 @@ const SalesList = () => {
     };
 
     const handleSearch = (e) => {
-        setSearch(e.target.value);
+        const normalizedValue = e.target.value.toUpperCase().replace(/\s+/g, '');
+        setSearch(normalizedValue);
+        setSearchError(validateInvoiceSearch(normalizedValue));
         setCurrentPage(1);
     };
 
@@ -341,7 +362,7 @@ const SalesList = () => {
 
                                     {/* Bar Chart â€” Last 7 Days Revenue */}
                                     <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                                        <h3 className="text-base font-semibold text-gray-700 mb-4">Revenue â€” Last 7 Days</h3>
+                                        <h3 className="text-base font-semibold text-gray-700 mb-4">Revenue of Last 7 Days</h3>
                                         {last7Days.some(d => d.revenue > 0) ? (
                                             <ResponsiveContainer width="100%" height={260}>
                                                 <BarChart data={last7Days} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
@@ -429,10 +450,13 @@ const SalesList = () => {
                                     type="text"
                                     value={search}
                                     onChange={handleSearch}
-                                    placeholder="Search by invoice number..."
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                    placeholder="INV-000001"
+                                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${searchError ? 'border-red-300' : 'border-gray-300'}`}
                                 />
                             </div>
+                            {searchError && (
+                                <p className="mt-1 text-xs text-red-600">{searchError}</p>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1">Start Date</label>

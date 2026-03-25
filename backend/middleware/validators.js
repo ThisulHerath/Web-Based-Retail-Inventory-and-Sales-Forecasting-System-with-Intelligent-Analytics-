@@ -125,6 +125,27 @@ export const validateCustomerProfileUpdate = [
     handleValidation,
 ];
 
+export const validateCustomerPasswordVerification = [
+    body('previousPassword').trim().notEmpty().withMessage('Current password is required'),
+    handleValidation,
+];
+
+export const validateCustomerSelfProfileUpdate = [
+    body('firstName').optional().trim().notEmpty().withMessage('First name cannot be empty'),
+    body('lastName').optional().trim().notEmpty().withMessage('Last name cannot be empty'),
+    body('email').optional().isEmail().withMessage('Valid email is required'),
+    body('phone').optional({ values: 'falsy' }).matches(srilankaPhoneRegex).withMessage('Valid Sri Lankan phone number is required'),
+    body('previousPassword').trim().notEmpty().withMessage('Current password is required'),
+    body('newPassword').optional({ values: 'falsy' }).isLength({ min: 6 }).withMessage('New password must be at least 6 characters'),
+    body('confirmNewPassword').optional({ values: 'falsy' }).custom((value, { req }) => {
+        if (req.body.newPassword && value !== req.body.newPassword) {
+            throw new Error('Confirm password must match new password');
+        }
+        return true;
+    }),
+    handleValidation,
+];
+
 export const validateCustomerAdminUpdate = [
     ...validateCustomerProfileUpdate.slice(0, -1),
     body('isActive').optional().isBoolean().withMessage('isActive must be a boolean'),

@@ -3,6 +3,37 @@ import { supabase } from '../config/db.js';
 const TABLE = 'suppliers';
 
 const Supplier = {
+    async findDuplicate({ supplierName, email, phone, excludeId } = {}) {
+        const checks = [
+            { field: 'supplier_name', value: supplierName, compare: 'ilike', label: 'supplierName' },
+            { field: 'email', value: email, compare: 'ilike', label: 'email' },
+            { field: 'phone', value: phone, compare: 'eq', label: 'phone' },
+        ];
+
+        for (const check of checks) {
+            if (!check.value) continue;
+
+            let q = supabase.from(TABLE).select('*').limit(1);
+            q = check.compare === 'ilike'
+                ? q.ilike(check.field, check.value)
+                : q.eq(check.field, check.value);
+
+            if (excludeId) q = q.neq('id', excludeId);
+
+            const { data, error } = await q;
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                return {
+                    field: check.label,
+                    supplier: Supplier.format(data[0]),
+                };
+            }
+        }
+
+        return null;
+    },
+
     async findById(id) {
         const { data, error } = await supabase.from(TABLE).select('*').eq('id', id).single();
         if (error) {

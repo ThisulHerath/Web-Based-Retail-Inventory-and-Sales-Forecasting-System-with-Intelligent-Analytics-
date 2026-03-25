@@ -4,7 +4,9 @@ import Inventory from '../models/Inventory.js';
 import StockTransaction from '../models/StockTransaction.js';
 import Customer from '../models/Customer.js';
 import Coupon from '../models/Coupon.js';
+import SalesAudit from '../models/SalesAudit.js';
 import { autoGenerateLoyaltyCoupon } from './couponController.js';
+import { generatePDFInvoice, generateExcelReport, generateDetailedExcelReport } from '../utils/exportUtils.js';
 
 // @desc    Get all sales with pagination, search, and filter
 // @route   GET /api/sales
@@ -12,6 +14,7 @@ import { autoGenerateLoyaltyCoupon } from './couponController.js';
 export const getAllSales = async (req, res) => {
     try {
         const { page = 1, limit = 10, search = '', startDate, endDate } = req.query;
+        const normalizedSearch = String(search || '').trim().toUpperCase();
 
         let parsedStartDate = null;
         let parsedEndDate = null;
@@ -34,8 +37,12 @@ export const getAllSales = async (req, res) => {
             return res.status(400).json({ message: 'startDate must be less than or equal to endDate.' });
         }
 
+        if (normalizedSearch && !/^INV-\d{0,6}$/.test(normalizedSearch)) {
+            return res.status(400).json({ message: 'Invalid search format. Use INV- followed by up to 6 digits.' });
+        }
+
         let query = {};
-        if (search) query.invoiceNumber = { $regex: search };
+        if (normalizedSearch) query.invoiceNumber = { $regex: normalizedSearch };
         if (parsedStartDate || parsedEndDate) {
             query.createdAt = {};
             if (parsedStartDate) query.createdAt.$gte = parsedStartDate;
@@ -239,6 +246,24 @@ export const createSale = async (req, res) => {
             }
         }
 
+        // Log sale creation to audit trail
+        await SalesAudit.create({
+            saleId: sale.id,
+            userId: req.user?.id || req.user?._id,
+            userName: req.user?.name || req.user?.email || 'unknown',
+            userRole: req.user?.role,
+            action: 'CREATE',
+            changes: {
+                invoiceNumber: sale.invoiceNumber,
+                customerName: sale.customerName,
+                grandTotal: sale.grandTotal,
+                itemsCount: items.length,
+                paymentMethod: sale.paymentMethod,
+            },
+            ipAddress: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress,
+            statusCode: 201,
+        });
+
         res.status(201).json(sale);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -265,6 +290,29 @@ export const updateSale = async (req, res) => {
             subtotal,
             tax,
             grandTotal,
+        });
+
+        // Log sale update to audit trail
+        await SalesAudit.create({
+            saleId: req.params.id,
+            userId: req.user?.id || req.user?._id,
+            userName: req.user?.name || req.user?.email || 'unknown',
+            userRole: req.user?.role,
+            action: 'UPDATE',
+            changes: {
+                before: {
+                    customerName: sale.customerName,
+                    paymentMethod: sale.paymentMethod,
+                    grandTotal: sale.grandTotal,
+                },
+                after: {
+                    customerName: customerName || sale.customerName,
+                    paymentMethod: paymentMethod || sale.paymentMethod,
+                    grandTotal: grandTotal,
+                },
+            },
+            ipAddress: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress,
+            statusCode: 200,
         });
 
         res.status(200).json(updatedSale);
@@ -302,6 +350,27 @@ export const deleteSale = async (req, res) => {
         }
 
         await Sale.deleteOne(req.params.id);
+
+        // Log sale deletion to audit trail
+        await SalesAudit.create({
+            saleId: req.params.id,
+            userId: req.user?.id || req.user?._id,
+            userName: req.user?.name || req.user?.email || 'unknown',
+            userRole: req.user?.role,
+            action: 'DELETE',
+            changes: {
+                deletedSale: {
+                    invoiceNumber: sale.invoiceNumber,
+                    customerName: sale.customerName,
+                    grandTotal: sale.grandTotal,
+                    itemsCount: sale.items.length,
+                },
+                stockRestored: true,
+            },
+            ipAddress: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress,
+            statusCode: 200,
+        });
+
         res.status(200).json({ message: 'Sale deleted successfully and stock restored' });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -354,6 +423,23 @@ export const getSalesAnalytics = async (req, res) => {
             .sort((a, b) => b.revenue - a.revenue)
             .slice(0, 5);
 
+        // Monthly revenue for the last 12 months
+        const monthlyMap = {};
+        for (let i = 11; i >= 0; i--) {
+            const d = new Date(now);
+            d.setMonth(d.getMonth() - i);
+            const key = d.toISOString().slice(0, 7); // YYYY-MM
+            monthlyMap[key] = { month: key, revenue: 0, profit: 0, count: 0 };
+        }
+        for (const s of sales) {
+            const key = (s.created_at || '').slice(0, 7);
+            if (monthlyMap[key]) {
+                monthlyMap[key].revenue += parseFloat(s.grand_total || 0);
+                monthlyMap[key].profit += parseFloat(s.total_profit || 0);
+                monthlyMap[key].count += 1;
+            }
+        }
+
         const totalRevenue = sales.reduce((sum, s) => sum + parseFloat(s.grand_total || 0), 0);
         const totalProfit = sales.reduce((sum, s) => sum + parseFloat(s.total_profit || 0), 0);
         const totalSalesCount = sales.length;
@@ -361,6 +447,7 @@ export const getSalesAnalytics = async (req, res) => {
         res.status(200).json({
             paymentBreakdown: Object.values(paymentMap),
             dailyRevenue: Object.values(dailyMap),
+            monthlyRevenue: Object.values(monthlyMap),
             topProducts,
             summary: { totalRevenue, totalProfit, totalSalesCount },
         });
@@ -387,6 +474,139 @@ export const getSalesStats = async (req, res) => {
         const todaySales = await Sale.countDocuments({ createdAt: { $gte: today, $lt: tomorrow } });
 
         res.status(200).json({ totalSales, totalRevenue, totalProfit, todaySales });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Export invoice as PDF
+// @route   GET /api/sales/:id/export/pdf
+// @access  Private
+export const exportSaleAsPDF = async (req, res) => {
+    try {
+        const sale = await Sale.findById(req.params.id);
+        if (!sale) {
+            return res.status(404).json({ message: 'Sale not found' });
+        }
+
+        const pdfBuffer = await generatePDFInvoice(sale);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="Invoice-${sale.invoiceNumber}.pdf"`);
+        res.send(pdfBuffer);
+
+        // Log export action
+        await SalesAudit.create({
+            saleId: sale.id,
+            userId: req.user?.id || req.user?._id,
+            userName: req.user?.name || req.user?.email || 'unknown',
+            userRole: req.user?.role,
+            action: 'EXPORT',
+            changes: { exportFormat: 'PDF' },
+            ipAddress: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Export sales report as Excel
+// @route   GET /api/sales/export/excel
+// @access  Private
+export const exportSalesAsExcel = async (req, res) => {
+    try {
+        const { startDate, endDate, detailed = false } = req.query;
+
+        let query = {};
+        if (startDate || endDate) {
+            query.createdAt = {};
+            if (startDate) query.createdAt.$gte = new Date(`${startDate}T00:00:00`);
+            if (endDate) query.createdAt.$lte = new Date(`${endDate}T23:59:59.999`);
+        }
+
+        const sales = await Sale.find(query, { limit: 1000 });
+
+        let excelBuffer;
+        if (detailed === 'true' || detailed === true) {
+            excelBuffer = await generateDetailedExcelReport(sales);
+        } else {
+            excelBuffer = await generateExcelReport(sales, { startDate, endDate });
+        }
+
+        const filename = `Sales_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(excelBuffer);
+
+        // Log export action
+        await SalesAudit.create({
+            userId: req.user?.id || req.user?._id,
+            userName: req.user?.name || req.user?.email || 'unknown',
+            userRole: req.user?.role,
+            action: 'EXPORT',
+            changes: {
+                exportFormat: 'Excel',
+                detailed: detailed === 'true',
+                filters: { startDate, endDate },
+                recordsExported: sales.length,
+            },
+            ipAddress: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Get audit trail for a sale
+// @route   GET /api/sales/:id/audit
+// @access  Private (Admin & Manager)
+export const getSaleAuditTrail = async (req, res) => {
+    try {
+        const { page = 1, limit = 20 } = req.query;
+
+        const auditLogs = await SalesAudit.findBySaleId(req.params.id, {
+            limit: Number(limit),
+        });
+
+        res.status(200).json({
+            saleId: req.params.id,
+            auditLogs: auditLogs.map(log => SalesAudit.format(log)),
+            totalRecords: auditLogs.length,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Get all audit logs for sales
+// @route   GET /api/sales/audit/all
+// @access  Private (Admin)
+export const getAllSalesAuditLogs = async (req, res) => {
+    try {
+        const { page = 1, limit = 50, action, userId, startDate, endDate } = req.query;
+
+        let query = { action: 'UPDATE' }; // Default to update actions for sales
+        if (action) query.action = action;
+        if (userId) query.userId = userId;
+
+        if (startDate || endDate) {
+            query.startDate = startDate ? new Date(startDate) : null;
+            query.endDate = endDate ? new Date(endDate) : null;
+        }
+
+        const logs = await SalesAudit.find(query, {
+            limit: Number(limit),
+            skip: (Number(page) - 1) * Number(limit),
+        });
+
+        const count = await SalesAudit.count(query);
+
+        res.status(200).json({
+            auditLogs: logs.map(log => SalesAudit.format(log)),
+            totalPages: Math.ceil(count / Number(limit)),
+            currentPage: Number(page),
+            totalRecords: count,
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

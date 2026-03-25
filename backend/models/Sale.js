@@ -102,9 +102,17 @@ const Sale = {
 
     async countDocuments(query = {}) {
         let q = supabase.from(TABLE).select('id', { count: 'exact', head: true });
+        if (query.invoiceNumber) {
+            if (typeof query.invoiceNumber === 'object' && query.invoiceNumber.$regex) {
+                q = q.ilike('invoice_number', `%${query.invoiceNumber.$regex}%`);
+            } else {
+                q = q.eq('invoice_number', query.invoiceNumber);
+            }
+        }
         if (query.createdAt) {
             if (query.createdAt.$gte) q = q.gte('created_at', query.createdAt.$gte.toISOString());
             if (query.createdAt.$lt) q = q.lt('created_at', query.createdAt.$lt.toISOString());
+            if (query.createdAt.$lte) q = q.lte('created_at', query.createdAt.$lte.toISOString());
         }
         const { count, error } = await q;
         if (error) throw error;

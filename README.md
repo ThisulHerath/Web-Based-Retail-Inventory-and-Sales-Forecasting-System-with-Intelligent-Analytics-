@@ -115,6 +115,20 @@ cd frontend
 npm install
 ```
 
+### Step 5: Set Up Python Environment for AI Forecast Server
+
+The AI server (`backend/ai_server.py`) uses Flask + scikit-learn and has its own Python dependencies.
+
+```powershell
+cd backend
+python -m venv ..\.venv
+..\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+Why `scikit-learn==1.7.2` is pinned:
+The file `backend/super_city_rf_ai_bundle.pkl` was created with this version, so pinning avoids model deserialization compatibility warnings.
+
 ---
 
 ## Running the Application
@@ -146,6 +160,27 @@ You should see:
 ```
   VITE v5.x.x  ready in xxx ms
   ➜  Local:   http://localhost:5173/
+```
+
+### Terminal 3 (Optional): Start AI Forecast Server
+
+```powershell
+cd backend
+..\.venv\Scripts\Activate.ps1
+python ai_server.py
+```
+
+Or run a one-command setup + start script on Windows:
+
+```powershell
+cd backend
+.\run_ai_server.ps1
+```
+
+You should see:
+```
+Server is awake on http://localhost:5001
+Running on http://127.0.0.1:5001
 ```
 
 ### Open the App
@@ -248,6 +283,20 @@ Remove-Item -Recurse -Force node_modules
 Remove-Item package-lock.json
 npm install
 ```
+
+### Welcome Email Not Sending (SMTP)
+
+If user creation works but welcome emails are not sent:
+
+1. Verify `SMTP_USER` and `SMTP_PASS` in `backend/.env`.
+2. For Gmail, use an App Password (16 characters). Spaces in the copied value are acceptable in this project and are normalized automatically.
+3. If logs show `self-signed certificate in certificate chain`, your network is intercepting TLS. Set:
+
+```env
+SMTP_TLS_REJECT_UNAUTHORIZED=false
+```
+
+Use `false` only when needed for local/dev environments.
 
 ---
 

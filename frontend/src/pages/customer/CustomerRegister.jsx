@@ -291,9 +291,8 @@ const CustomerRegister = () => {
 
                     <form onSubmit={handleSubmit} noValidate className="space-y-4">
                         {/* Name Fields Grid */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.first_name')}</label>
                                 <FloatingInput
                                     id="firstName"
                                     type="text"
@@ -307,7 +306,6 @@ const CustomerRegister = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.last_name')}</label>
                                 <FloatingInput
                                     id="lastName"
                                     type="text"
@@ -324,7 +322,6 @@ const CustomerRegister = () => {
 
                         {/* Email */}
                         <div>
-                            <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.email')}</label>
                             <FloatingInput
                                 id="email"
                                 type="email"
@@ -340,7 +337,6 @@ const CustomerRegister = () => {
 
                         {/* Phone */}
                         <div>
-                            <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.phone')}</label>
                             <FloatingInput
                                 id="phone"
                                 type="tel"
@@ -355,9 +351,8 @@ const CustomerRegister = () => {
                         </div>
 
                         {/* Password Fields Grid */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.password')}</label>
                                 <PasswordInput
                                     id="password"
                                     label={t('auth.password')}
@@ -369,7 +364,6 @@ const CustomerRegister = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-semibold text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-1 ml-1">{t('auth.confirm')}</label>
                                 <PasswordInput
                                     id="confirmPassword"
                                     label={t('auth.confirm')}

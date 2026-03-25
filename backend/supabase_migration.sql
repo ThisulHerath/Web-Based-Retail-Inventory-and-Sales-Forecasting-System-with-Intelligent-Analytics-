@@ -356,6 +356,29 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_created ON audit_logs(created_at DESC);
 
 -- =====================================================
+-- 16. SALES AUDIT LOGS TABLE (Enhanced Audit Trail)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS sales_audit (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    sale_id UUID NOT NULL REFERENCES sales(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    user_name VARCHAR(255) NOT NULL,
+    user_role VARCHAR(50),
+    action VARCHAR(20) NOT NULL CHECK (action IN ('CREATE', 'UPDATE', 'DELETE', 'EXPORT')),
+    changes JSONB DEFAULT '{}'::jsonb,
+    reason TEXT DEFAULT NULL,
+    ip_address VARCHAR(45),
+    status_code INTEGER,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for efficient audit queries
+CREATE INDEX IF NOT EXISTS idx_sales_audit_sale_id ON sales_audit(sale_id);
+CREATE INDEX IF NOT EXISTS idx_sales_audit_user_id ON sales_audit(user_id);
+CREATE INDEX IF NOT EXISTS idx_sales_audit_action ON sales_audit(action);
+CREATE INDEX IF NOT EXISTS idx_sales_audit_created_at ON sales_audit(created_at DESC);
+
+-- =====================================================
 -- PATCH: COUPONS FK CASCADE FOR CUSTOMER DELETE
 -- =====================================================
 DO $$

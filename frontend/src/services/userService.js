@@ -31,3 +31,22 @@ export const deleteUser = async (id) => {
     const response = await api.delete(`/users/${id}`);
     return response.data;
 };
+
+// Resend welcome email and reset temporary password
+export const resendWelcomeEmail = async (id) => {
+    const response = await api.post(`/users/${id}/resend-welcome`);
+    return response.data;
+};
+
+// Get audit logs for a user
+export const getAuditLogs = async (page = 1, limit = 50, filters = {}) => {
+    const params = { page, limit, ...filters };
+    const response = await api.get('/audit', { params });
+    return response.data;
+};
+
+// Get distinct entity types for audit log filtering
+export const getAuditEntityTypes = async () => {
+    const response = await api.get('/audit/entity-types');
+    return response.data;
+};

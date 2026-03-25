@@ -1,4 +1,33 @@
 import User from '../models/User.js';
+import sendEmail, { getWelcomeEmailTemplate } from '../utils/sendEmail.js';
+import crypto from 'crypto';
+
+const generateTemporaryPassword = (length = 8) => {
+    const uppercase = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijkmnopqrstuvwxyz';
+    const numbers = '23456789';
+    const symbols = '@#$%&*';
+    const all = `${uppercase}${lowercase}${numbers}${symbols}`;
+
+    const picks = [
+        uppercase[crypto.randomInt(uppercase.length)],
+        lowercase[crypto.randomInt(lowercase.length)],
+        numbers[crypto.randomInt(numbers.length)],
+        symbols[crypto.randomInt(symbols.length)],
+    ];
+
+    while (picks.length < length) {
+        picks.push(all[crypto.randomInt(all.length)]);
+    }
+
+    // Fisher-Yates shuffle for better randomness of character positions.
+    for (let i = picks.length - 1; i > 0; i -= 1) {
+        const j = crypto.randomInt(i + 1);
+        [picks[i], picks[j]] = [picks[j], picks[i]];
+    }
+
+    return picks.join('');
+};
 
 // @desc    Get all users
 // @route   GET /api/users
@@ -47,6 +76,13 @@ export const createUser = async (req, res) => {
             return res.status(400).json({ message: 'User already exists with this email' });
         }
 
+        // NEW: Strict Email Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Please provide a valid email address format' });
+        }
+
+
         const user = await User.create({
             name,
             email,
@@ -55,12 +91,32 @@ export const createUser = async (req, res) => {
             isActive: isActive !== undefined ? isActive : true,
         });
 
+        // NEW: Try sending the welcome email in the background
+        let emailSent = false;
+        let emailErrorMessage = null;
+        try {
+            const emailHtml = getWelcomeEmailTemplate(name, user.role, email, password); // Mail raw password provided directly by Admin
+            await sendEmail({
+                email: user.email,
+                subject: 'Welcome to 7 Super City POS - Your Official Account Details',
+                html: emailHtml
+            });
+            emailSent = true;
+        } catch (emailError) {
+            console.error('Warning: Failed to send welcome email to ' + user.email, emailError);
+            emailErrorMessage = emailError?.message || 'Unknown email error';
+            // We intentionally do not throw an error here. 
+            // The user account is already created, so we shouldn't fail the entire request just for a mailing issue.
+        }
+
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
             isActive: user.isActive,
+            emailSent: emailSent,
+            emailErrorMessage,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -144,5 +200,38 @@ export const getUserStats = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Resend welcome email and reset password
+// @route   POST /api/users/:id/resend-welcome
+// @access  Private (Admin only)
+export const resendWelcomeEmail = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const temporaryPassword = generateTemporaryPassword(8);
+
+        await User.updateById(req.params.id, {
+            password: temporaryPassword,
+        });
+
+        const emailHtml = getWelcomeEmailTemplate(user.name, user.role, user.email, temporaryPassword);
+        await sendEmail({
+            email: user.email,
+            subject: 'Welcome Back to 7 Super City POS - Your Updated Login Details',
+            html: emailHtml,
+        });
+
+        return res.status(200).json({
+            message: `Welcome email resent successfully to ${user.email}`,
+            emailSent: true,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 };

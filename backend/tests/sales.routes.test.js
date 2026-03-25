@@ -298,7 +298,7 @@ describe('Sales routes – business logic (stock & coupon)', () => {
             .send({
                 customerName: 'John Doe',
                 paymentMethod: 'Cash',
-                couponCode: 'SAVE10',
+                couponCode: 'SAVE100',
                 items: [
                     {
                         productId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
@@ -311,7 +311,7 @@ describe('Sales routes – business logic (stock & coupon)', () => {
         // Then: The API accepts the sale and marks coupon discount as applied.
         expect(r.status).toBe(201);
         expect(r.body.discountApplied).toBe(true);
-        expect(r.body.coupon).toBe('SAVE10');
+        expect(r.body.coupon).toBe('SAVE100');
     });
 
     // Test SA-04: Invalid coupon application

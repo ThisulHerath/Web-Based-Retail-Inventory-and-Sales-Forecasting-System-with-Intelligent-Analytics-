@@ -219,6 +219,29 @@ export const getCustomerProfile = async (req, res) => {
     }
 };
 
+// @desc    Verify current password before allowing profile edits
+// @route   POST /api/customers/profile/verify-password
+// @access  Private (Customer)
+export const verifyCustomerProfilePassword = async (req, res) => {
+    try {
+        const customerId = req.customer._id || req.customer.id;
+        const customer = await Customer.findById(customerId);
+
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+
+        const isPasswordValid = await customer.matchPassword(req.body.previousPassword);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
+
+        return res.json({ verified: true, message: 'Password verified' });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 // @desc    Update own profile (Customer self-update)
 // @route   PUT /api/customers/profile
 // @access  Private (Customer)
@@ -229,6 +252,13 @@ export const updateCustomerProfile = async (req, res) => {
 
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found' });
+        }
+
+        const { previousPassword, newPassword, confirmNewPassword } = req.body;
+
+        const isPasswordValid = await customer.matchPassword(previousPassword);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
         }
 
         const updates = {};
@@ -247,6 +277,17 @@ export const updateCustomerProfile = async (req, res) => {
                 return res.status(400).json({ message: 'Please enter a valid Sri Lankan phone number (e.g., 07X XXXXXXX)' });
             }
             updates.phone = req.body.phone;
+        }
+
+        if (confirmNewPassword && !newPassword) {
+            return res.status(400).json({ message: 'New password is required when confirmation is provided' });
+        }
+
+        if (newPassword) {
+            if (newPassword !== confirmNewPassword) {
+                return res.status(400).json({ message: 'New password and confirmation do not match' });
+            }
+            updates.password = newPassword;
         }
 
         const updatedCustomer = await Customer.updateById(customerId, updates);

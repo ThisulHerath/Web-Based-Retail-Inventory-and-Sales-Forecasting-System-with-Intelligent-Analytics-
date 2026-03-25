@@ -62,6 +62,10 @@ const buildApp = () => {
         res.json({ deleted: true })
     );
 
+    app.post('/api/users/:id/resend-welcome', jwtGuard, verifyRole('admin'), validateUUIDParam, (req, res) =>
+        res.json({ resent: true })
+    );
+
     return app;
 };
 
@@ -101,6 +105,20 @@ describe('Users routes – authorization', () => {
             .set('Authorization', `Bearer ${makeToken('cashier')}`)
             .send({ name: 'Test User', email: 'test@test.com', password: 'pass123' });
         expect(r.status).toBe(403);
+    });
+
+    test('POST /api/users/:id/resend-welcome by cashier returns 403', async () => {
+        const r = await request(app)
+            .post('/api/users/a1b2c3d4-e5f6-7890-abcd-ef1234567890/resend-welcome')
+            .set('Authorization', `Bearer ${makeToken('cashier')}`);
+        expect(r.status).toBe(403);
+    });
+
+    test('POST /api/users/:id/resend-welcome by admin returns 200', async () => {
+        const r = await request(app)
+            .post('/api/users/a1b2c3d4-e5f6-7890-abcd-ef1234567890/resend-welcome')
+            .set('Authorization', `Bearer ${makeToken('admin')}`);
+        expect(r.status).toBe(200);
     });
 });
 

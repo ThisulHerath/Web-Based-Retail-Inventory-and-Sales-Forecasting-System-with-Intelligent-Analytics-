@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCustomer } from '../../context/CustomerContext';
-import { User, Gift, Star, ShoppingBag, Clock, MapPin, Edit2, Trash2, X, Save, AlertTriangle } from 'lucide-react';
+import { User, Gift, Star, ShoppingBag, Clock, MapPin, Edit2, Trash2, X, Save, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { getMyCoupons } from '../../services/couponService';
 import Toast from '../../components/Toast';
 import axios from 'axios';
@@ -18,6 +18,18 @@ const CustomerDashboard = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeletingAccount, setIsDeletingAccount] = useState(false);
     const [toast, setToast] = useState(null);
+    const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
+    const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+    const [passwordForm, setPasswordForm] = useState({
+        previousPassword: '',
+        newPassword: '',
+        confirmNewPassword: '',
+    });
+    const [showPassword, setShowPassword] = useState({
+        previous: false,
+        next: false,
+        confirm: false,
+    });
     const [editForm, setEditForm] = useState({
         firstName: '',
         lastName: '',
@@ -71,6 +83,23 @@ const CustomerDashboard = () => {
 
     const handleUpdateProfile = async () => {
         try {
+            if (!isPasswordVerified || !passwordForm.previousPassword) {
+                setToast({ message: t('profile.current_password_required'), type: 'error' });
+                return;
+            }
+
+            if (passwordForm.newPassword || passwordForm.confirmNewPassword) {
+                if (passwordForm.newPassword.length < 6) {
+                    setToast({ message: t('profile.password_min_length'), type: 'error' });
+                    return;
+                }
+
+                if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
+                    setToast({ message: t('profile.password_mismatch'), type: 'error' });
+                    return;
+                }
+            }
+
             // Validate Sri Lankan phone number
             if (editForm.phone) {
                 const cleaned = editForm.phone.replace(/[\s\-()]/g, '');
@@ -86,14 +115,63 @@ const CustomerDashboard = () => {
                 lastName: editForm.lastName,
                 email: editForm.email,
                 phone: editForm.phone,
+                previousPassword: passwordForm.previousPassword,
+                newPassword: passwordForm.newPassword || undefined,
+                confirmNewPassword: passwordForm.confirmNewPassword || undefined,
             }, {
                 headers: { Authorization: `Bearer ${customer.token}` },
             });
             updateCustomerData(data);
             setIsEditing(false);
+            setIsPasswordVerified(false);
+            setPasswordForm({ previousPassword: '', newPassword: '', confirmNewPassword: '' });
             setToast({ message: t('profile.update_success'), type: 'success' });
         } catch (error) {
             setToast({ message: error.response?.data?.message || t('profile.update_failed'), type: 'error' });
+        }
+    };
+
+    const openEditModal = () => {
+        setEditForm({
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            email: customer.email,
+            phone: customer.phone,
+        });
+        setPasswordForm({ previousPassword: '', newPassword: '', confirmNewPassword: '' });
+        setShowPassword({ previous: false, next: false, confirm: false });
+        setIsPasswordVerified(false);
+        setIsEditing(true);
+    };
+
+    const closeEditModal = () => {
+        setIsEditing(false);
+        setIsPasswordVerified(false);
+        setIsVerifyingPassword(false);
+        setPasswordForm({ previousPassword: '', newPassword: '', confirmNewPassword: '' });
+        setShowPassword({ previous: false, next: false, confirm: false });
+    };
+
+    const handleVerifyPassword = async () => {
+        try {
+            if (!passwordForm.previousPassword) {
+                setToast({ message: t('profile.current_password_required'), type: 'error' });
+                return;
+            }
+
+            setIsVerifyingPassword(true);
+            await axios.post('http://localhost:5000/api/customers/profile/verify-password', {
+                previousPassword: passwordForm.previousPassword,
+            }, {
+                headers: { Authorization: `Bearer ${customer.token}` },
+            });
+
+            setIsPasswordVerified(true);
+            setToast({ message: t('profile.password_verified'), type: 'success' });
+        } catch (error) {
+            setToast({ message: error.response?.data?.message || t('profile.password_verify_failed'), type: 'error' });
+        } finally {
+            setIsVerifyingPassword(false);
         }
     };
 
@@ -154,7 +232,7 @@ const CustomerDashboard = () => {
                     </div>
                     <div className="flex gap-2">
                         <button
-                            onClick={() => setIsEditing(true)}
+                            onClick={openEditModal}
                             className="p-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110 backdrop-blur-sm border border-white/20"
                             title={t('profile.edit_tooltip')}
                         >
@@ -178,13 +256,53 @@ const CustomerDashboard = () => {
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">{t('profile.edit_title')}</h2>
                             <button
-                                onClick={() => setIsEditing(false)}
+                                onClick={closeEditModal}
                                 className="p-2 hover:bg-[var(--color-bg-secondary)] rounded-lg transition-all duration-200 hover:scale-110"
                             >
                                 <X className="w-5 h-5 text-[var(--color-text-secondary)]" />
                             </button>
                         </div>
-                        <div className="space-y-4">
+                        {!isPasswordVerified ? (
+                            <div className="space-y-4">
+                                <p className="text-sm text-[var(--color-text-secondary)]">{t('profile.verify_password_subtitle')}</p>
+                                <div>
+                                    <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">{t('profile.current_password')}</label>
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword.previous ? 'text' : 'password'}
+                                            value={passwordForm.previousPassword}
+                                            onChange={(e) => setPasswordForm({ ...passwordForm, previousPassword: e.target.value })}
+                                            className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword((prev) => ({ ...prev, previous: !prev.previous }))}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f5d800] hover:text-[#e6c700]"
+                                            aria-label={showPassword.previous ? 'Hide password' : 'Show password'}
+                                        >
+                                            {showPassword.previous ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        onClick={handleVerifyPassword}
+                                        disabled={isVerifyingPassword}
+                                        className="flex-1 bg-[#f5d800] text-[#155c27] font-weight-600 py-3 rounded-lg font-semibold hover:bg-[#e6c700] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isVerifyingPassword ? t('profile.verifying_password') : t('profile.verify_continue')}
+                                    </button>
+                                    <button
+                                        onClick={closeEditModal}
+                                        disabled={isVerifyingPassword}
+                                        className="px-6 py-3 bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] rounded-lg font-semibold hover:bg-[var(--color-border)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {t('profile.cancel')}
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">{t('profile.first_name')}</label>
@@ -223,6 +341,49 @@ const CustomerDashboard = () => {
                                     className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                 />
                             </div>
+                            <div className="pt-2 border-t border-[var(--color-border)]">
+                                <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">{t('profile.change_password_section')}</h3>
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">{t('profile.new_password')}</label>
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword.next ? 'text' : 'password'}
+                                                value={passwordForm.newPassword}
+                                                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                                                className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword((prev) => ({ ...prev, next: !prev.next }))}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f5d800] hover:text-[#e6c700]"
+                                                aria-label={showPassword.next ? 'Hide password' : 'Show password'}
+                                            >
+                                                {showPassword.next ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">{t('profile.confirm_new_password')}</label>
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword.confirm ? 'text' : 'password'}
+                                                value={passwordForm.confirmNewPassword}
+                                                onChange={(e) => setPasswordForm({ ...passwordForm, confirmNewPassword: e.target.value })}
+                                                className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword((prev) => ({ ...prev, confirm: !prev.confirm }))}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f5d800] hover:text-[#e6c700]"
+                                                aria-label={showPassword.confirm ? 'Hide password' : 'Show password'}
+                                            >
+                                                {showPassword.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="flex gap-3 pt-4">
                                 <button
                                     onClick={handleUpdateProfile}
@@ -232,13 +393,14 @@ const CustomerDashboard = () => {
                                     {t('profile.save_changes')}
                                 </button>
                                 <button
-                                    onClick={() => setIsEditing(false)}
+                                    onClick={closeEditModal}
                                     className="px-6 py-3 bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] rounded-lg font-semibold hover:bg-[var(--color-border)] transition-all duration-200"
                                 >
                                     {t('profile.cancel')}
                                 </button>
                             </div>
                         </div>
+                        )}
                     </div>
                 </div>
             )}

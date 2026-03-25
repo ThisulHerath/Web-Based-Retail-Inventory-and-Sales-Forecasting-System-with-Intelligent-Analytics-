@@ -144,7 +144,6 @@ const Suppliers = () => {
                                             <th className="text-left py-3 px-4 font-semibold text-gray-700">Supplier</th>
                                             <th className="text-left py-3 px-4 font-semibold text-gray-700">Company</th>
                                             <th className="text-left py-3 px-4 font-semibold text-gray-700">Contact</th>
-                                            <th className="text-left py-3 px-4 font-semibold text-gray-700">Products</th>
                                             <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
                                             <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                                         </tr>
@@ -159,11 +158,6 @@ const Suppliers = () => {
                                                         {s.email && <div className="text-gray-600">{s.email}</div>}
                                                         {s.phone && <div className="text-gray-500">{s.phone}</div>}
                                                     </div>
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    <span className="px-3 py-2 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                                                        {s.suppliedProducts?.length || 0} products
-                                                    </span>
                                                 </td>
                                                 <td className="py-3 px-4">
                                                     <span className={`px-3 py-2 rounded-full text-xs font-medium ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>

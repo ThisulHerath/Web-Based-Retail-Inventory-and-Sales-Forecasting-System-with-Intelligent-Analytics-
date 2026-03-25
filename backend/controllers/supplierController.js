@@ -8,6 +8,9 @@ const isValidSLPhone = (phone) => {
     return /^(?:0[1-9][0-9]{8}|\+?94[1-9][0-9]{8})$/.test(cleaned);
 };
 
+const normalizeEmail = (email = '') => email.trim().toLowerCase();
+const normalizePhone = (phone = '') => phone.trim().replace(/[\s\-()]/g, '');
+
 // @desc    Get all suppliers
 // @route   GET /api/suppliers
 // @access  Private (Admin & Manager)
@@ -85,41 +88,60 @@ export const getSupplierById = async (req, res) => {
 export const createSupplier = async (req, res) => {
     try {
         const { supplierName, companyName, email, phone, address } = req.body;
+        const normalizedSupplierName = supplierName?.trim();
+        const normalizedCompanyName = companyName?.trim();
+        const normalizedEmail = normalizeEmail(email || '');
+        const normalizedPhone = normalizePhone(phone || '');
+        const normalizedAddress = address?.trim();
 
-        if (!supplierName?.trim()) {
+        if (!normalizedSupplierName) {
             return res.status(400).json({ message: 'Supplier name is required' });
         }
 
-        if (!companyName?.trim()) {
+        if (!normalizedCompanyName) {
             return res.status(400).json({ message: 'Company name is required' });
         }
 
-        if (!email?.trim()) {
+        if (!normalizedEmail) {
             return res.status(400).json({ message: 'Email is required' });
         }
 
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
             return res.status(400).json({ message: 'Please enter a valid email address' });
         }
 
-        if (!phone?.trim()) {
+        if (!normalizedPhone) {
             return res.status(400).json({ message: 'Phone is required' });
         }
 
-        if (phone && !isValidSLPhone(phone)) {
+        if (normalizedPhone && !isValidSLPhone(normalizedPhone)) {
             return res.status(400).json({ message: 'Please enter a valid Sri Lankan phone number (e.g., 07X XXXXXXX)' });
         }
 
-        if (!address?.trim()) {
+        if (!normalizedAddress) {
             return res.status(400).json({ message: 'Address is required' });
         }
 
+        const duplicate = await Supplier.findDuplicate({
+            supplierName: normalizedSupplierName,
+            email: normalizedEmail,
+            phone: normalizedPhone,
+        });
+
+        if (duplicate) {
+            return res.status(409).json({
+                message: `Duplicate supplier found for ${duplicate.field}`,
+                code: 'DUPLICATE_SUPPLIER',
+                field: duplicate.field,
+            });
+        }
+
         const supplier = await Supplier.create({
-            supplierName: supplierName.trim(),
-            companyName: companyName.trim(),
-            email: email.trim(),
-            phone: phone.trim(),
-            address: address.trim(),
+            supplierName: normalizedSupplierName,
+            companyName: normalizedCompanyName,
+            email: normalizedEmail,
+            phone: normalizedPhone,
+            address: normalizedAddress,
         });
 
         res.status(201).json(supplier);
@@ -141,16 +163,37 @@ export const updateSupplier = async (req, res) => {
 
         const { supplierName, companyName, email, phone, address, isActive } = req.body;
 
-        if (phone && !isValidSLPhone(phone)) {
+        const normalizedSupplierName = supplierName !== undefined ? supplierName.trim() : undefined;
+        const normalizedCompanyName = companyName !== undefined ? companyName.trim() : undefined;
+        const normalizedEmail = email !== undefined ? normalizeEmail(email) : undefined;
+        const normalizedPhone = phone !== undefined ? normalizePhone(phone) : undefined;
+        const normalizedAddress = address !== undefined ? address.trim() : undefined;
+
+        if (normalizedPhone && !isValidSLPhone(normalizedPhone)) {
             return res.status(400).json({ message: 'Please enter a valid Sri Lankan phone number (e.g., 07X XXXXXXX)' });
         }
 
+        const duplicate = await Supplier.findDuplicate({
+            supplierName: normalizedSupplierName !== undefined ? normalizedSupplierName : supplier.supplierName,
+            email: normalizedEmail !== undefined ? normalizedEmail : supplier.email,
+            phone: normalizedPhone !== undefined ? normalizedPhone : supplier.phone,
+            excludeId: req.params.id,
+        });
+
+        if (duplicate) {
+            return res.status(409).json({
+                message: `Duplicate supplier found for ${duplicate.field}`,
+                code: 'DUPLICATE_SUPPLIER',
+                field: duplicate.field,
+            });
+        }
+
         const updates = {};
-        if (supplierName) updates.supplierName = supplierName;
-        if (companyName !== undefined) updates.companyName = companyName;
-        if (email !== undefined) updates.email = email;
-        if (phone !== undefined) updates.phone = phone;
-        if (address !== undefined) updates.address = address;
+        if (normalizedSupplierName) updates.supplierName = normalizedSupplierName;
+        if (normalizedCompanyName !== undefined) updates.companyName = normalizedCompanyName;
+        if (normalizedEmail !== undefined) updates.email = normalizedEmail;
+        if (normalizedPhone !== undefined) updates.phone = normalizedPhone;
+        if (normalizedAddress !== undefined) updates.address = normalizedAddress;
         if (isActive !== undefined) updates.isActive = isActive;
 
         const updatedSupplier = await Supplier.updateById(req.params.id, updates);

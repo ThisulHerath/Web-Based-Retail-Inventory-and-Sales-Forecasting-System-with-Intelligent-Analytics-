@@ -7,6 +7,7 @@ import {
     getCustomerById,
     updateCustomer,
     updateCustomerProfile,
+    verifyCustomerProfilePassword,
     deleteCustomerAccount,
     deleteCustomer,
     getCustomerStats,
@@ -18,7 +19,8 @@ import {
     validateLogin,
     validateUUIDParam,
     validateCustomerRegister,
-    validateCustomerProfileUpdate,
+    validateCustomerSelfProfileUpdate,
+    validateCustomerPasswordVerification,
     validateCustomerAdminUpdate,
 } from '../middleware/validators.js';
 
@@ -30,7 +32,8 @@ router.post('/login', validateLogin, loginCustomer);
 
 // Customer self-service routes (uses customer auth)
 router.get('/profile', protectCustomer, getCustomerProfile);
-router.put('/profile', protectCustomer, validateCustomerProfileUpdate, updateCustomerProfile);
+router.post('/profile/verify-password', protectCustomer, validateCustomerPasswordVerification, verifyCustomerProfilePassword);
+router.put('/profile', protectCustomer, validateCustomerSelfProfileUpdate, updateCustomerProfile);
 router.delete('/profile', protectCustomer, deleteCustomerAccount);
 
 // Protected routes (Admin/Manager)

@@ -380,6 +380,12 @@ select:-webkit-autofill {
   animation: floatSoft 2s ease-in-out infinite;
 }
 
+/* Hide built-in reveal controls so custom eye button remains visible */
+.password-input-no-native::-ms-reveal,
+.password-input-no-native::-ms-clear {
+  display: none;
+}
+
 @layer utilities {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;

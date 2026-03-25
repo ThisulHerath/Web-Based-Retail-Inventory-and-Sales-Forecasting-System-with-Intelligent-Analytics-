@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Admin pages
 import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
+import AIPrediction from './pages/admin/AIPrediction';
 import SalesList from './pages/sales/SalesList';
 import CreateSale from './pages/sales/CreateSale';
 import ViewSale from './pages/sales/ViewSale';
@@ -100,6 +101,16 @@ function App() {
             >
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
+
+                {/* AI Prediction Route (Admin Only) */}
+                <Route
+                    path="ai-prediction"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <AIPrediction />
+                        </ProtectedRoute>
+                    }
+                />
 
                 {/* Sales Routes */}
                 <Route path="sales" element={<SalesList />} />

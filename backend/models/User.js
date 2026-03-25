@@ -30,7 +30,7 @@ const User = {
         if (query.role) q = q.eq('role', query.role);
         if (query.isActive !== undefined) q = q.eq('is_active', query.isActive);
         if (options.excludePassword) {
-            q = supabase.from(TABLE).select('id, name, email, role, is_active, created_at, updated_at');
+            q = supabase.from(TABLE).select('id, name, email, role, is_active, created_at, updated_at, last_login_date');
             if (query.role) q = q.eq('role', query.role);
             if (query.isActive !== undefined) q = q.eq('is_active', query.isActive);
         }
@@ -72,6 +72,17 @@ const User = {
         return User.format(data);
     },
 
+    async updateLastLoginDate(id) {
+        const { data, error } = await supabase
+            .from(TABLE)
+            .update({ last_login_date: new Date().toISOString() })
+            .eq('id', id)
+            .select()
+            .single();
+        if (error) throw error;
+        return User.format(data);
+    },
+
     async deleteOne(id) {
         const { error } = await supabase.from(TABLE).delete().eq('id', id);
         if (error) throw error;
@@ -98,6 +109,7 @@ const User = {
             isActive: row.is_active,
             createdAt: row.created_at,
             updatedAt: row.updated_at,
+            lastLoginDate: row.last_login_date,
             async comparePassword(enteredPassword) {
                 return await bcrypt.compare(enteredPassword, row.password);
             },

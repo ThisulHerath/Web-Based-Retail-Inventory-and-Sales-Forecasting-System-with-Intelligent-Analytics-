@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users, ShoppingBag, Truck, ClipboardList, Tag, Layers, UserCheck, Gift, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, ShoppingBag, Truck, ClipboardList, Tag, Layers, UserCheck, Gift, PanelLeftClose, PanelLeftOpen, BrainCircuit } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import BrandLogo from './BrandLogo';
 
@@ -68,6 +68,12 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
             icon: Users,
             roles: ['admin'],
         },
+        {
+            name: 'AI Prediction',
+            path: '/admin/ai-prediction',
+            icon: BrainCircuit,
+            roles: ['admin'],
+        },
     ];
 
     const filteredItems = menuItems.filter(item => hasRole(...item.roles));
@@ -82,6 +88,7 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
         if (path === '/admin/users') return location.pathname.startsWith('/admin/users');
         if (path === '/admin/customers') return location.pathname.startsWith('/admin/customers');
         if (path === '/admin/validate-coupon') return location.pathname === '/admin/validate-coupon';
+        if (path === '/admin/ai-prediction') return location.pathname.startsWith('/admin/ai-prediction');
         return location.pathname === path;
     };
 

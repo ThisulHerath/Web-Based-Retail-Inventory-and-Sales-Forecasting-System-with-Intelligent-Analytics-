@@ -7,6 +7,7 @@ import {
     updateUser,
     deleteUser,
     getUserStats,
+    resendWelcomeEmail,
 } from '../controllers/userController.js';
 import {
     validateUUIDParam,
@@ -26,5 +27,6 @@ router.route('/').get(getAllUsers).post(validateCreateUser, createUser);
 router.route('/stats/summary').get(getUserStats);
 
 router.route('/:id').put(validateUUIDParam, validateUpdateUser, updateUser).delete(validateUUIDParam, deleteUser);
+router.post('/:id/resend-welcome', validateUUIDParam, resendWelcomeEmail);
 
 export default router;
