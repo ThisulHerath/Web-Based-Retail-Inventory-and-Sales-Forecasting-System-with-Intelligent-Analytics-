@@ -25,6 +25,7 @@ const Users = () => {
     const [toast, setToast] = useState(null);
     const [isDeletingUser, setIsDeletingUser] = useState(false);
     const [isResendingEmail, setIsResendingEmail] = useState(false);
+    const [deleteDependencies, setDeleteDependencies] = useState(null);
 
     const { user: currentUser } = useAuth();
 
@@ -56,8 +57,17 @@ const Users = () => {
             setToast({ type: 'success', message: 'User deleted successfully' });
             fetchUsers();
             setShowDeleteModal(false);
+            setDeleteDependencies(null);
         } catch (error) {
-            setToast({ type: 'error', message: error.response?.data?.message || 'Failed to delete user' });
+            const errorData = error.response?.data;
+            
+            // Handle dependency constraint error
+            if (errorData?.code === 'USER_HAS_DEPENDENCIES') {
+                setDeleteDependencies(errorData.details);
+                return;
+            }
+            
+            setToast({ type: 'error', message: errorData?.message || 'Failed to delete user' });
             setShowDeleteModal(false);
         } finally {
             setIsDeletingUser(false);
@@ -383,29 +393,81 @@ const Users = () => {
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 animate-fade-in">
-                        <div className="flex items-center gap-4 text-red-600 mb-4">
-                            <ShieldAlert className="w-8 h-8" />
-                            <h2 className="text-xl font-bold">Delete User?</h2>
-                        </div>
-                        <p className="text-gray-600 mb-6">
-                            Are you sure you want to delete <strong>{userToDelete?.name}</strong>? This action cannot be undone.
-                        </p>
-                        <div className="flex justify-end gap-3">
-                            <button
-                                onClick={() => setShowDeleteModal(false)}
-                                disabled={isDeletingUser}
-                                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={confirmDelete}
-                                disabled={isDeletingUser}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isDeletingUser ? 'Deleting...' : 'Delete User'}
-                            </button>
-                        </div>
+                        {deleteDependencies ? (
+                            // Dependency constraint error modal
+                            <>
+                                <div className="flex items-center gap-4 text-amber-600 mb-4">
+                                    <ShieldAlert className="w-8 h-8" />
+                                    <h2 className="text-xl font-bold">Cannot Delete User</h2>
+                                </div>
+                                <p className="text-gray-600 mb-4">
+                                    <strong>{userToDelete?.name}</strong> has related records in the system. Please review the following:
+                                </p>
+                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 space-y-2 text-sm">
+                                    {deleteDependencies.stockTransactions > 0 && (
+                                        <p className="text-amber-900">
+                                            • <strong>{deleteDependencies.stockTransactions}</strong> stock transaction(s)
+                                        </p>
+                                    )}
+                                    {deleteDependencies.purchases > 0 && (
+                                        <p className="text-amber-900">
+                                            • <strong>{deleteDependencies.purchases}</strong> purchase order(s)
+                                        </p>
+                                    )}
+                                    {deleteDependencies.inventoryReportsCreated > 0 && (
+                                        <p className="text-amber-900">
+                                            • <strong>{deleteDependencies.inventoryReportsCreated}</strong> inventory report(s) created
+                                        </p>
+                                    )}
+                                    {deleteDependencies.inventoryReportsUpdated > 0 && (
+                                        <p className="text-amber-900">
+                                            • <strong>{deleteDependencies.inventoryReportsUpdated}</strong> inventory report(s) updated
+                                        </p>
+                                    )}
+                                </div>
+                                <p className="text-gray-600 text-sm mb-6">
+                                    To maintain data integrity and audit trails, you cannot delete users with active records. Consider deactivating the user instead.
+                                </p>
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        onClick={() => {
+                                            setShowDeleteModal(false);
+                                            setDeleteDependencies(null);
+                                        }}
+                                        className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                    >
+                                        Back
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            // Regular delete confirmation modal
+                            <>
+                                <div className="flex items-center gap-4 text-red-600 mb-4">
+                                    <ShieldAlert className="w-8 h-8" />
+                                    <h2 className="text-xl font-bold">Delete User?</h2>
+                                </div>
+                                <p className="text-gray-600 mb-6">
+                                    Are you sure you want to delete <strong>{userToDelete?.name}</strong>? This action cannot be undone.
+                                </p>
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        onClick={() => setShowDeleteModal(false)}
+                                        disabled={isDeletingUser}
+                                        className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={confirmDelete}
+                                        disabled={isDeletingUser}
+                                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isDeletingUser ? 'Deleting...' : 'Delete User'}
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

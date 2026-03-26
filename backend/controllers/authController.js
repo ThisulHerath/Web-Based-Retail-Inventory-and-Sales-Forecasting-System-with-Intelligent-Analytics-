@@ -1,5 +1,12 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import {
+    getLoginAttemptKey,
+    getRetryAfterSeconds,
+    isLoginBlocked,
+    recordFailedLogin,
+    recordSuccessfulLogin,
+} from '../utils/loginThrottle.js';
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -14,6 +21,19 @@ const generateToken = (id) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        const attemptKey = getLoginAttemptKey(req, email);
+
+        if (isLoginBlocked(attemptKey)) {
+            const retryAfter = getRetryAfterSeconds(attemptKey);
+            if (retryAfter) {
+                res.set('Retry-After', String(retryAfter));
+            }
+            return res.status(429).json({
+                message: 'Too many failed login attempts. Please try again later.',
+                code: 'AUTH_LOCKED',
+                retryAfterSeconds: retryAfter,
+            });
+        }
 
         if (!email || !password) {
             return res.status(400).json({ message: 'Please provide email and password' });
@@ -22,18 +42,22 @@ export const login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
+            recordFailedLogin(attemptKey);
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         const isPasswordCorrect = await user.comparePassword(password);
 
         if (!isPasswordCorrect) {
+            recordFailedLogin(attemptKey);
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         if (!user.isActive) {
             return res.status(403).json({ message: 'Account has been disabled by the admin' });
         }
+
+        recordSuccessfulLogin(attemptKey);
 
         // Update last login date
         await User.updateLastLoginDate(user._id);

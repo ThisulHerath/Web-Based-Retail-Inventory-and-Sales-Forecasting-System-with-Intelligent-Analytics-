@@ -6,6 +6,9 @@ import { User, Gift, Star, ShoppingBag, Clock, MapPin, Edit2, Trash2, X, Save, A
 import { getMyCoupons } from '../../services/couponService';
 import Toast from '../../components/Toast';
 import axios from 'axios';
+import PasswordStrengthMeter from '../../components/PasswordStrengthMeter';
+import { usePasswordBreachCheck } from '../../hooks/usePasswordBreachCheck';
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from '../../utils/passwordPolicy';
 
 const CustomerDashboard = () => {
     const { t } = useTranslation();
@@ -25,6 +28,7 @@ const CustomerDashboard = () => {
         newPassword: '',
         confirmNewPassword: '',
     });
+    const breachStatus = usePasswordBreachCheck(passwordForm.newPassword);
     const [showPassword, setShowPassword] = useState({
         previous: false,
         next: false,
@@ -89,8 +93,28 @@ const CustomerDashboard = () => {
             }
 
             if (passwordForm.newPassword || passwordForm.confirmNewPassword) {
-                if (passwordForm.newPassword.length < 6) {
+                if (passwordForm.newPassword.length < PASSWORD_MIN_LENGTH) {
                     setToast({ message: t('profile.password_min_length'), type: 'error' });
+                    return;
+                }
+
+                if (passwordForm.newPassword.length > PASSWORD_MAX_LENGTH) {
+                    setToast({ message: t('profile.password_max_length'), type: 'error' });
+                    return;
+                }
+
+                if (breachStatus.state === 'checking') {
+                    setToast({ message: t('password_strength.checking'), type: 'error' });
+                    return;
+                }
+
+                if (breachStatus.state === 'error') {
+                    setToast({ message: t('password_strength.check_failed'), type: 'error' });
+                    return;
+                }
+
+                if (breachStatus.state === 'done' && breachStatus.breached && !breachStatus.skipped) {
+                    setToast({ message: t('password_strength.breached'), type: 'error' });
                     return;
                 }
 
@@ -352,6 +376,8 @@ const CustomerDashboard = () => {
                                                 value={passwordForm.newPassword}
                                                 onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
                                                 className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                                minLength={PASSWORD_MIN_LENGTH}
+                                                maxLength={PASSWORD_MAX_LENGTH}
                                             />
                                             <button
                                                 type="button"
@@ -362,6 +388,19 @@ const CustomerDashboard = () => {
                                                 {showPassword.next ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                             </button>
                                         </div>
+                                        <PasswordStrengthMeter password={passwordForm.newPassword} />
+                                        {passwordForm.newPassword.length >= PASSWORD_MIN_LENGTH && breachStatus.state === 'checking' && (
+                                            <p className="mt-1 text-xs text-amber-600">{t('password_strength.checking')}</p>
+                                        )}
+                                        {passwordForm.newPassword.length >= PASSWORD_MIN_LENGTH && breachStatus.state === 'error' && (
+                                            <p className="mt-1 text-xs text-amber-600">{t('password_strength.check_failed')}</p>
+                                        )}
+                                        {passwordForm.newPassword.length >= PASSWORD_MIN_LENGTH && breachStatus.state === 'done' && !breachStatus.skipped && breachStatus.breached && (
+                                            <p className="mt-1 text-xs text-red-500">{t('password_strength.breached')}</p>
+                                        )}
+                                        {passwordForm.newPassword.length >= PASSWORD_MIN_LENGTH && breachStatus.state === 'done' && !breachStatus.skipped && !breachStatus.breached && (
+                                            <p className="mt-1 text-xs text-green-600">{t('password_strength.safe')}</p>
+                                        )}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">{t('profile.confirm_new_password')}</label>
@@ -371,6 +410,8 @@ const CustomerDashboard = () => {
                                                 value={passwordForm.confirmNewPassword}
                                                 onChange={(e) => setPasswordForm({ ...passwordForm, confirmNewPassword: e.target.value })}
                                                 className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                                minLength={PASSWORD_MIN_LENGTH}
+                                                maxLength={PASSWORD_MAX_LENGTH}
                                             />
                                             <button
                                                 type="button"

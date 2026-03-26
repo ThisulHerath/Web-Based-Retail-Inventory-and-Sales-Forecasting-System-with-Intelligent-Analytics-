@@ -1,6 +1,13 @@
 import Customer from '../models/Customer.js';
 import Coupon from '../models/Coupon.js';
 import jwt from 'jsonwebtoken';
+import {
+    getLoginAttemptKey,
+    getRetryAfterSeconds,
+    isLoginBlocked,
+    recordFailedLogin,
+    recordSuccessfulLogin,
+} from '../utils/loginThrottle.js';
 
 // Sri Lankan phone number validation
 const isValidSLPhone = (phone) => {
@@ -25,13 +32,19 @@ export const registerCustomer = async (req, res) => {
         const { firstName, lastName, email, phone, password } = req.body;
 
         if (phone && !isValidSLPhone(phone)) {
-            return res.status(400).json({ message: 'Please enter a valid Sri Lankan phone number (e.g., 07X XXXXXXX)' });
+            return res.status(400).json({ 
+                code: 'INVALID_PHONE',
+                message: 'Please enter a valid Sri Lankan phone number (e.g., 07X XXXXXXX)' 
+            });
         }
 
         const customerExists = await Customer.findOne({ email });
 
         if (customerExists) {
-            return res.status(400).json({ message: 'Customer already exists' });
+            return res.status(400).json({ 
+                code: 'EMAIL_EXISTS',
+                message: 'An account with this email already exists' 
+            });
         }
 
         const customer = await Customer.create({
@@ -75,6 +88,19 @@ export const registerCustomer = async (req, res) => {
 export const loginCustomer = async (req, res) => {
     try {
         const { email, password } = req.body;
+        const attemptKey = getLoginAttemptKey(req, email);
+
+        if (isLoginBlocked(attemptKey)) {
+            const retryAfter = getRetryAfterSeconds(attemptKey);
+            if (retryAfter) {
+                res.set('Retry-After', String(retryAfter));
+            }
+            return res.status(429).json({
+                message: 'Too many failed login attempts. Please try again later.',
+                code: 'AUTH_LOCKED',
+                retryAfterSeconds: retryAfter,
+            });
+        }
 
         const customer = await Customer.findOne({ email });
 
@@ -82,6 +108,8 @@ export const loginCustomer = async (req, res) => {
             if (!customer.isActive) {
                 return res.status(403).json({ message: 'Account is disabled' });
             }
+
+            recordSuccessfulLogin(attemptKey);
 
             res.json({
                 _id: customer._id,
@@ -93,6 +121,7 @@ export const loginCustomer = async (req, res) => {
                 token: generateToken(customer._id),
             });
         } else {
+            recordFailedLogin(attemptKey);
             res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {

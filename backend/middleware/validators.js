@@ -1,6 +1,25 @@
 import { body, param, validationResult } from 'express-validator';
+import {
+    PASSWORD_MIN_LENGTH,
+    PASSWORD_MAX_LENGTH,
+    assertPasswordNotPwned,
+} from '../utils/passwordPolicy.js';
 
 const srilankaPhoneRegex = /^(?:0[1-9][0-9]{8}|\+?94[1-9][0-9]{8})$/;
+const passwordLengthMessage = `Password must be between ${PASSWORD_MIN_LENGTH} and ${PASSWORD_MAX_LENGTH} characters`;
+
+const passwordPolicyValidator = (field, { optional = false } = {}) => {
+    let chain = body(field);
+    if (optional) {
+        chain = chain.optional({ values: 'falsy' });
+    }
+    return chain
+        .isString()
+        .isLength({ min: PASSWORD_MIN_LENGTH, max: PASSWORD_MAX_LENGTH })
+        .withMessage(passwordLengthMessage)
+        .bail()
+        .custom(assertPasswordNotPwned);
+};
 
 export const handleValidation = (req, res, next) => {
     const errors = validationResult(req);
@@ -42,7 +61,7 @@ export const validateLogin = [
 export const validateCreateUser = [
     body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
     body('email').isEmail().withMessage('Valid email is required'),
-    body('password').isString().isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    passwordPolicyValidator('password'),
     body('role').optional().isIn(['admin', 'manager', 'cashier']).withMessage('Invalid role'),
     body('isActive').optional().isBoolean().withMessage('isActive must be a boolean'),
     handleValidation,
@@ -112,7 +131,7 @@ export const validateCustomerRegister = [
     body('firstName').trim().isLength({ min: 2 }).withMessage('First name must be at least 2 characters'),
     body('lastName').trim().isLength({ min: 2 }).withMessage('Last name must be at least 2 characters'),
     body('email').isEmail().withMessage('Valid email is required'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    passwordPolicyValidator('password'),
     body('phone').optional({ values: 'falsy' }).matches(srilankaPhoneRegex).withMessage('Valid Sri Lankan phone number is required'),
     handleValidation,
 ];
@@ -126,7 +145,7 @@ export const validateCustomerProfileUpdate = [
 ];
 
 export const validateCustomerPasswordVerification = [
-    body('previousPassword').trim().notEmpty().withMessage('Current password is required'),
+    body('previousPassword').isString().notEmpty().withMessage('Current password is required'),
     handleValidation,
 ];
 
@@ -135,8 +154,8 @@ export const validateCustomerSelfProfileUpdate = [
     body('lastName').optional().trim().notEmpty().withMessage('Last name cannot be empty'),
     body('email').optional().isEmail().withMessage('Valid email is required'),
     body('phone').optional({ values: 'falsy' }).matches(srilankaPhoneRegex).withMessage('Valid Sri Lankan phone number is required'),
-    body('previousPassword').trim().notEmpty().withMessage('Current password is required'),
-    body('newPassword').optional({ values: 'falsy' }).isLength({ min: 6 }).withMessage('New password must be at least 6 characters'),
+    body('previousPassword').isString().notEmpty().withMessage('Current password is required'),
+    passwordPolicyValidator('newPassword', { optional: true }),
     body('confirmNewPassword').optional({ values: 'falsy' }).custom((value, { req }) => {
         if (req.body.newPassword && value !== req.body.newPassword) {
             throw new Error('Confirm password must match new password');

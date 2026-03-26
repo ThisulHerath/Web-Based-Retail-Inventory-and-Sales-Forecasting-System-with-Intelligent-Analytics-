@@ -103,7 +103,7 @@ describe('Users routes – authorization', () => {
         const r = await request(app)
             .post('/api/users')
             .set('Authorization', `Bearer ${makeToken('cashier')}`)
-            .send({ name: 'Test User', email: 'test@test.com', password: 'pass123' });
+            .send({ name: 'Test User', email: 'test@test.com', password: 'pass1234' });
         expect(r.status).toBe(403);
     });
 
@@ -131,17 +131,17 @@ describe('Users routes – input validation', () => {
         const r = await request(app)
             .post('/api/users')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'Valid Name', email: 'not-an-email', password: 'pass123' });
+            .send({ name: 'Valid Name', email: 'not-an-email', password: 'pass1234' });
         expect(r.status).toBe(400);
         expect(r.body.code).toBe('VALIDATION_ERROR');
         expect(r.body.errors.some((e) => e.field === 'email')).toBe(true);
     });
 
-    test('POST /api/users with password under 6 chars returns 400', async () => {
+    test('POST /api/users with password under 8 chars returns 400', async () => {
         const r = await request(app)
             .post('/api/users')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'Valid Name', email: 'user@example.com', password: '123' });
+            .send({ name: 'Valid Name', email: 'user@example.com', password: '1234567' });
         expect(r.status).toBe(400);
         expect(r.body.code).toBe('VALIDATION_ERROR');
         expect(r.body.errors.some((e) => e.field === 'password')).toBe(true);
@@ -151,7 +151,7 @@ describe('Users routes – input validation', () => {
         const r = await request(app)
             .post('/api/users')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'A', email: 'user@example.com', password: 'pass123' });
+            .send({ name: 'A', email: 'user@example.com', password: 'pass1234' });
         expect(r.status).toBe(400);
         expect(r.body.code).toBe('VALIDATION_ERROR');
     });
@@ -160,7 +160,7 @@ describe('Users routes – input validation', () => {
         const r = await request(app)
             .post('/api/users')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'Valid Name', email: 'user@example.com', password: 'pass123', role: 'superuser' });
+            .send({ name: 'Valid Name', email: 'user@example.com', password: 'pass1234', role: 'superuser' });
         expect(r.status).toBe(400);
         expect(r.body.code).toBe('VALIDATION_ERROR');
     });

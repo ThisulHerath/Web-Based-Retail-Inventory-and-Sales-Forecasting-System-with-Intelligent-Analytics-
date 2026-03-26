@@ -2,31 +2,9 @@ import User from '../models/User.js';
 import sendEmail, { getWelcomeEmailTemplate } from '../utils/sendEmail.js';
 import crypto from 'crypto';
 
-const generateTemporaryPassword = (length = 8) => {
-    const uppercase = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-    const lowercase = 'abcdefghijkmnopqrstuvwxyz';
-    const numbers = '23456789';
-    const symbols = '@#$%&*';
-    const all = `${uppercase}${lowercase}${numbers}${symbols}`;
-
-    const picks = [
-        uppercase[crypto.randomInt(uppercase.length)],
-        lowercase[crypto.randomInt(lowercase.length)],
-        numbers[crypto.randomInt(numbers.length)],
-        symbols[crypto.randomInt(symbols.length)],
-    ];
-
-    while (picks.length < length) {
-        picks.push(all[crypto.randomInt(all.length)]);
-    }
-
-    // Fisher-Yates shuffle for better randomness of character positions.
-    for (let i = picks.length - 1; i > 0; i -= 1) {
-        const j = crypto.randomInt(i + 1);
-        [picks[i], picks[j]] = [picks[j], picks[i]];
-    }
-
-    return picks.join('');
+const generateTemporaryPassword = (length = 16) => {
+    const buffer = crypto.randomBytes(Math.ceil((length * 3) / 4));
+    return buffer.toString('base64url').slice(0, length);
 };
 
 // @desc    Get all users
@@ -172,6 +150,16 @@ export const deleteUser = async (req, res) => {
             return res.status(400).json({ message: 'Cannot delete your own account' });
         }
 
+        // Check for dependent records
+        const dependencies = await checkUserDependencies(req.params.id);
+        if (dependencies.hasDependencies) {
+            return res.status(409).json({
+                code: 'USER_HAS_DEPENDENCIES',
+                message: `Cannot delete user. This user has related records in the system.`,
+                details: dependencies,
+            });
+        }
+
         await User.deleteOne(req.params.id);
 
         res.status(200).json({ message: 'User deleted successfully' });
@@ -179,6 +167,53 @@ export const deleteUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Helper function to check user dependencies
+async function checkUserDependencies(userId) {
+    try {
+        const { supabase } = await import('../config/db.js');
+
+        // Check for stock transactions created by this user
+        const { count: stockTxnCount } = await supabase
+            .from('stock_transactions')
+            .select('id', { count: 'exact', head: true })
+            .eq('created_by', userId);
+
+        // Check for purchases created by this user
+        const { count: purchasesCount } = await supabase
+            .from('purchases')
+            .select('id', { count: 'exact', head: true })
+            .eq('created_by', userId);
+
+        // Check for inventory reports created or updated by this user
+        const { count: reportCreatedCount } = await supabase
+            .from('inventory_reports')
+            .select('id', { count: 'exact', head: true })
+            .eq('created_by', userId);
+
+        const { count: reportUpdatedCount } = await supabase
+            .from('inventory_reports')
+            .select('id', { count: 'exact', head: true })
+            .eq('updated_by', userId);
+
+        const hasDependencies =
+            (stockTxnCount && stockTxnCount > 0) ||
+            (purchasesCount && purchasesCount > 0) ||
+            (reportCreatedCount && reportCreatedCount > 0) ||
+            (reportUpdatedCount && reportUpdatedCount > 0);
+
+        return {
+            hasDependencies,
+            stockTransactions: stockTxnCount || 0,
+            purchases: purchasesCount || 0,
+            inventoryReportsCreated: reportCreatedCount || 0,
+            inventoryReportsUpdated: reportUpdatedCount || 0,
+        };
+    } catch (error) {
+        console.error('Error checking user dependencies:', error);
+        throw error;
+    }
+}
 
 // @desc    Get user statistics
 // @route   GET /api/users/stats/summary
@@ -214,7 +249,7 @@ export const resendWelcomeEmail = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const temporaryPassword = generateTemporaryPassword(8);
+        const temporaryPassword = generateTemporaryPassword(16);
 
         await User.updateById(req.params.id, {
             password: temporaryPassword,

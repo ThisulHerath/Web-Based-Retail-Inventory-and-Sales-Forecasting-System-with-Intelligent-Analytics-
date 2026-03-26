@@ -18,6 +18,7 @@ import inventoryRoutes from './routes/inventoryRoutes.js';
 import customerRoutes from './routes/customerRoutes.js';
 import couponRoutes from './routes/couponRoutes.js';
 import feedbackRoutes from './routes/feedbackRoutes.js';
+import securityRoutes from './routes/securityRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import auditRoutes from './routes/auditRoutes.js';
 import { auditLog } from './middleware/auditLog.js';
@@ -94,6 +95,7 @@ app.get('/', (req, res) => {
 app.use('/api', auditLog);
 
 app.use('/api/auth', authRoutes);
+app.use('/api/security', securityRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
