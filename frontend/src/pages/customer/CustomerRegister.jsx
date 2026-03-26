@@ -5,6 +5,9 @@ import { useCustomer } from '../../context/CustomerContext';
 import { Mail, Lock, User, Phone, Eye, EyeOff, X } from 'lucide-react';
 import Toast from '../../components/Toast';
 import BrandLogo from '../../components/BrandLogo';
+import PasswordStrengthMeter from '../../components/PasswordStrengthMeter';
+import { usePasswordBreachCheck } from '../../hooks/usePasswordBreachCheck';
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from '../../utils/passwordPolicy';
 
 /* Floating-label input â€” label lifts above border on focus or when filled */
 const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoComplete, placeholder, error }) => {
@@ -54,7 +57,7 @@ const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoCompl
 };
 
 /* Password input with visibility toggle */
-const PasswordInput = ({ id, label, value, onChange, autoComplete, placeholder, error }) => {
+const PasswordInput = ({ id, label, value, onChange, onBlur, autoComplete, placeholder, error, minLength, maxLength }) => {
     const [focused, setFocused] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const lifted = focused || value.length > 0;
@@ -88,9 +91,14 @@ const PasswordInput = ({ id, label, value, onChange, autoComplete, placeholder, 
                         value={value}
                         onChange={onChange}
                         onFocus={() => setFocused(true)}
-                        onBlur={() => setFocused(false)}
+                        onBlur={(e) => {
+                            setFocused(false);
+                            onBlur?.(e);
+                        }}
                         autoComplete={autoComplete}
                         placeholder={lifted ? placeholder : ''}
+                        minLength={minLength}
+                        maxLength={maxLength}
                         className="w-full pl-3 pr-10 py-3 bg-[var(--color-search-bg)] dark:bg-[var(--color-card-bg)] text-sm text-[var(--color-text-primary)] focus:outline-none"
                         style={{ WebkitTextFillColor: 'var(--color-text-primary)' }}
                     />
@@ -125,6 +133,7 @@ const CustomerRegister = () => {
     const [showTermsModal, setShowTermsModal] = useState(false);
     const { register } = useCustomer();
     const navigate = useNavigate();
+    const breachStatus = usePasswordBreachCheck(formData.password);
 
     const clearFieldError = (field) => setFieldErrors((prev) => ({ ...prev, [field]: '' }));
 
@@ -138,10 +147,33 @@ const CustomerRegister = () => {
             if (!/^(?:0[1-9][0-9]{8}|\+?94[1-9][0-9]{8})$/.test(cleaned))
                 errors.phone = t('register.validation.phone_invalid');
         }
-        if (!formData.password || formData.password.length < 6) errors.password = t('register.validation.password_min');
+        if (!formData.password || formData.password.length < PASSWORD_MIN_LENGTH) {
+            errors.password = t('register.validation.password_min');
+        } else if (formData.password.length > PASSWORD_MAX_LENGTH) {
+            errors.password = t('register.validation.password_max');
+        } else if (breachStatus.state === 'checking') {
+            errors.password = t('password_strength.checking');
+        } else if (breachStatus.state === 'error') {
+            errors.password = t('password_strength.check_failed');
+        } else if (breachStatus.state === 'done' && breachStatus.breached && !breachStatus.skipped) {
+            errors.password = t('password_strength.breached');
+        }
         if (formData.password !== formData.confirmPassword) errors.confirmPassword = t('register.validation.password_mismatch');
         if (!agreedToTerms) errors.terms = t('register.validation.terms_required');
         return errors;
+    };
+
+    const breachMessage = () => {
+        if (!formData.password || formData.password.length < PASSWORD_MIN_LENGTH) return null;
+        if (breachStatus.state === 'checking') return { text: t('password_strength.checking'), className: 'text-amber-600' };
+        if (breachStatus.state === 'error') return { text: t('password_strength.check_failed'), className: 'text-amber-600' };
+        if (breachStatus.state === 'done' && !breachStatus.skipped) {
+            if (breachStatus.breached) {
+                return { text: t('password_strength.breached'), className: 'text-red-500' };
+            }
+            return { text: t('password_strength.safe'), className: 'text-green-600' };
+        }
+        return null;
     };
 
     const handleSubmit = async (e) => {
@@ -168,6 +200,10 @@ const CustomerRegister = () => {
                 setFieldErrors((prev) => ({ ...prev, email: t('register.validation.email_exists') }));
                 return;
             }
+            if (error.response?.data?.code === 'INVALID_PHONE') {
+                setFieldErrors((prev) => ({ ...prev, phone: t('register.validation.phone_invalid') }));
+                return;
+            }
             if (error.response?.data?.code === 'VALIDATION_ERROR') {
                 const serverErrs = {};
                 error.response.data.errors?.forEach((e) => { serverErrs[e.field] = e.message; });
@@ -179,6 +215,8 @@ const CustomerRegister = () => {
             setLoading(false);
         }
     };
+
+    const breachInfo = breachMessage();
 
     return (
         <div className="min-h-screen flex">
@@ -359,9 +397,15 @@ const CustomerRegister = () => {
                                     value={formData.password}
                                         onChange={(e) => { setFormData({ ...formData, password: e.target.value }); clearFieldError('password'); }}
                                     autoComplete="new-password"
-                                    placeholder="Min. 6 characters"
+                                    placeholder={`Min. ${PASSWORD_MIN_LENGTH} characters`}
+                                    minLength={PASSWORD_MIN_LENGTH}
+                                    maxLength={PASSWORD_MAX_LENGTH}
                                         error={fieldErrors.password}
                                 />
+                                <PasswordStrengthMeter password={formData.password} />
+                                {breachInfo && !fieldErrors.password && (
+                                    <p className={`mt-1 text-xs ${breachInfo.className}`}>{breachInfo.text}</p>
+                                )}
                             </div>
                             <div>
                                 <PasswordInput
@@ -371,6 +415,8 @@ const CustomerRegister = () => {
                                         onChange={(e) => { setFormData({ ...formData, confirmPassword: e.target.value }); clearFieldError('confirmPassword'); }}
                                     autoComplete="new-password"
                                     placeholder="Repeat password"
+                                    minLength={PASSWORD_MIN_LENGTH}
+                                    maxLength={PASSWORD_MAX_LENGTH}
                                         error={fieldErrors.confirmPassword}
                                 />
                             </div>
