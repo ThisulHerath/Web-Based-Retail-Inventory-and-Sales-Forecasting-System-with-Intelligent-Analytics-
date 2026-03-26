@@ -4,6 +4,7 @@ import { Plus, Trash2, ArrowLeft, Search, Tag, UserCheck } from 'lucide-react';
 import { createSale } from '../../services/salesService';
 import { getAllProducts } from '../../services/productService';
 import { getAllCustomers } from '../../services/customerService';
+import { getAllWalkInCustomers, createWalkInCustomer } from '../../services/walkInCustomerService';
 import { validateCoupon } from '../../services/couponService';
 import Toast from '../../components/Toast';
 
@@ -15,9 +16,13 @@ const CreateSale = () => {
     const [itemErrors, setItemErrors] = useState([{}]);
     const [products, setProducts] = useState([]);
     const [customers, setCustomers] = useState([]);
+    const [walkInCustomers, setWalkInCustomers] = useState([]);
     const [customerSearch, setCustomerSearch] = useState('');
     const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedWalkInCustomer, setSelectedWalkInCustomer] = useState(null);
+    const [walkInDraft, setWalkInDraft] = useState({ fullName: '', phone: '', email: '' });
+    const [redeemPoints, setRedeemPoints] = useState(0);
     const [couponCode, setCouponCode] = useState('');
     const [couponDetails, setCouponDetails] = useState(null);
     const [couponValidationLoading, setCouponValidationLoading] = useState(false);
@@ -26,6 +31,8 @@ const CreateSale = () => {
     const [formData, setFormData] = useState({
         customerName: '',
         customerId: '',
+        walkInCustomerId: '',
+        loyaltyPointsToRedeem: 0,
         couponCode: '',
         paymentMethod: 'Cash',
         items: [{ productId: '', productName: '', quantity: 1, unitPrice: 0, total: 0, maxStock: 0 }],
@@ -44,6 +51,7 @@ const CreateSale = () => {
     useEffect(() => {
         fetchProducts();
         fetchCustomers();
+        fetchWalkInCustomers();
     }, []);
 
     const fetchProducts = async () => {
@@ -65,6 +73,15 @@ const CreateSale = () => {
         }
     };
 
+    const fetchWalkInCustomers = async () => {
+        try {
+            const data = await getAllWalkInCustomers(1, 1000, '');
+            setWalkInCustomers(data.customers || []);
+        } catch (error) {
+            console.error('Failed to load walk-in customers:', error);
+        }
+    };
+
     const filteredCustomers = customers.filter((c) =>
         `${c.firstName} ${c.lastName}`.toLowerCase().includes(customerSearch.toLowerCase()) ||
         c.email?.toLowerCase().includes(customerSearch.toLowerCase()) ||
@@ -77,8 +94,11 @@ const CreateSale = () => {
         setFormData((prev) => ({
             ...prev,
             customerId,
+            walkInCustomerId: '',
             customerName: `${customer.firstName} ${customer.lastName}`,
         }));
+        setSelectedWalkInCustomer(null);
+        setRedeemPoints(0);
         setCustomerSearch('');
         setShowCustomerDropdown(false);
         setCouponDetails(null);
@@ -86,9 +106,55 @@ const CreateSale = () => {
 
     const clearCustomer = () => {
         setSelectedCustomer(null);
+        setSelectedWalkInCustomer(null);
         setCouponCode('');
         setCouponDetails(null);
-        setFormData((prev) => ({ ...prev, customerId: '', customerName: '', couponCode: '' }));
+        setRedeemPoints(0);
+        setFormData((prev) => ({ ...prev, customerId: '', walkInCustomerId: '', customerName: '', couponCode: '', loyaltyPointsToRedeem: 0 }));
+    };
+
+    const selectWalkInCustomer = (customer) => {
+        const id = customer._id || customer.id;
+        setSelectedWalkInCustomer(customer);
+        setSelectedCustomer(null);
+        setFormData((prev) => ({
+            ...prev,
+            customerId: '',
+            walkInCustomerId: id,
+            customerName: customer.fullName,
+        }));
+        setCouponCode('');
+        setCouponDetails(null);
+        setRedeemPoints(0);
+    };
+
+    const handleCreateWalkIn = async () => {
+        if (!walkInDraft.fullName.trim() || !walkInDraft.phone.trim()) {
+            setToast({ message: 'Walk-in full name and phone are required', type: 'error' });
+            return;
+        }
+
+        // Sri Lankan phone validation
+        const phoneRegex = /^(?:0[1-9][0-9]{8}|\+?94[1-9][0-9]{8})$/;
+        const cleanedPhone = walkInDraft.phone.replace(/[\s\-()]/g, '');
+        if (!phoneRegex.test(cleanedPhone)) {
+            setToast({ message: 'Invalid phone number. Use Sri Lankan format (e.g., 07X XXXXXXX or +94XXXXXXXXX)', type: 'error' });
+            return;
+        }
+
+        try {
+            const created = await createWalkInCustomer({
+                fullName: walkInDraft.fullName.trim(),
+                phone: walkInDraft.phone.trim(),
+                email: walkInDraft.email?.trim() || undefined,
+            });
+            setWalkInCustomers((prev) => [created, ...prev]);
+            setWalkInDraft({ fullName: '', phone: '', email: '' });
+            selectWalkInCustomer(created);
+            setToast({ message: 'Walk-in customer created', type: 'success' });
+        } catch (error) {
+            setToast({ message: error.response?.data?.message || 'Failed to create walk-in customer', type: 'error' });
+        }
     };
 
     const handleValidateCoupon = async () => {
@@ -182,9 +248,15 @@ const CreateSale = () => {
         }
 
         const discountedSubtotal = subtotal - discount;
-        const tax = discountedSubtotal * 0.1;
-        const grandTotal = discountedSubtotal + tax;
-        return { subtotal, discount, discountedSubtotal, tax, grandTotal };
+        
+        // Calculate loyalty points discount
+        const redeemRequested = Number(redeemPoints || 0);
+        const loyaltyDiscount = Math.min(redeemRequested, discountedSubtotal);
+        const finalDiscountedSubtotal = discountedSubtotal - loyaltyDiscount;
+        
+        const tax = finalDiscountedSubtotal * 0.1;
+        const grandTotal = finalDiscountedSubtotal + tax;
+        return { subtotal, discount, discountedSubtotal, loyaltyDiscount, finalDiscountedSubtotal, tax, grandTotal };
     };
 
     const handleSubmit = async (e) => {
@@ -218,6 +290,7 @@ const CreateSale = () => {
             const saleData = {
                 ...formData,
                 couponCode: couponCode.trim() || undefined,
+                loyaltyPointsToRedeem: Number(redeemPoints || 0),
             };
             await createSale(saleData);
             setToast({ message: 'Sale created successfully', type: 'success' });
@@ -229,7 +302,7 @@ const CreateSale = () => {
         }
     };
 
-    const { subtotal, discount, discountedSubtotal, tax, grandTotal } = calculateTotals();
+    const { subtotal, discount, discountedSubtotal, loyaltyDiscount, finalDiscountedSubtotal, tax, grandTotal } = calculateTotals();
 
     return (
         <div className="p-6">
@@ -344,6 +417,68 @@ const CreateSale = () => {
                                         {fieldErrors.customerName && <p className="mt-1 text-xs text-red-500">{fieldErrors.customerName}</p>}
                                     </div>
                                 )}
+
+                                {!selectedCustomer && !selectedWalkInCustomer && (
+                                    <div className="mt-3 p-3 rounded-lg border border-gray-200 bg-gray-50 space-y-2">
+                                        <p className="text-xs font-semibold text-gray-700">Create / Select Walk-in Customer</p>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            <select
+                                                onChange={(e) => {
+                                                    const picked = walkInCustomers.find((w) => String(w.id || w._id) === e.target.value);
+                                                    if (picked) selectWalkInCustomer(picked);
+                                                }}
+                                                defaultValue=""
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            >
+                                                <option value="">Select existing walk-in customer</option>
+                                                {walkInCustomers.slice(0, 100).map((w) => (
+                                                    <option key={w.id || w._id} value={String(w.id || w._id)}>
+                                                        {w.fullName} - {w.phone} ({w.loyaltyPoints || 0} pts)
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <input
+                                                type="text"
+                                                placeholder="Walk-in full name"
+                                                value={walkInDraft.fullName}
+                                                onChange={(e) => setWalkInDraft((prev) => ({ ...prev, fullName: e.target.value }))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Walk-in phone"
+                                                value={walkInDraft.phone}
+                                                onChange={(e) => setWalkInDraft((prev) => ({ ...prev, phone: e.target.value }))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            />
+                                            <input
+                                                type="email"
+                                                placeholder="Walk-in email (optional)"
+                                                value={walkInDraft.email}
+                                                onChange={(e) => setWalkInDraft((prev) => ({ ...prev, email: e.target.value }))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleCreateWalkIn}
+                                                className="px-3 py-2 text-sm font-semibold bg-[#155c27] text-white rounded-lg hover:bg-green-800"
+                                            >
+                                                Save Walk-in Customer
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedWalkInCustomer && (
+                                    <div className="mt-3 flex items-center justify-between px-3 py-2 rounded-lg bg-blue-50 border border-blue-200">
+                                        <span className="text-sm text-blue-800">
+                                            Walk-in: {selectedWalkInCustomer.fullName} ({selectedWalkInCustomer.phone})
+                                        </span>
+                                        <span className="text-xs font-semibold text-blue-700">
+                                            {selectedWalkInCustomer.loyaltyPoints || 0} pts
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             <div>
@@ -404,6 +539,24 @@ const CreateSale = () => {
                                     <option value="Cash">Cash</option>
                                     <option value="Card">Card</option>
                                 </select>
+
+                                <label className="block text-sm font-medium text-gray-700 mt-3 mb-2">
+                                    Redeem Loyalty Points
+                                </label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    value={redeemPoints}
+                                    onChange={(e) => {
+                                        const val = Number(e.target.value || 0);
+                                        setRedeemPoints(val);
+                                        setFormData((prev) => ({ ...prev, loyaltyPointsToRedeem: val }));
+                                    }}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Available points: {selectedCustomer?.loyaltyPoints || selectedWalkInCustomer?.loyaltyPoints || 0}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -543,6 +696,12 @@ const CreateSale = () => {
                                         <span>LKR {discountedSubtotal.toFixed(2)}</span>
                                     </div>
                                 </>
+                            )}
+                            {loyaltyDiscount > 0 && (
+                                <div className="flex justify-between text-blue-700 font-medium">
+                                    <span>Loyalty Points Discount:</span>
+                                    <span>- LKR {loyaltyDiscount.toFixed(2)}</span>
+                                </div>
                             )}
                             <div className="flex justify-between text-gray-700">
                                 <span>Tax (10%):</span>

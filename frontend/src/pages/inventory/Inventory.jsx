@@ -121,7 +121,7 @@ const Inventory = () => {
                                                 <td className="py-3 px-4 font-mono text-xs text-gray-500">{inv.product?.sku || '—'}</td>
                                                 <td className="py-3 px-4">
                                                     {inv.product?.category ? (
-                                                        <span className="px-2 py-2 bg-[#1a6e30ad] text-[#ffffff] rounded-full text-xs font-medium">{inv.product.category.categoryName}</span>
+                                                        <span className="inline-block px-3 py-1.5 bg-[#1a6e30ad] text-[#ffffff] rounded-lg text-xs font-medium max-w-xs truncate" title={inv.product.category.categoryName}>{inv.product.category.categoryName}</span>
                                                     ) : 'â€”'}
                                                 </td>
                                                 <td className="py-3 px-4 text-center"><span className={`text-lg font-bold ${isLow ? 'text-red-600' : 'text-gray-800'}`}>{displayedStock}</span></td>
@@ -138,10 +138,28 @@ const Inventory = () => {
                                                     )}
                                                 </td>
                                                 <td className="py-3 px-4">
-                                                    <div className="flex items-center gap-1">
-                                                        <Link to={`/admin/inventory/${inv.product?._id}/stock-in`} title="Stock In" className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg"><ArrowUpCircle className="w-4 h-4" /></Link>
-                                                        <Link to={`/admin/inventory/${inv.product?._id}/stock-out`} title="Stock Out" className="p-1.5 text-orange-600 hover:bg-orange-50 rounded-lg"><ArrowDownCircle className="w-4 h-4" /></Link>
-                                                        <Link to={`/admin/inventory/${inv.product?._id}/history`} title="History" className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg"><History className="w-4 h-4" /></Link>
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <Link 
+                                                            to={`/admin/inventory/${inv.product?._id}/stock-in`} 
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors text-xs font-medium border border-green-200"
+                                                        >
+                                                            <ArrowUpCircle className="w-4 h-4" />
+                                                            Stock In
+                                                        </Link>
+                                                        <Link 
+                                                            to={`/admin/inventory/${inv.product?._id}/stock-out`} 
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors text-xs font-medium border border-orange-200"
+                                                        >
+                                                            <ArrowDownCircle className="w-4 h-4" />
+                                                            Stock Out
+                                                        </Link>
+                                                        <Link 
+                                                            to={`/admin/inventory/${inv.product?._id}/history`} 
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-medium border border-blue-200"
+                                                        >
+                                                            <History className="w-4 h-4" />
+                                                            History
+                                                        </Link>
                                                     </div>
                                                 </td>
                                             </tr>

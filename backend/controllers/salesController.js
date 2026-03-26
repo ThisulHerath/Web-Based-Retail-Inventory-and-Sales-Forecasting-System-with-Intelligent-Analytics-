@@ -3,6 +3,7 @@ import Product from '../models/Product.js';
 import Inventory from '../models/Inventory.js';
 import StockTransaction from '../models/StockTransaction.js';
 import Customer from '../models/Customer.js';
+import WalkInCustomer from '../models/WalkInCustomer.js';
 import Coupon from '../models/Coupon.js';
 import SalesAudit from '../models/SalesAudit.js';
 import { autoGenerateLoyaltyCoupon } from './couponController.js';
@@ -85,7 +86,7 @@ export const getSaleById = async (req, res) => {
 // @access  Private
 export const createSale = async (req, res) => {
     try {
-        const { customerName, customerId, items, paymentMethod, couponCode } = req.body;
+        const { customerName, customerId, walkInCustomerId, items, paymentMethod, couponCode, loyaltyPointsToRedeem = 0 } = req.body;
 
         if (!customerName || !items || items.length === 0 || !paymentMethod) {
             return res.status(400).json({ message: 'Please provide all required fields' });
@@ -126,11 +127,22 @@ export const createSale = async (req, res) => {
         const subtotal = processedItems.reduce((sum, item) => sum + item.total, 0);
 
         let customer = null;
+        let walkInCustomer = null;
         if (customerId) {
             customer = await Customer.findById(customerId);
             if (!customer) {
                 return res.status(404).json({ message: 'Selected customer not found' });
             }
+        }
+        if (walkInCustomerId) {
+            walkInCustomer = await WalkInCustomer.findById(walkInCustomerId);
+            if (!walkInCustomer) {
+                return res.status(404).json({ message: 'Selected walk-in customer not found' });
+            }
+        }
+
+        if (customerId && walkInCustomerId) {
+            return res.status(400).json({ message: 'Select either a registered customer or a walk-in customer, not both' });
         }
 
         let discount = 0;
@@ -165,9 +177,24 @@ export const createSale = async (req, res) => {
         }
 
         const discountedSubtotal = subtotal - discount;
-        const tax = discountedSubtotal * 0.1;
-        const grandTotal = discountedSubtotal + tax;
-        const totalProfit = discountedSubtotal - totalCost;
+
+        const redeemRequested = Number(loyaltyPointsToRedeem || 0);
+        if (!Number.isInteger(redeemRequested) || redeemRequested < 0) {
+            return res.status(400).json({ message: 'loyaltyPointsToRedeem must be a non-negative integer' });
+        }
+
+        const holderPoints = customer ? Number(customer.loyaltyPoints || 0) : Number(walkInCustomer?.loyaltyPoints || 0);
+        if (redeemRequested > holderPoints) {
+            return res.status(400).json({ message: 'Insufficient loyalty points to redeem' });
+        }
+
+        const maxRedeemValue = redeemRequested;
+        const loyaltyDiscount = Math.min(maxRedeemValue, discountedSubtotal);
+        const pointsActuallyRedeemed = Math.floor(loyaltyDiscount);
+        const finalDiscountedSubtotal = discountedSubtotal - loyaltyDiscount;
+        const tax = finalDiscountedSubtotal * 0.1;
+        const grandTotal = finalDiscountedSubtotal + tax;
+        const totalProfit = finalDiscountedSubtotal - totalCost;
 
         // Generate invoice number
         const lastSale = await Sale.findOne({ sort: { createdAt: -1 } });
@@ -181,25 +208,27 @@ export const createSale = async (req, res) => {
 
         // Calculate Loyalty Points for Customer
         let pointsEarned = 0;
-        if (customerId) {
-            pointsEarned = Math.floor(discountedSubtotal / 100);
+        if (customerId || walkInCustomerId) {
+            pointsEarned = Math.floor(finalDiscountedSubtotal / 100);
         }
 
         const sale = await Sale.create({
             invoiceNumber,
             customerName,
             customer: customerId || null,
+            walkInCustomer: walkInCustomerId || null,
             items: processedItems,
             subtotal,
-            discountAmount: discount,
-            discountedSubtotal,
+            discountAmount: discount + loyaltyDiscount,
+            discountedSubtotal: finalDiscountedSubtotal,
             tax,
             grandTotal,
             totalCost,
             totalProfit,
             paymentMethod,
             couponUsed: couponUsedId,
-            pointsEarned
+            pointsEarned,
+            loyaltyPointsRedeemed: pointsActuallyRedeemed,
         });
 
         // Update Coupon status
@@ -209,7 +238,7 @@ export const createSale = async (req, res) => {
 
         // Update Customer Record
         if (customerId && customer) {
-            const newLoyaltyPoints = (customer.loyaltyPoints || 0) + pointsEarned;
+            const newLoyaltyPoints = (customer.loyaltyPoints || 0) - pointsActuallyRedeemed + pointsEarned;
             const newTotalPurchases = (customer.totalPurchases || 0) + 1;
 
             let finalPoints = newLoyaltyPoints;
@@ -222,6 +251,18 @@ export const createSale = async (req, res) => {
             await Customer.updateById(customerId, {
                 loyaltyPoints: finalPoints,
                 totalPurchases: newTotalPurchases,
+            });
+        }
+
+        if (walkInCustomerId && walkInCustomer) {
+            const nextPoints = (walkInCustomer.loyaltyPoints || 0) - pointsActuallyRedeemed + pointsEarned;
+            const nextVisits = (walkInCustomer.visitCount || 0) + 1;
+            const nextTotalSpent = Number(walkInCustomer.totalSpent || 0) + Number(grandTotal || 0);
+
+            await WalkInCustomer.updateById(walkInCustomerId, {
+                loyaltyPoints: Math.max(0, nextPoints),
+                visitCount: nextVisits,
+                totalSpent: nextTotalSpent,
             });
         }
 

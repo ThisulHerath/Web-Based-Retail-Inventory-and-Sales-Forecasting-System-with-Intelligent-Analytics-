@@ -61,6 +61,7 @@ const Sale = {
             invoice_number: obj.invoiceNumber,
             customer_name: obj.customerName,
             customer_id: obj.customer || null,
+            walk_in_customer_id: obj.walkInCustomer || null,
             subtotal: obj.subtotal,
             discount_amount: obj.discountAmount || 0,
             discounted_subtotal: obj.discountedSubtotal || obj.subtotal,
@@ -71,6 +72,7 @@ const Sale = {
             payment_method: obj.paymentMethod,
             coupon_used: obj.couponUsed || null,
             points_earned: obj.pointsEarned || 0,
+            loyalty_points_redeemed: obj.loyaltyPointsRedeemed || 0,
         };
         const { data, error } = await supabase.from(TABLE).insert(row).select().single();
         if (error) throw error;
@@ -200,6 +202,8 @@ const Sale = {
             customerName: row.customer_name,
             customer: row.customer_id,
             customerId: row.customer_id,
+            walkInCustomer: row.walk_in_customer_id,
+            walkInCustomerId: row.walk_in_customer_id,
             items: formattedItems,
             subtotal: toNumber(row.subtotal),
             discountAmount: toNumber(row.discount_amount),
@@ -213,6 +217,7 @@ const Sale = {
             paymentMethod: row.payment_method,
             couponUsed: row.coupon_used,
             pointsEarned: row.points_earned,
+            loyaltyPointsRedeemed: row.loyalty_points_redeemed || 0,
             createdAt: row.created_at,
             updatedAt: row.updated_at,
             toJSON() {

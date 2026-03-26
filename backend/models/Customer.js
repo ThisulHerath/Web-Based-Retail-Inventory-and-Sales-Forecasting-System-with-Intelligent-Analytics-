@@ -25,6 +25,15 @@ const Customer = {
         return data ? Customer.format(data) : null;
     },
 
+    async findByPhone(phone) {
+        const { data, error } = await supabase.from(TABLE).select('*').eq('phone', phone).limit(1).single();
+        if (error) {
+            if (error.code === 'PGRST116') return null;
+            throw error;
+        }
+        return data ? Customer.format(data) : null;
+    },
+
     async find(query = {}, options = {}) {
         let selectFields = '*';
         if (options.excludePassword) {

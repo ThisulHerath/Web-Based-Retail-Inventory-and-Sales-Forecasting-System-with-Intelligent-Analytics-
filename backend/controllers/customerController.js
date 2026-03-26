@@ -1,4 +1,5 @@
 import Customer from '../models/Customer.js';
+import WalkInCustomer from '../models/WalkInCustomer.js';
 import Coupon from '../models/Coupon.js';
 import jwt from 'jsonwebtoken';
 import {
@@ -45,6 +46,24 @@ export const registerCustomer = async (req, res) => {
                 code: 'EMAIL_EXISTS',
                 message: 'An account with this email already exists' 
             });
+        }
+
+        if (phone) {
+            const phoneExists = await Customer.findByPhone(phone);
+            if (phoneExists) {
+                return res.status(400).json({ 
+                    code: 'PHONE_EXISTS',
+                    message: 'This phone number is already registered' 
+                });
+            }
+
+            const walkInWithPhone = await WalkInCustomer.findOne({ phone });
+            if (walkInWithPhone) {
+                return res.status(400).json({ 
+                    code: 'PHONE_EXISTS',
+                    message: 'This phone number is already used by a walk-in customer' 
+                });
+            }
         }
 
         const customer = await Customer.create({
