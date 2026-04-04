@@ -61,7 +61,6 @@ export const validateLogin = [
 export const validateCreateUser = [
     body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
     body('email').isEmail().withMessage('Valid email is required'),
-    passwordPolicyValidator('password'),
     body('role').optional().isIn(['admin', 'manager', 'cashier']).withMessage('Invalid role'),
     body('isActive').optional().isBoolean().withMessage('isActive must be a boolean'),
     handleValidation,
