@@ -203,7 +203,7 @@ const BusinessAssistantBot = () => {
                 {isOpen ? (
                     <X className="w-7 h-7 relative z-10 transition-transform duration-300 rotate-90 group-hover:rotate-180" />
                 ) : (
-                    <Sparkles className="w-7 h-7 relative z-10 transition-transform duration-300 group-hover:animate-pulse" />
+                    <Bot className="w-7 h-7 relative z-10 transition-transform duration-300 group-hover:animate-pulse" />
                 )}
             </button>
         </div>
