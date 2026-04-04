@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Search, Edit, Trash2, ShieldAlert, Mail, Activity } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, ShieldAlert, Mail, ClipboardList } from 'lucide-react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { getAllUsers, deleteUser, resendWelcomeEmail } from '../../services/userService';
 import { useAuth } from '../../context/AuthContext';
@@ -310,34 +310,38 @@ const Users = () => {
                                         <div className="flex items-center justify-end gap-2">
                                             <button
                                                 onClick={() => handleActivityLogClick(user)}
-                                                className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-purple-600 hover:bg-purple-50 border border-transparent hover:border-purple-200 rounded-lg transition-colors"
                                                 title="View Activity Log"
                                             >
-                                                <Activity className="w-4 h-4" />
+                                                <ClipboardList className="w-4 h-4" />
+                                                Logs
                                             </button>
                                             <Link
                                                 to={`/admin/users/edit/${user._id}`}
-                                                className="p-2 text-[#f5d800] hover:bg-blue-50 rounded-lg transition-colors"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 rounded-lg transition-colors"
                                                 title="Edit User"
                                             >
                                                 <Edit className="w-4 h-4" />
+                                                Edit
                                             </Link>
                                             {user._id !== currentUser._id && (
                                                 <button
                                                     onClick={() => handleResendClick(user)}
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#c5a600] hover:bg-[#fffdf0] border border-transparent hover:border-[#f5d800] rounded-lg transition-colors"
                                                     title="Resend Welcome Email"
                                                 >
                                                     <Mail className="w-4 h-4" />
+                                                    Resend
                                                 </button>
                                             )}
                                             {user._id !== currentUser._id && (
                                                 <button
                                                     onClick={() => handleDeleteClick(user)}
-                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors"
                                                     title="Delete User"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
+                                                    Delete
                                                 </button>
                                             )}
                                         </div>

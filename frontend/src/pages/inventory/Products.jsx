@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit, Trash2, Tag, Filter, AlertTriangle } from 'lucide-react';
 import { getAllProducts, deleteProduct } from '../../services/productService';
@@ -185,9 +185,9 @@ const Products = () => {
                                 </td>
                                 <td className="px-6 py-4 text-right">
                                     <div className="flex items-center justify-end gap-1">
-                                        <Link to={`/admin/products/edit/${product._id}`} className="p-1.5 text-[#f5d800] hover:bg-[#1a6e30]/30 rounded" title="Edit"><Edit className="w-4 h-4" /></Link>
+                                        <Link to={`/admin/products/edit/${product._id}`} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-yellow-600 hover:bg-yellow-50 border border-transparent hover:border-yellow-200 rounded-lg transition-colors" title="Edit"><Edit className="w-4 h-4" /> Edit</Link>
                                         {isAdmin() && (
-                                            <button onClick={() => setDeleteModal(product)} className="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Delete"><Trash2 className="w-4 h-4" /></button>
+                                            <button onClick={() => setDeleteModal(product)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors" title="Delete"><Trash2 className="w-4 h-4" /> Delete</button>
                                         )}
                                     </div>
                                 </td>

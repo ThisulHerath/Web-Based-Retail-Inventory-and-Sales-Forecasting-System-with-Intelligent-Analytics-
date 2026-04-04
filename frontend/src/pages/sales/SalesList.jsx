@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Eye, Trash2, Calendar, BarChart2, X, TrendingUp, DollarSign, ShoppingCart, Package } from 'lucide-react';
 import { getAllSales, deleteSale, getSalesAnalytics } from '../../services/salesService';
@@ -567,18 +567,20 @@ const SalesList = () => {
                                                     <div className="flex items-center gap-2">
                                                         <Link
                                                             to={`/admin/sales/${sale._id}`}
-                                                            className="p-2 text-[#f5d800] hover:bg-[#1a6e30]/30 rounded-lg transition-colors"
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 rounded-lg transition-colors"
                                                             title="View"
                                                         >
                                                             <Eye className="w-4 h-4" />
+                                                            View
                                                         </Link>
                                                         {isAdmin() && (
                                                             <button
                                                                 onClick={() => setDeleteModal(sale)}
-                                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors"
                                                                 title="Delete"
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
+                                                                Delete
                                                             </button>
                                                         )}
                                                     </div>

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Plus, Trash2, ArrowLeft } from 'lucide-react';
 import { getSaleById, updateSale } from '../../services/salesService';
@@ -297,9 +297,10 @@ const EditSale = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => removeItem(index)}
-                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors mt-1"
                                             >
                                                 <Trash2 className="w-5 h-5" />
+                                                Remove
                                             </button>
                                         )}
                                     </div>

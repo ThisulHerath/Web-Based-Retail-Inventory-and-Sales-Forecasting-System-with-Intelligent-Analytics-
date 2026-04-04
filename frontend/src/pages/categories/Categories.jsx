@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit, Trash2, Tag, Search } from 'lucide-react';
 import { getAllCategories, deleteCategory } from '../../services/categoryService';
@@ -126,8 +126,8 @@ const Categories = () => {
                                     <div className="flex items-center gap-1">
                                         {isAdmin() && (
                                             <>
-                                                <Link to={`/admin/categories/edit/${cat._id}`} className="p-2 text-[#f5d800] hover:bg-[#1a6e30]/30 rounded-lg"><Edit className="w-4 h-4" /></Link>
-                                                <button onClick={() => setDeleteModal(cat)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                                                <Link to={`/admin/categories/edit/${cat._id}`} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-yellow-600 hover:bg-yellow-50 border border-transparent hover:border-yellow-200 rounded-lg transition-colors" title="Edit"><Edit className="w-4 h-4" /> Edit</Link>
+                                                <button onClick={() => setDeleteModal(cat)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors" title="Delete"><Trash2 className="w-4 h-4" /> Delete</button>
                                             </>
                                         )}
                                     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, MapPin, Clock } from 'lucide-react';
+import { X, Calendar, MapPin, Clock, Eye, EyeOff } from 'lucide-react';
 import { getAuditLogs } from '../../services/userService';
 
 const ActivityLogModal = ({ user, onClose }) => {
@@ -14,6 +14,7 @@ const ActivityLogModal = ({ user, onClose }) => {
         from: '',
         to: ''
     });
+    const [expandedLogId, setExpandedLogId] = useState(null);
 
     const LIMIT = 20;
 
@@ -84,6 +85,10 @@ const ActivityLogModal = ({ user, onClose }) => {
         if (filterType === 'action') setActionFilter(value);
         if (filterType === 'entity') setEntityFilter(value);
         setPage(1);
+    };
+
+    const toggleExpand = (logId) => {
+        setExpandedLogId(prev => prev === logId ? null : logId);
     };
 
     return (
@@ -189,49 +194,82 @@ const ActivityLogModal = ({ user, onClose }) => {
                                         <th className="px-6 py-3 font-semibold text-gray-600">Date & Time</th>
                                         <th className="px-6 py-3 font-semibold text-gray-600">Status Code</th>
                                         <th className="px-6 py-3 font-semibold text-gray-600">IP Address</th>
+                                        <th className="px-6 py-3 font-semibold text-gray-600 text-center">Details</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
-                                    {logs.map((log, index) => (
-                                        <tr key={log.id || index} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-3">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getActionColor(log.action)}`}>
-                                                    {log.action}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-3 text-gray-900 font-medium">
-                                                {log.entity_type || 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-3 text-gray-600 font-mono text-xs">
-                                                {log.entity_id ? log.entity_id.substring(0, 12) : 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-3 text-gray-600">
-                                                <div className="flex items-center gap-2">
-                                                    <Clock className="w-4 h-4 text-gray-400" />
-                                                    {formatDate(log.created_at)}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-3 text-gray-600">
-                                                {log.status_code ? (
-                                                    <span className={`inline-flex px-2 py-1 rounded text-xs font-medium ${
-                                                        log.status_code < 300
-                                                            ? 'bg-green-100 text-green-800'
-                                                            : log.status_code < 400
-                                                            ? 'bg-yellow-100 text-yellow-800'
-                                                            : 'bg-red-100 text-red-800'
-                                                    }`}>
-                                                        {log.status_code}
+                                    {logs.map((log, index) => {
+                                        const uniqueId = log.id || index;
+                                        const hasDetails = log.request_body && Object.keys(log.request_body).length > 0;
+                                        return (
+                                        <React.Fragment key={uniqueId}>
+                                            <tr className="hover:bg-gray-50 transition-colors">
+                                                <td className="px-6 py-3">
+                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getActionColor(log.action)}`}>
+                                                        {log.action}
                                                     </span>
-                                                ) : 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-3 text-gray-600">
-                                                <div className="flex items-center gap-2">
-                                                    <MapPin className="w-4 h-4 text-gray-400" />
-                                                    {log.ip_address || 'N/A'}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                                <td className="px-6 py-3 text-gray-900 font-medium">
+                                                    {log.entity_type || 'N/A'}
+                                                </td>
+                                                <td className="px-6 py-3 text-gray-600 font-mono text-xs">
+                                                    {log.entity_id ? log.entity_id.substring(0, 12) : 'N/A'}
+                                                </td>
+                                                <td className="px-6 py-3 text-gray-600">
+                                                    <div className="flex items-center gap-2">
+                                                        <Clock className="w-4 h-4 text-gray-400" />
+                                                        {formatDate(log.created_at)}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-3 text-gray-600">
+                                                    {log.status_code ? (
+                                                        <span className={`inline-flex px-2 py-1 rounded text-xs font-medium ${
+                                                            log.status_code < 300
+                                                                ? 'bg-green-100 text-green-800'
+                                                                : log.status_code < 400
+                                                                ? 'bg-yellow-100 text-yellow-800'
+                                                                : 'bg-red-100 text-red-800'
+                                                        }`}>
+                                                            {log.status_code}
+                                                        </span>
+                                                    ) : 'N/A'}
+                                                </td>
+                                                <td className="px-6 py-3 text-gray-600">
+                                                    <div className="flex items-center gap-2">
+                                                        <MapPin className="w-4 h-4 text-gray-400" />
+                                                        {log.ip_address || 'N/A'}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-3 text-center">
+                                                    {hasDetails ? (
+                                                        <button 
+                                                            onClick={() => toggleExpand(uniqueId)}
+                                                            className={`p-1.5 rounded transition-colors ${expandedLogId === uniqueId ? 'bg-[#f5d800]/20 text-[#155c27]' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+                                                            title={expandedLogId === uniqueId ? "Hide Details" : "View Details"}
+                                                        >
+                                                            {expandedLogId === uniqueId ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-gray-400 text-xs italic">No Details</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                            {expandedLogId === uniqueId && hasDetails && (
+                                                <tr className="bg-gray-50 border-y border-gray-200">
+                                                    <td colSpan="7" className="px-6 py-4">
+                                                        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                                                            <h4 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                                                                <Clock className="w-4 h-4 text-gray-500" /> Data Payload Recorded
+                                                            </h4>
+                                                            <pre className="text-xs bg-[#f8fafc] p-4 rounded-lg border border-gray-100 overflow-x-auto text-gray-700 font-mono">
+                                                                {JSON.stringify(log.request_body, null, 2)}
+                                                            </pre>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
+                                    )})}
                                 </tbody>
                             </table>
                         </div>

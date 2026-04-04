@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { createPurchase } from '../../services/purchaseService';
@@ -148,8 +148,9 @@ const CreatePurchase = () => {
                                             </td>
                                             <td className="py-2 px-3">
                                                 <button type="button" onClick={() => removeItem(index)} disabled={items.length === 1}
-                                                    className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30">
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-500 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors disabled:opacity-30">
                                                     <Trash2 className="w-4 h-4" />
+                                                    Remove
                                                 </button>
                                             </td>
                                         </tr>

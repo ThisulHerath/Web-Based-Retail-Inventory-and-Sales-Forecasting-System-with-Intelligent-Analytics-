@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Plus, Eye, Trash2, Filter } from 'lucide-react';
 import { getAllPurchases, deletePurchase } from '../../services/purchaseService';
@@ -232,9 +232,9 @@ const Purchases = () => {
                                                 </td>
                                                 <td className="py-3 px-4">
                                                     <div className="flex items-center gap-2">
-                                                        <Link to={`/admin/purchases/${p._id}`} className="p-2 text-[#f5d800] hover:bg-[#1a6e30]/30 rounded-lg transition-colors" title="View"><Eye className="w-4 h-4" /></Link>
+                                                        <Link to={`/admin/purchases/${p._id}`} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 rounded-lg transition-colors" title="View"><Eye className="w-4 h-4" /> View</Link>
                                                         {isAdmin() && (
-                                                            <button onClick={() => setDeleteModal(p)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete"><Trash2 className="w-4 h-4" /></button>
+                                                            <button onClick={() => setDeleteModal(p)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors" title="Delete"><Trash2 className="w-4 h-4" /> Delete</button>
                                                         )}
                                                     </div>
                                                 </td>

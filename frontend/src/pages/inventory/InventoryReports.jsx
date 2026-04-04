@@ -281,14 +281,17 @@ const InventoryReports = () => {
                                             <td className="py-3 px-4 text-sm text-gray-600">{new Date(report.createdAt).toLocaleString()}</td>
                                             <td className="py-3 px-4">
                                                 <div className="flex items-center gap-2">
-                                                    <button onClick={() => openView(report._id)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="View">
+                                                    <button onClick={() => openView(report._id)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 rounded-lg transition-colors" title="View">
                                                         <Eye className="w-4 h-4" />
+                                                        View
                                                     </button>
-                                                    <button onClick={() => openEdit(report)} className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg" title="Edit">
+                                                    <button onClick={() => openEdit(report)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-200 rounded-lg transition-colors" title="Edit">
                                                         <Pencil className="w-4 h-4" />
+                                                        Edit
                                                     </button>
-                                                    <button onClick={() => handleDelete(report._id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg" title="Delete">
+                                                    <button onClick={() => handleDelete(report._id)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors" title="Delete">
                                                         <Trash2 className="w-4 h-4" />
+                                                        Delete
                                                     </button>
                                                 </div>
                                             </td>

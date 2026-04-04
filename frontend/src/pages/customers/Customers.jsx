@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Search, Edit, Trash2, ChevronLeft, ChevronRight, Gift, MessageSquare, CheckCircle2, XCircle } from 'lucide-react';
 import { getAllCustomers, deleteCustomer } from '../../services/customerService';
@@ -192,34 +192,38 @@ const Customers = () => {
                                             <div className="flex items-center justify-center gap-2">
                                                 <button
                                                     onClick={() => handleViewCoupons(customer)}
-                                                    className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-200 rounded-lg transition-colors"
                                                     title="View Coupons"
                                                 >
                                                     <Gift className="w-4 h-4" />
+                                                    Coupons
                                                 </button>
                                                 {hasRole('admin', 'manager') && (
                                                     <button
                                                         onClick={() => handleViewFeedbacks(customer)}
-                                                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 rounded-lg transition-colors"
                                                         title="Manage Feedback"
                                                     >
                                                         <MessageSquare className="w-4 h-4" />
+                                                        Feedback
                                                     </button>
                                                 )}
                                                 <Link
                                                     to={`/admin/customers/edit/${customer._id}`}
-                                                    className="p-1.5 text-[#f5d800] hover:bg-[#1a6e30]/30 rounded-lg transition-colors"
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-yellow-600 hover:bg-yellow-50 border border-transparent hover:border-yellow-200 rounded-lg transition-colors"
                                                     title="Edit"
                                                 >
                                                     <Edit className="w-4 h-4" />
+                                                    Edit
                                                 </Link>
                                                 {isAdmin() && (
                                                     <button
                                                         onClick={() => handleDelete(customer._id)}
-                                                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors"
                                                         title="Delete"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
+                                                        Delete
                                                     </button>
                                                 )}
                                             </div>
@@ -334,24 +338,27 @@ const Customers = () => {
                                                 <div className="flex items-center gap-2">
                                                     <button
                                                         onClick={() => handleFeedbackStatusUpdate(feedback._id, 'approved')}
-                                                        className="p-1.5 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-green-600 hover:bg-green-50 border border-transparent hover:border-green-200 rounded-lg transition-colors"
                                                         title="Approve"
                                                     >
                                                         <CheckCircle2 className="w-4 h-4" />
+                                                        Approve
                                                     </button>
                                                     <button
                                                         onClick={() => handleFeedbackStatusUpdate(feedback._id, 'rejected')}
-                                                        className="p-1.5 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-orange-600 hover:bg-orange-50 border border-transparent hover:border-orange-200 rounded-lg transition-colors"
                                                         title="Reject"
                                                     >
                                                         <XCircle className="w-4 h-4" />
+                                                        Reject
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteFeedback(feedback._id)}
-                                                        className="p-1.5 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors"
                                                         title="Delete"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
+                                                        Delete
                                                     </button>
                                                 </div>
                                             </div>

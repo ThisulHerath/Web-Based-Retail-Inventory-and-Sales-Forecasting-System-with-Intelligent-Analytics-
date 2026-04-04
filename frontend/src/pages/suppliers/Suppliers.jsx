@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Eye, Edit, Trash2, Filter } from 'lucide-react';
 import { getAllSuppliers, deleteSupplier } from '../../services/supplierService';
@@ -166,10 +166,10 @@ const Suppliers = () => {
                                                 </td>
                                                 <td className="py-3 px-4">
                                                     <div className="flex items-center gap-2">
-                                                        <Link to={`/admin/suppliers/${s._id}`} className="p-2 text-[#f5d800] hover:bg-blue-50 rounded-lg transition-colors" title="View"><Eye className="w-4 h-4" /></Link>
-                                                        <Link to={`/admin/suppliers/edit/${s._id}`} className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors" title="Edit"><Edit className="w-4 h-4" /></Link>
+                                                        <Link to={`/admin/suppliers/${s._id}`} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 rounded-lg transition-colors" title="View"><Eye className="w-4 h-4" /> View</Link>
+                                                        <Link to={`/admin/suppliers/edit/${s._id}`} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-yellow-600 hover:bg-yellow-50 border border-transparent hover:border-yellow-200 rounded-lg transition-colors" title="Edit"><Edit className="w-4 h-4" /> Edit</Link>
                                                         {isAdmin() && (
-                                                            <button onClick={() => setDeleteModal(s)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete"><Trash2 className="w-4 h-4" /></button>
+                                                            <button onClick={() => setDeleteModal(s)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors" title="Delete"><Trash2 className="w-4 h-4" /> Delete</button>
                                                         )}
                                                     </div>
                                                 </td>

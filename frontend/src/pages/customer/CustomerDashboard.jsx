@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCustomer } from '../../context/CustomerContext';
@@ -257,17 +257,19 @@ const CustomerDashboard = () => {
                     <div className="flex gap-2">
                         <button
                             onClick={openEditModal}
-                            className="p-2.5 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110 backdrop-blur-sm border border-white/20"
+                            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-105 backdrop-blur-sm border border-white/20"
                             title={t('profile.edit_tooltip')}
                         >
                             <Edit2 className="w-5 h-5" />
+                            <span>Edit</span>
                         </button>
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="p-2.5 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-all duration-200 hover:scale-110 backdrop-blur-sm border border-red-400/20"
+                            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-all duration-200 hover:scale-105 backdrop-blur-sm border border-red-400/20"
                             title={t('profile.delete_tooltip')}
                         >
                             <Trash2 className="w-5 h-5" />
+                            <span>Delete</span>
                         </button>
                     </div>
                 </div>
