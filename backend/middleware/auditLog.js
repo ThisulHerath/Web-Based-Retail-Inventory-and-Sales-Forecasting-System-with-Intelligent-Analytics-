@@ -25,9 +25,13 @@ const sanitizeBody = (body) => {
  * e.g.  /api/products/123  →  "product"
  *        /api/stock/in      →  "stock"
  */
-const getEntityType = (path) => {
-    const segments = path.replace(/^\/api\//, '').split('/');
-    const base = segments[0] || 'unknown';
+const getEntityType = (originalUrl) => {
+    // originalUrl is like "/api/products/123?page=2"
+    if (!originalUrl) return 'unknown';
+    const pathNoQuery = originalUrl.split('?')[0];
+    const segments = pathNoQuery.split('/').filter(Boolean);
+    // segments -> ['api', 'products', '123']
+    const base = segments[1] || 'unknown'; 
     // Normalise plurals to singular for display
     const singular = base.replace(/ies$/, 'y').replace(/s$/, '');
     return singular;
@@ -76,7 +80,7 @@ export const auditLog = (req, res, next) => {
                 user_name: req.user?.name || req.user?.email || 'unknown',
                 user_role: req.user?.role || null,
                 action,
-                entity_type: getEntityType(req.path),
+                entity_type: getEntityType(req.originalUrl),
                 entity_id: getEntityId(req, data),
                 request_body: sanitizeBody(req.body),
                 ip_address:

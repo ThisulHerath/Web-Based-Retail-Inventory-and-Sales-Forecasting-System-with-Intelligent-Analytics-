@@ -1,0 +1,66 @@
+{
+  "sample_log_user_ids": [
+    "0df000d4-dc41-41fa-8ebf-94a229c5f070",
+    "0df000d4-dc41-41fa-8ebf-94a229c5f070",
+    "0df000d4-dc41-41fa-8ebf-94a229c5f070",
+    "0df000d4-dc41-41fa-8ebf-94a229c5f070",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "users": [
+    {
+      "id": "64b29fab-dc75-49cd-aff0-f618065151cc",
+      "name": "Manager User",
+      "email": "manager@7supercity.com"
+    },
+    {
+      "id": "2dd40e1b-e33d-4786-b238-b4157fdba8fb",
+      "name": "Cashier User",
+      "email": "cashier@7supercity.com"
+    },
+    {
+      "id": "1e845d20-5bd3-471d-8676-96bfc243bd21",
+      "name": "Tharudi ",
+      "email": "tharudi@gmail.com"
+    },
+    {
+      "id": "1dec1295-f0f3-4c41-83be-775332259b46",
+      "name": "sriwee",
+      "email": "sri123@gmail.com"
+    },
+    {
+      "id": "6645967d-f555-4a76-a14d-f222f26f9ee1",
+      "name": "Vishwa",
+      "email": "vishwa@gmail.com"
+    },
+    {
+      "id": "0df000d4-dc41-41fa-8ebf-94a229c5f070",
+      "name": "Mr.Asanka Kalyana",
+      "email": "asanka@gmail.com"
+    },
+    {
+      "id": "e8640d04-2043-47cd-8a2f-939a575d3bc7",
+      "name": "shehan N weerasinghe",
+      "email": "shehanweersing@gmail.com"
+    },
+    {
+      "id": "f0410cdd-03d3-48a7-9059-55d195133b55",
+      "name": "SRI",
+      "email": "sri@gmail.com"
+    },
+    {
+      "id": "40a49e83-6624-45c1-b3e8-62749ce3e984",
+      "name": "admin",
+      "email": "admin@7supercity.com"
+    },
+    {
+      "id": "9eb8abb5-281b-4afb-ba1e-e1e8a86683e0",
+      "name": "Thisul Herath",
+      "email": "heraththisul151@gmail.com"
+    }
+  ]
+}
