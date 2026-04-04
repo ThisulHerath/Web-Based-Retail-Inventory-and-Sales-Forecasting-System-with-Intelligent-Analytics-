@@ -23,6 +23,7 @@ import securityRoutes from './routes/securityRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import auditRoutes from './routes/auditRoutes.js';
 import { auditLog } from './middleware/auditLog.js';
+import aiRoutes from './routes/ai.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,6 +111,7 @@ app.use('/api/walk-in-customers', walkInCustomerRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/audit', auditRoutes);
+app.use('/api/ai-assistant', aiRoutes);
 
 // Error handling
 app.use(notFound);

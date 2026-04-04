@@ -1,5 +1,6 @@
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import BusinessAssistantBot from '../components/BusinessAssistantBot';
 import { useEffect, useState } from 'react';
 
 const DashboardLayout = ({ children }) => {
@@ -28,6 +29,7 @@ const DashboardLayout = ({ children }) => {
                 <Navbar />
                 <main className="p-6">{children}</main>
             </div>
+            <BusinessAssistantBot />
         </div>
     );
 };
