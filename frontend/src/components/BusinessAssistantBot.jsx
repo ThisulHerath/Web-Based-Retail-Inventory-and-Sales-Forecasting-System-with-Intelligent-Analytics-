@@ -80,8 +80,8 @@ const BusinessAssistantBot = () => {
         <div ref={botRef} className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
             {/* Chat Window */}
             <div 
-                className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] origin-[calc(100%-2rem)_calc(100%+2rem)] mb-6 bg-slate-900/95 backdrop-blur-2xl rounded-[28px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-slate-700/60 overflow-hidden w-[340px] sm:w-[400px] flex flex-col ${
-                    isOpen ? 'opacity-100 scale-100 translate-y-0 translate-x-0 pointer-events-auto' : 'opacity-0 scale-[0.05] translate-y-16 translate-x-12 pointer-events-none'
+                className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] origin-bottom-right mb-6 bg-slate-900/95 backdrop-blur-2xl rounded-[28px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-slate-700/60 overflow-hidden w-[340px] sm:w-[400px] flex flex-col ${
+                    isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-[0.92] translate-y-8 pointer-events-none'
                 }`}
                 style={{ height: '560px' }}
             >
