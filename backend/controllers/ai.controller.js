@@ -11,7 +11,7 @@ export const askAssistant = async (req, res) => {
 
         // Initialize Gemini model
         if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ message: 'AI Assistant API key is missing' });
+            return res.status(500).json({ message: 'AI Assistant API key is missing. Please restart your backend server if you just added it.' });
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
