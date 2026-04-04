@@ -360,17 +360,24 @@ const AIPrediction = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
                                 <Tag className="w-4 h-4" />
-                                Discount Applied (%)
+                                Discount Applied (%) <span className="text-gray-400 font-normal text-xs">(Retail Standard)</span>
                             </label>
-                            <input
-                                type="number"
+                            <select
                                 name="discount"
                                 value={formData.discount}
                                 onChange={handleChange}
-                                min="0"
-                                max="100"
                                 className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                            />
+                            >
+                                <option value="0">0% (No Discount)</option>
+                                <option value="5">5% (Minor Promo)</option>
+                                <option value="10">10% (Standard Sale)</option>
+                                <option value="15">15% (Special Offer)</option>
+                                <option value="20">20% (Deep Discount)</option>
+                                <option value="25">25% (Quarter Markdown)</option>
+                                <option value="30">30% (End of Season)</option>
+                                <option value="40">40% (Clearance)</option>
+                                <option value="50">50% (Liquidation Limit)</option>
+                            </select>
                         </div>
 
                         <div className="flex items-center mt-2">
