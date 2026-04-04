@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { DollarSign, ShoppingCart, TrendingUp, Users, Package, AlertTriangle, Truck, ClipboardList, Tag, Layers, UserCheck, Gift } from 'lucide-react';
 import { getSalesStats } from '../../services/salesService';
 import { getAllProducts } from '../../services/productService';
@@ -176,9 +176,9 @@ const Dashboard = () => {
                 title: 'Total Users',
                 value: stats.totalUsers,
                 icon: Users,
-                color: 'bg-[#1a6e30]0',
-                bgColor: 'bg-[#1a6e30]',
-                textColor: 'text-[#f5d800]',
+                color: 'bg-[#1a6e30]',
+                bgColor: 'bg-[#1a6e30]/10',
+                textColor: 'text-[#155c27]',
                 link: '/admin/users',
             });
         }
@@ -358,11 +358,11 @@ const Dashboard = () => {
                         <span className="text-sm font-medium text-gray-700 group-hover:text-yellow-700 transition-colors">Validate Coupon</span>
                     </Link>
                     {isAdmin() && (
-                        <Link to="/admin/users/create" className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-[#1a6e30] hover:border-indigo-200 hover:shadow-md transition-all duration-200">
-                            <div className="p-3 rounded-full bg-indigo-100 text-[#f5d800] group-hover:bg-indigo-200 transition-colors">
+                        <Link to="/admin/users/create" className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-[#1a6e30]/10 hover:border-[#1a6e30] hover:shadow-md transition-all duration-200">
+                            <div className="p-3 rounded-full bg-indigo-100 text-[#155c27] group-hover:bg-indigo-200 transition-colors">
                                 <Users className="w-6 h-6" />
                             </div>
-                            <span className="text-sm font-medium text-gray-700 group-hover:text-indigo-700 transition-colors">Add User</span>
+                            <span className="text-sm font-medium text-gray-700 group-hover:text-[#155c27] transition-colors">Add User</span>
                         </Link>
                     )}
                 </div>
