@@ -80,7 +80,7 @@ const BusinessAssistantBot = () => {
         <div ref={botRef} className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
             {/* Chat Window */}
             <div 
-                className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] origin-bottom-right mb-6 bg-white/70 backdrop-blur-2xl rounded-[28px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-white/60 overflow-hidden w-[340px] sm:w-[400px] flex flex-col ${
+                className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] origin-bottom-right mb-6 bg-slate-900/95 backdrop-blur-2xl rounded-[28px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-slate-700/60 overflow-hidden w-[340px] sm:w-[400px] flex flex-col ${
                     isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-[0.92] translate-y-8 pointer-events-none'
                 }`}
                 style={{ height: '560px' }}
@@ -115,7 +115,7 @@ const BusinessAssistantBot = () => {
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 p-5 overflow-y-auto bg-gradient-to-b from-slate-50/50 to-slate-100/50 flex flex-col gap-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+                <div className="flex-1 p-5 overflow-y-auto bg-gradient-to-b from-slate-900/50 to-slate-800/50 flex flex-col gap-5 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
                     {messages.map((msg, idx) => (
                         <div 
                             key={idx} 
@@ -134,7 +134,7 @@ const BusinessAssistantBot = () => {
                             <div className={`px-4 py-3 min-w-[60px] max-w-[85%] text-[14px] leading-relaxed shadow-sm ${
                                 msg.role === 'user' 
                                     ? 'bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-[20px] rounded-br-sm font-medium shadow-indigo-500/20' 
-                                    : 'bg-white/95 backdrop-blur-sm text-slate-700 border border-slate-100 rounded-[20px] rounded-bl-sm shadow-slate-200/50 hover:shadow-md transition-shadow'
+                                    : 'bg-slate-800/95 backdrop-blur-sm text-slate-200 border border-slate-700 rounded-[20px] rounded-bl-sm shadow-slate-900/50 hover:shadow-md transition-shadow'
                             }`}>
                                 {msg.content.split('\n').map((line, i) => (
                                     <span key={i} className="block whitespace-pre-wrap">
@@ -150,13 +150,13 @@ const BusinessAssistantBot = () => {
                             <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-slate-700 to-slate-800 shadow-md">
                                 <Sparkles className="w-4 h-4 text-indigo-200" />
                             </div>
-                            <div className="px-5 py-3.5 bg-white/95 backdrop-blur-sm border border-slate-100 rounded-[20px] rounded-bl-sm shadow-sm flex items-center gap-3">
+                            <div className="px-5 py-3.5 bg-slate-800/95 backdrop-blur-sm border border-slate-700 rounded-[20px] rounded-bl-sm shadow-sm flex items-center gap-3">
                                 <div className="flex gap-1.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '300ms' }}></div>
                                 </div>
-                                <span className="text-slate-500 text-[13px] font-medium tracking-wide ml-1">Analyzing data...</span>
+                                <span className="text-slate-400 text-[13px] font-medium tracking-wide ml-1">Analyzing data...</span>
                             </div>
                         </div>
                     )}
@@ -164,7 +164,7 @@ const BusinessAssistantBot = () => {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 bg-white/70 backdrop-blur-xl border-t border-slate-200/50 shrink-0">
+                <div className="p-4 bg-slate-900/70 backdrop-blur-xl border-t border-slate-800 shrink-0">
                     <form 
                         onSubmit={handleSend}
                         className="relative flex items-center"
@@ -174,7 +174,7 @@ const BusinessAssistantBot = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask about inventory, sales..."
-                            className="flex-1 pl-5 pr-14 py-3.5 bg-white/80 border border-slate-200/80 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 text-[14px] text-slate-700 placeholder-slate-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-all"
+                            className="flex-1 pl-5 pr-14 py-3.5 bg-slate-800 border border-slate-700 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 text-[14px] text-slate-200 placeholder-slate-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] transition-all"
                             disabled={loading}
                         />
                         <button
