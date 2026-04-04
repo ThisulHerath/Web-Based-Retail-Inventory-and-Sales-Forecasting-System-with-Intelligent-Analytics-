@@ -43,11 +43,13 @@ export const getAllUsers = async (req, res) => {
 // @access  Private (Admin only)
 export const createUser = async (req, res) => {
     try {
-        const { name, email, password, role, isActive } = req.body;
+        const { name, email, role, isActive } = req.body;
 
-        if (!name || !email || !password) {
+        if (!name || !email) {
             return res.status(400).json({ message: 'Please provide all required fields' });
         }
+
+        const password = generateTemporaryPassword(12);
 
         const userExists = await User.findOne({ email });
         if (userExists) {

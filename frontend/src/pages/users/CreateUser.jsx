@@ -4,23 +4,18 @@ import { createUser } from '../../services/userService';
 import Toast from '../../components/Toast';
 import { Save, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import PasswordStrengthMeter from '../../components/PasswordStrengthMeter';
-import { usePasswordBreachCheck } from '../../hooks/usePasswordBreachCheck';
-import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from '../../utils/passwordPolicy';
 
 const CreateUser = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        password: '',
         role: 'cashier',
         isActive: true,
     });
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState(null);
     const [fieldErrors, setFieldErrors] = useState({});
-    const breachStatus = usePasswordBreachCheck(formData.password);
 
     const validateFields = () => {
         const errors = {};
@@ -28,31 +23,7 @@ const CreateUser = () => {
             errors.name = 'Full name must be at least 2 characters';
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()))
             errors.email = 'Please enter a valid email address';
-        if (!formData.password || formData.password.length < PASSWORD_MIN_LENGTH) {
-            errors.password = `Password must be at least ${PASSWORD_MIN_LENGTH} characters`;
-        } else if (formData.password.length > PASSWORD_MAX_LENGTH) {
-            errors.password = `Password must be ${PASSWORD_MAX_LENGTH} characters or fewer`;
-        } else if (breachStatus.state === 'checking') {
-            errors.password = 'Checking password breach status...';
-        } else if (breachStatus.state === 'error') {
-            errors.password = 'Unable to check password breach status. Try again.';
-        } else if (breachStatus.state === 'done' && breachStatus.breached && !breachStatus.skipped) {
-            errors.password = 'Password appears in a breach dataset. Choose another.';
-        }
         return errors;
-    };
-
-    const breachMessage = () => {
-        if (!formData.password || formData.password.length < PASSWORD_MIN_LENGTH) return null;
-        if (breachStatus.state === 'checking') return { text: 'Checking password breach status...', className: 'text-amber-600' };
-        if (breachStatus.state === 'error') return { text: 'Unable to check password breach status.', className: 'text-amber-600' };
-        if (breachStatus.state === 'done' && !breachStatus.skipped) {
-            if (breachStatus.breached) {
-                return { text: 'Password appears in a breach dataset. Choose another.', className: 'text-red-500' };
-            }
-            return { text: 'No breach found for this password.', className: 'text-green-600' };
-        }
-        return null;
     };
 
     const handleChange = (e) => {
@@ -94,8 +65,6 @@ const CreateUser = () => {
         }
     };
 
-    const breachInfo = breachMessage();
-
     return (
         <div className="p-6">
             <div className="flex items-center gap-4 mb-6">
@@ -136,26 +105,6 @@ const CreateUser = () => {
                             onChange={handleChange}
                         />
                         {fieldErrors.email && <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>}
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Password * <span className="text-gray-400 font-normal text-xs">(min. {PASSWORD_MIN_LENGTH}, max. {PASSWORD_MAX_LENGTH})</span>
-                        </label>
-                        <input
-                            type="password"
-                            name="password"
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.password ? 'border-red-500' : 'border-gray-200'}`}
-                            value={formData.password}
-                            onChange={handleChange}
-                            minLength={PASSWORD_MIN_LENGTH}
-                            maxLength={PASSWORD_MAX_LENGTH}
-                        />
-                        <PasswordStrengthMeter password={formData.password} />
-                        {breachInfo && !fieldErrors.password && (
-                            <p className={`mt-1 text-xs ${breachInfo.className}`}>{breachInfo.text}</p>
-                        )}
-                        {fieldErrors.password && <p className="mt-1 text-xs text-red-500">{fieldErrors.password}</p>}
                     </div>
 
                     <div>
