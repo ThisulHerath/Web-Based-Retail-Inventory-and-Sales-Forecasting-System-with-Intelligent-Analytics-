@@ -19,9 +19,9 @@ export const askAssistant = async (req, res) => {
         // System prompt configuration for the specific business context
         const systemInstruction = "You are the secure Business Intelligence AI for 7 Super City. You advise managers on inventory, sales, and retail strategy. Keep answers concise, professional, and data-focused. Refuse to answer non-business questions.";
 
-        // Use gemini-1.5-flash which is the standard, fast model
+        // Use gemini-2.5-flash which is the standard, fast model
         const model = genAI.getGenerativeModel({
-            model: 'gemini-1.5-flash',
+            model: 'gemini-2.5-flash',
             systemInstruction: systemInstruction,
         });
 
