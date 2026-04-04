@@ -35,6 +35,14 @@ const AIPrediction = () => {
         is_holiday: false
     });
     const [predictionResult, setPredictionResult] = useState(null);
+    const [expandedForecasts, setExpandedForecasts] = useState({});
+
+    const toggleForecast = (idx) => {
+        setExpandedForecasts(prev => ({
+            ...prev,
+            [idx]: !prev[idx]
+        }));
+    };
 
     const AI_URL = 'http://localhost:5001';
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -200,16 +208,19 @@ const AIPrediction = () => {
                                     <div className="space-y-2">
                                         {/* Show only the first 3 days for brevity, or summarize */}
                                         <div className="text-xs text-gray-500 font-medium tracking-wide uppercase mb-2">Daily Breakdown</div>
-                                        {item.predictions.slice(0, 4).map((pred, i) => (
+                                        {item.predictions.slice(0, expandedForecasts[idx] ? item.predictions.length : 4).map((pred, i) => (
                                             <div key={i} className="flex justify-between items-center text-sm border-b border-gray-50 pb-1 last:border-0 last:pb-0">
                                                 <span className="text-gray-600">{pred.day_name}</span>
                                                 <span className="font-medium text-gray-900">{pred.predicted_sales}</span>
                                             </div>
                                         ))}
                                         {item.predictions.length > 4 && (
-                                            <div className="text-xs text-center text-gray-400 italic pt-1">
-                                                + {item.predictions.length - 4} more days
-                                            </div>
+                                            <button 
+                                                onClick={() => toggleForecast(idx)}
+                                                className="w-full mt-1.5 text-xs text-center text-primary-600 hover:text-primary-800 font-medium cursor-pointer transition-colors active:scale-95 focus:outline-none py-1.5 rounded bg-primary-50/50 hover:bg-primary-50"
+                                            >
+                                                {expandedForecasts[idx] ? "Show less" : `+ ${item.predictions.length - 4} more days`}
+                                            </button>
                                         )}
                                     </div>
                                 </div>
