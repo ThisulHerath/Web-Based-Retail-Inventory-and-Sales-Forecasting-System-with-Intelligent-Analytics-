@@ -26,6 +26,8 @@ const CreateSale = () => {
     const [couponCode, setCouponCode] = useState('');
     const [couponDetails, setCouponDetails] = useState(null);
     const [couponValidationLoading, setCouponValidationLoading] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmPayload, setConfirmPayload] = useState(null);
     const customerDropdownRef = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -259,9 +261,7 @@ const CreateSale = () => {
         return { subtotal, discount, discountedSubtotal, loyaltyDiscount, finalDiscountedSubtotal, tax, grandTotal };
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
+    const validateBeforeSubmit = () => {
         // Validate customer name
         const fErrors = {};
         if (!formData.customerId && !formData.customerName.trim()) {
@@ -282,18 +282,53 @@ const CreateSale = () => {
         if (Object.keys(fErrors).length > 0 || hasItemErrors) {
             setFieldErrors(fErrors);
             setItemErrors(iErrors);
-            return;
+            return null;
         }
 
+        const summaryItems = formData.items
+            .filter((item) => item.productId)
+            .map((item) => {
+                const fallbackProduct = products.find((p) => String(p._id || p.id) === String(item.productId));
+                return {
+                    productName: item.productName || fallbackProduct?.productName || 'Product',
+                    quantity: Number(item.quantity) || 0,
+                    unitPrice: Number(item.unitPrice) || 0,
+                    total: Number(item.total) || 0,
+                };
+            });
+
+        const saleData = {
+            ...formData,
+            couponCode: couponCode.trim() || undefined,
+            loyaltyPointsToRedeem: Number(redeemPoints || 0),
+        };
+
+        return {
+            saleData,
+            summary: {
+                customerName: formData.customerName || selectedCustomer?.firstName || selectedWalkInCustomer?.fullName || 'Walk-in customer',
+                paymentMethod: formData.paymentMethod,
+                couponCode: couponCode.trim(),
+                items: summaryItems,
+                subtotal,
+                discount,
+                loyaltyDiscount,
+                tax,
+                grandTotal,
+            },
+        };
+    };
+
+    const handleConfirmCreate = async () => {
+        if (!confirmPayload?.saleData) {
+            return;
+        }
         setLoading(true);
         try {
-            const saleData = {
-                ...formData,
-                couponCode: couponCode.trim() || undefined,
-                loyaltyPointsToRedeem: Number(redeemPoints || 0),
-            };
-            await createSale(saleData);
+            await createSale(confirmPayload.saleData);
             setToast({ message: 'Sale created successfully', type: 'success' });
+            setShowConfirmModal(false);
+            setConfirmPayload(null);
             setTimeout(() => navigate('/admin/sales'), 1500);
         } catch (error) {
             setToast({ message: error.response?.data?.message || 'Error creating sale', type: 'error' });
@@ -302,11 +337,152 @@ const CreateSale = () => {
         }
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const payload = validateBeforeSubmit();
+        if (!payload) {
+            return;
+        }
+        setConfirmPayload(payload);
+        setShowConfirmModal(true);
+    };
+
     const { subtotal, discount, discountedSubtotal, loyaltyDiscount, finalDiscountedSubtotal, tax, grandTotal } = calculateTotals();
+    const hasCustomerSelection = Boolean(formData.customerId || formData.walkInCustomerId || formData.customerName.trim());
+    const hasSelectedItems = formData.items.some((item) => item.productId);
+    const currentStep = !hasCustomerSelection ? 1 : !hasSelectedItems ? 2 : 3;
+    const stepItems = [
+        { id: 1, label: 'Customer Info' },
+        { id: 2, label: 'Add Items' },
+        { id: 3, label: 'Review & Confirm' },
+    ];
+
+    const getStepStyles = (stepId) => {
+        if (stepId < currentStep) {
+            return {
+                bubble: 'bg-[#f5d800] border-[#f5d800] text-[#155c27]',
+                text: 'text-[#155c27]',
+                bar: 'bg-[#f5d800]',
+            };
+        }
+        if (stepId === currentStep) {
+            return {
+                bubble: 'bg-[#f5d800] border-[#f5d800] text-[#155c27]',
+                text: 'text-[#155c27]',
+                bar: 'bg-[#f5d800]/70',
+            };
+        }
+        return {
+            bubble: 'bg-white border-gray-300 text-gray-500',
+            text: 'text-gray-400',
+            bar: 'bg-gray-200',
+        };
+    };
 
     return (
         <div className="p-6">
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+
+            {showConfirmModal && confirmPayload && (
+                <div className="fixed inset-0 bg-black/45 flex items-center justify-center z-[70] p-4">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl border border-gray-100 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5">
+                            <h3 className="text-lg font-bold text-gray-800">Confirm Sale Details</h3>
+                            <p className="text-sm text-gray-600">Review this sale before continuing.</p>
+                        </div>
+
+                        <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide">Customer</p>
+                                    <p className="font-semibold text-gray-800">{confirmPayload.summary.customerName}</p>
+                                </div>
+                                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide">Payment</p>
+                                    <p className="font-semibold text-gray-800">{confirmPayload.summary.paymentMethod}</p>
+                                </div>
+                                <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide">Coupon</p>
+                                    <p className="font-semibold text-gray-800">{confirmPayload.summary.couponCode || 'None'}</p>
+                                </div>
+                            </div>
+
+                            <div className="overflow-x-auto rounded-lg border border-gray-100">
+                                <table className="w-full min-w-[650px]">
+                                    <thead className="bg-gray-50 border-b border-gray-100">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Product</th>
+                                            <th className="px-4 py-3 text-right text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Qty</th>
+                                            <th className="px-4 py-3 text-right text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Unit Price</th>
+                                            <th className="px-4 py-3 text-right text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Line Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {confirmPayload.summary.items.map((item, index) => (
+                                            <tr key={`${item.productName}-${index}`}>
+                                                <td className="px-4 py-3 text-sm text-gray-800">{item.productName}</td>
+                                                <td className="px-4 py-3 text-sm text-gray-700 text-right">{item.quantity}</td>
+                                                <td className="px-4 py-3 text-sm text-gray-700 text-right">LKR {item.unitPrice.toFixed(2)}</td>
+                                                <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">LKR {item.total.toFixed(2)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 space-y-2 text-sm">
+                                <div className="flex justify-between text-gray-700">
+                                    <span>Subtotal</span>
+                                    <span>LKR {confirmPayload.summary.subtotal.toFixed(2)}</span>
+                                </div>
+                                {confirmPayload.summary.discount > 0 && (
+                                    <div className="flex justify-between text-green-700">
+                                        <span>Coupon Discount</span>
+                                        <span>- LKR {confirmPayload.summary.discount.toFixed(2)}</span>
+                                    </div>
+                                )}
+                                {confirmPayload.summary.loyaltyDiscount > 0 && (
+                                    <div className="flex justify-between text-green-700">
+                                        <span>Loyalty Discount</span>
+                                        <span>- LKR {confirmPayload.summary.loyaltyDiscount.toFixed(2)}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-gray-700">
+                                    <span>Tax (10%)</span>
+                                    <span>LKR {confirmPayload.summary.tax.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-base font-bold text-gray-900 border-t border-gray-300 pt-2">
+                                    <span>Grand Total</span>
+                                    <span>LKR {confirmPayload.summary.grandTotal.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="px-6 py-4 border-t border-gray-100 bg-white flex justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (!loading) {
+                                        setShowConfirmModal(false);
+                                    }
+                                }}
+                                disabled={loading}
+                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleConfirmCreate}
+                                disabled={loading}
+                                className="px-4 py-2 bg-[#f5d800] text-[#155c27] font-semibold rounded-lg hover:bg-[#e6c700] disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? 'Creating...' : 'Continue'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="space-y-6">
                 <div className="flex items-center gap-4">
@@ -322,9 +498,32 @@ const CreateSale = () => {
                     </div>
                 </div>
 
+                <div className="bg-white rounded-xl shadow-md p-5 border border-gray-100">
+                    <div className="flex items-center gap-3">
+                        {stepItems.map((step, index) => {
+                            const styles = getStepStyles(step.id);
+                            return (
+                                <div key={step.id} className="flex items-center flex-1">
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-7 h-7 rounded-full border text-xs font-semibold flex items-center justify-center ${styles.bubble}`}>
+                                            {step.id}
+                                        </div>
+                                        <span className={`text-sm font-semibold ${styles.text}`}>{step.label}</span>
+                                    </div>
+                                    {index < stepItems.length - 1 && <div className={`h-1 rounded-full mx-3 flex-1 ${styles.bar}`} />}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4">Customer Information</h2>
+                    <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5 flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#155c27]" />
+                            <h2 className="text-sm uppercase tracking-[0.08em] font-bold text-gray-700">Customer Information</h2>
+                        </div>
+                        <div className="p-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="relative">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -559,11 +758,15 @@ const CreateSale = () => {
                                 </p>
                             </div>
                         </div>
+                        </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-gray-800">Items</h2>
+                    <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-[#155c27]" />
+                                <h2 className="text-sm uppercase tracking-[0.08em] font-bold text-gray-700">Items</h2>
+                            </div>
                             <button
                                 type="button"
                                 onClick={addItem}
@@ -574,113 +777,113 @@ const CreateSale = () => {
                             </button>
                         </div>
 
-                        <div className="space-y-4">
-                            {formData.items.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 bg-gray-50 rounded-lg"
-                                >
-                                    <div className="md:col-span-2">
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Product *
-                                        </label>
-                                        <select
-                                            value={item.productId}
-                                            onChange={(e) => {
-                                                handleItemChange(index, 'productId', e.target.value);
-                                                if (itemErrors[index]?.productId) {
-                                                    const newIE = [...itemErrors];
-                                                    newIE[index] = { ...newIE[index], productId: '' };
-                                                    setItemErrors(newIE);
-                                                }
-                                            }}
-                                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${itemErrors[index]?.productId ? 'border-red-500' : 'border-gray-300'}`}
-                                        >
-                                            <option value="">Select Product</option>
-                                            {products.map((p) => (
-                                                <option
-                                                    key={p._id || p.id}
-                                                    value={p._id || p.id}
-                                                    disabled={(p.displayedStock ?? p.currentStock ?? 0) <= 0}
-                                                >
-                                                    {p.productName} ( Displayed: {p.displayedStock ?? p.currentStock ?? 0} )
-                                                </option>
-                                            ))}
-                                        </select>
-                                        {itemErrors[index]?.productId && <p className="mt-1 text-xs text-red-500">{itemErrors[index].productId}</p>}
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Quantity *
-                                        </label>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            max={item.productId && Number(item.maxStock) > 0 ? item.maxStock : undefined}
-                                            value={item.quantity}
-                                            onChange={(e) => {
-                                                handleItemChange(index, 'quantity', e.target.value);
-                                                if (itemErrors[index]?.quantity) {
-                                                    const newIE = [...itemErrors];
-                                                    newIE[index] = { ...newIE[index], quantity: '' };
-                                                    setItemErrors(newIE);
-                                                }
-                                            }}
-                                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${itemErrors[index]?.quantity || Number(item.quantity) > Number(item.maxStock) ? 'border-red-500' : 'border-gray-300'}`}
-                                        />
-                                        {itemErrors[index]?.quantity
-                                            ? <p className="text-xs mt-1 text-red-500">{itemErrors[index].quantity}</p>
-                                            : item.productId && (
-                                                <p className={`text-xs mt-1 ${Number(item.quantity) > Number(item.maxStock) ? 'text-red-500' : 'text-gray-500'}`}>
-                                                    Max: {item.maxStock}
-                                                </p>
-                                            )
-                                        }
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Unit Price
-                                        </label>
-                                        <input
-                                            type="number"
-                                            value={item.unitPrice}
-                                            readOnly
-                                            className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600"
-                                        />
-                                    </div>
-
-                                    <div className="flex items-start gap-2">
-                                        <div className="flex-1">
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Total
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={`LKR ${(Number(item.total) || 0).toFixed(2)}`}
-                                                readOnly
-                                                className="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg"
-                                            />
-                                        </div>
-                                        {formData.items.length > 1 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => removeItem(index)}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors mt-8"
-                                            >
-                                                <Trash2 className="w-5 h-5" />
-                                                Remove
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="p-6">
+                            <div className="overflow-x-auto rounded-lg border border-gray-100">
+                                <table className="w-full min-w-[900px]">
+                                    <thead className="bg-gray-50 border-b border-gray-100">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Product</th>
+                                            <th className="px-4 py-3 text-left text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Quantity</th>
+                                            <th className="px-4 py-3 text-left text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Unit Price</th>
+                                            <th className="px-4 py-3 text-left text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Total</th>
+                                            <th className="px-4 py-3 text-right text-[11px] uppercase tracking-[0.08em] font-bold text-gray-500">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {formData.items.map((item, index) => (
+                                            <tr key={index} className="hover:bg-gray-50/70 transition-colors">
+                                                <td className="px-4 py-3 align-top">
+                                                    <select
+                                                        value={item.productId}
+                                                        onChange={(e) => {
+                                                            handleItemChange(index, 'productId', e.target.value);
+                                                            if (itemErrors[index]?.productId) {
+                                                                const newIE = [...itemErrors];
+                                                                newIE[index] = { ...newIE[index], productId: '' };
+                                                                setItemErrors(newIE);
+                                                            }
+                                                        }}
+                                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-sm ${itemErrors[index]?.productId ? 'border-red-500' : 'border-gray-300'}`}
+                                                    >
+                                                        <option value="">Select Product</option>
+                                                        {products.map((p) => (
+                                                            <option
+                                                                key={p._id || p.id}
+                                                                value={p._id || p.id}
+                                                                disabled={(p.displayedStock ?? p.currentStock ?? 0) <= 0}
+                                                            >
+                                                                {p.productName} (Displayed: {p.displayedStock ?? p.currentStock ?? 0})
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    {itemErrors[index]?.productId && <p className="mt-1 text-xs text-red-500">{itemErrors[index].productId}</p>}
+                                                </td>
+                                                <td className="px-4 py-3 align-top">
+                                                    <input
+                                                        type="number"
+                                                        min="1"
+                                                        max={item.productId && Number(item.maxStock) > 0 ? item.maxStock : undefined}
+                                                        value={item.quantity}
+                                                        onChange={(e) => {
+                                                            handleItemChange(index, 'quantity', e.target.value);
+                                                            if (itemErrors[index]?.quantity) {
+                                                                const newIE = [...itemErrors];
+                                                                newIE[index] = { ...newIE[index], quantity: '' };
+                                                                setItemErrors(newIE);
+                                                            }
+                                                        }}
+                                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-sm ${itemErrors[index]?.quantity || Number(item.quantity) > Number(item.maxStock) ? 'border-red-500' : 'border-gray-300'}`}
+                                                    />
+                                                    {itemErrors[index]?.quantity
+                                                        ? <p className="text-xs mt-1 text-red-500">{itemErrors[index].quantity}</p>
+                                                        : item.productId && (
+                                                            <p className={`text-xs mt-1 ${Number(item.quantity) > Number(item.maxStock) ? 'text-red-500' : 'text-gray-500'}`}>
+                                                                Max: {item.maxStock}
+                                                            </p>
+                                                        )
+                                                    }
+                                                </td>
+                                                <td className="px-4 py-3 align-top">
+                                                    <input
+                                                        type="number"
+                                                        value={item.unitPrice}
+                                                        readOnly
+                                                        className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 text-sm"
+                                                    />
+                                                </td>
+                                                <td className="px-4 py-3 align-top">
+                                                    <input
+                                                        type="text"
+                                                        value={`LKR ${(Number(item.total) || 0).toFixed(2)}`}
+                                                        readOnly
+                                                        className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-medium"
+                                                    />
+                                                </td>
+                                                <td className="px-4 py-3 align-top text-right">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeItem(index)}
+                                                        disabled={formData.items.length === 1}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4">Summary</h2>
+                    <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5 flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#155c27]" />
+                            <h2 className="text-sm uppercase tracking-[0.08em] font-bold text-gray-700">Order Summary</h2>
+                        </div>
+                        <div className="p-6">
                         <div className="space-y-3">
                             <div className="flex justify-between text-gray-700">
                                 <span>Subtotal:</span>
@@ -699,8 +902,8 @@ const CreateSale = () => {
                                 </>
                             )}
                             {loyaltyDiscount > 0 && (
-                                <div className="flex justify-between text-blue-700 font-medium">
-                                    <span>Loyalty Points Discount:</span>
+                                <div className="flex justify-between text-green-700 font-medium">
+                                    <span>Loyalty Discount:</span>
                                     <span>- LKR {loyaltyDiscount.toFixed(2)}</span>
                                 </div>
                             )}
@@ -708,25 +911,26 @@ const CreateSale = () => {
                                 <span>Tax (10%):</span>
                                 <span>LKR {tax.toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between text-xl font-bold text-gray-800 pt-3 border-t">
+                            <div className="flex justify-between text-xl font-bold text-gray-800 pt-3 border-t-2 border-gray-300">
                                 <span>Grand Total:</span>
                                 <span>LKR {grandTotal.toFixed(2)}</span>
                             </div>
                         </div>
+                        </div>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button
                             type="button"
                             onClick={() => navigate('/admin/sales')}
-                            className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                            className="w-full px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-gray-700"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-1 px-6 py-3 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full px-6 py-3 bg-[#f5d800] text-[#155c27] rounded-lg hover:bg-[#e6c700] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? 'Creating...' : 'Create Sale'}
                         </button>

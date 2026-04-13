@@ -7,76 +7,105 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
     const location = useLocation();
     const { user, hasRole } = useAuth();
 
-    const menuItems = [
+    const getInitials = (fullName = '') => {
+        return fullName
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase() || '')
+            .join('') || 'U';
+    };
+
+    const menuSections = [
         {
-            name: 'Dashboard',
-            path: '/admin/dashboard',
-            icon: LayoutDashboard,
-            roles: ['admin', 'manager', 'cashier'],
+            label: 'Main Menu',
+            items: [
+                {
+                    name: 'Dashboard',
+                    path: '/admin/dashboard',
+                    icon: LayoutDashboard,
+                    roles: ['admin', 'manager', 'cashier'],
+                },
+                {
+                    name: 'Sales',
+                    path: '/admin/sales',
+                    icon: ShoppingCart,
+                    roles: ['admin', 'manager', 'cashier'],
+                },
+                {
+                    name: 'Validate Coupon',
+                    path: '/admin/validate-coupon',
+                    icon: Gift,
+                    roles: ['admin', 'manager', 'cashier'],
+                },
+            ],
         },
         {
-            name: 'Sales',
-            path: '/admin/sales',
-            icon: ShoppingCart,
-            roles: ['admin', 'manager', 'cashier'],
+            label: 'Inventory',
+            items: [
+                {
+                    name: 'Categories',
+                    path: '/admin/categories',
+                    icon: Tag,
+                    roles: ['admin', 'manager'],
+                },
+                {
+                    name: 'Suppliers',
+                    path: '/admin/suppliers',
+                    icon: Truck,
+                    roles: ['admin', 'manager'],
+                },
+                {
+                    name: 'Purchases',
+                    path: '/admin/purchases',
+                    icon: ClipboardList,
+                    roles: ['admin', 'manager'],
+                },
+                {
+                    name: 'Inventory',
+                    path: '/admin/inventory',
+                    icon: Layers,
+                    roles: ['admin', 'manager'],
+                },
+                {
+                    name: 'Products',
+                    path: '/admin/products',
+                    icon: Package,
+                    roles: ['admin', 'manager'],
+                },
+            ],
         },
         {
-            name: 'Categories',
-            path: '/admin/categories',
-            icon: Tag,
-            roles: ['admin', 'manager'],
-        },
-        {
-            name: 'Suppliers',
-            path: '/admin/suppliers',
-            icon: Truck,
-            roles: ['admin', 'manager'],
-        },
-        {
-            name: 'Purchases',
-            path: '/admin/purchases',
-            icon: ClipboardList,
-            roles: ['admin', 'manager'],
-        },
-        {
-            name: 'Inventory',
-            path: '/admin/inventory',
-            icon: Layers,
-            roles: ['admin', 'manager'],
-        },
-        {
-            name: 'Products',
-            path: '/admin/products',
-            icon: Package,
-            roles: ['admin', 'manager'],
-        },
-        {
-            name: 'Customers',
-            path: '/admin/customers',
-            icon: UserCheck,
-            roles: ['admin', 'manager', 'cashier'],
-        },
-        {
-            name: 'Validate Coupon',
-            path: '/admin/validate-coupon',
-            icon: Gift,
-            roles: ['admin', 'manager', 'cashier'],
-        },
-        {
-            name: 'User Management',
-            path: '/admin/users',
-            icon: Users,
-            roles: ['admin'],
-        },
-        {
-            name: 'AI Prediction',
-            path: '/admin/ai-prediction',
-            icon: BrainCircuit,
-            roles: ['admin'],
+            label: 'Management',
+            items: [
+                {
+                    name: 'Customers',
+                    path: '/admin/customers',
+                    icon: UserCheck,
+                    roles: ['admin', 'manager', 'cashier'],
+                },
+                {
+                    name: 'User Management',
+                    path: '/admin/users',
+                    icon: Users,
+                    roles: ['admin'],
+                },
+                {
+                    name: 'AI Prediction',
+                    path: '/admin/ai-prediction',
+                    icon: BrainCircuit,
+                    roles: ['admin'],
+                },
+            ],
         },
     ];
 
-    const filteredItems = menuItems.filter(item => hasRole(...item.roles));
+    const filteredSections = menuSections
+        .map((section) => ({
+            ...section,
+            items: section.items.filter((item) => hasRole(...item.roles)),
+        }))
+        .filter((section) => section.items.length > 0);
 
     const isActive = (path) => {
         if (path === '/admin/products') return location.pathname.startsWith('/admin/products');
@@ -115,41 +144,59 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
                 </div>
 
                 {!isCollapsed ? (
-                    <div className="mb-6 px-4 py-2 bg-[#0d3d1a] rounded-lg">
-                        <p className="text-sm text-gray-400">Logged in as:</p>
-                        <p className="font-semibold">{user?.name || 'User'}</p>
-                        <span className="text-xs px-2 py-0.5 rounded bg-[#f5d800] text-[#155c27] capitalize border border-[#f5d800] font-weight-600">
-                            {user?.role}
-                        </span>
+                    <div className="mb-5 px-3 py-2.5 bg-[#0d3d1a] rounded-lg border border-white/10">
+                        <p className="text-[10px] uppercase tracking-[0.12em] text-gray-300">Logged in as</p>
+                        <div className="mt-2 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-8 h-8 rounded-full bg-[#f5d800] text-[#155c27] text-xs font-bold flex items-center justify-center">
+                                    {getInitials(user?.name || '')}
+                                </div>
+                                <p className="font-semibold text-[13.5px] tracking-[0.01em] truncate">{user?.name || 'User'}</p>
+                            </div>
+                            <span className="text-[11px] px-2 py-0.5 rounded bg-[#f5d800] text-[#155c27] capitalize border border-[#f5d800] font-semibold tracking-[0.01em]">
+                                {user?.role}
+                            </span>
+                        </div>
                     </div>
                 ) : (
                     <div className="mb-6 flex justify-center">
-                        <span className="text-xs px-2 py-0.5 rounded bg-[#f5d800] text-[#155c27] capitalize border border-[#f5d800] font-weight-600" title={user?.role || 'User'}>
+                        <span className="text-xs px-2 py-0.5 rounded bg-[#f5d800] text-[#155c27] capitalize border border-[#f5d800] font-semibold" title={user?.role || 'User'}>
                             {user?.role?.[0]?.toUpperCase() || 'U'}
                         </span>
                     </div>
                 )}
 
-                <nav className="space-y-1">
-                    {filteredItems.map((item) => {
-                        const Icon = item.icon;
-                        const active = isActive(item.path);
+                <nav>
+                    {filteredSections.map((section, sectionIndex) => (
+                        <div key={section.label} className={`${sectionIndex > 0 ? 'mt-3 pt-3 border-t border-white/10' : ''}`}>
+                            {!isCollapsed && (
+                                <p className="px-3 mb-1 text-[10px] uppercase tracking-[0.12em] text-gray-300">
+                                    {section.label}
+                                </p>
+                            )}
+                            <div className="space-y-1">
+                                {section.items.map((item) => {
+                                    const Icon = item.icon;
+                                    const active = isActive(item.path);
 
-                        return (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                title={item.name}
-                                className={`flex items-center ${isCollapsed ? 'justify-center px-2' : 'gap-3 px-4'} py-2.5 rounded-lg transition-all ${active
-                                    ? 'bg-[#f5d800] text-[#155c27] font-weight-600 shadow-lg'
-                                    : 'text-gray-300 hover:bg-[#0d3d1a] hover:text-white'
-                                    }`}
-                            >
-                                <Icon className="w-5 h-5" />
-                                {!isCollapsed && <span className="font-medium text-sm">{item.name}</span>}
-                            </Link>
-                        );
-                    })}
+                                    return (
+                                        <Link
+                                            key={item.path}
+                                            to={item.path}
+                                            title={item.name}
+                                            className={`flex items-center ${isCollapsed ? 'justify-center px-2.5' : 'gap-3 px-3.5'} py-2.5 rounded-md transition-all ${active
+                                                ? 'bg-[#f5d800] text-[#155c27] font-semibold shadow-md'
+                                                : 'text-gray-200 hover:bg-[#0d3d1a] hover:text-white'
+                                                }`}
+                                        >
+                                            <Icon className="w-[18px] h-[18px]" strokeWidth={1.8} />
+                                            {!isCollapsed && <span className="font-medium text-[13.5px] tracking-[0.01em]">{item.name}</span>}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
                 </nav>
             </div>
         </aside>
