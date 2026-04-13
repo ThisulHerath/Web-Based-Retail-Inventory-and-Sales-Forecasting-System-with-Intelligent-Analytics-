@@ -1,7 +1,5 @@
 import Product from '../models/Product.js';
 import Inventory from '../models/Inventory.js';
-import Sale from '../models/Sale.js';
-import Purchase from '../models/Purchase.js';
 import Category from '../models/Category.js';
 import { processProductImage } from '../utils/imageProcessor.js';
 import path from 'path';
@@ -219,7 +217,7 @@ export const updateProduct = async (req, res) => {
     }
 };
 
-// @desc    Delete product (protected — checks stock, sales, purchases)
+// @desc    Delete product and cascade cleanup dependent records
 // @route   DELETE /api/products/:id
 // @access  Private (Admin only)
 export const deleteProduct = async (req, res) => {
@@ -227,34 +225,34 @@ export const deleteProduct = async (req, res) => {
         const product = await Product.findById(req.params.id);
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
-        // Check inventory stock
-        const inv = await Inventory.findOne({ product: req.params.id });
-        if (inv && inv.totalStock > 0) {
-            return res.status(400).json({
-                message: `Cannot delete product. Current total stock is ${inv.totalStock} (Displayed: ${inv.displayedStock}, Stored: ${inv.storedStock}). Clear stock first.`,
-            });
-        }
-
-        // Check sales - use sale_items table
-        const saleUsage = await Sale.countSaleItemsForProduct(req.params.id);
-        if (saleUsage > 0) {
-            return res.status(400).json({
-                message: `Cannot delete product. It is referenced in sale(s).`,
-            });
-        }
-
-        // Check purchases - use purchase_items table
-        const { count: purchaseUsage } = await supabase
-            .from('purchase_items')
-            .select('id', { count: 'exact', head: true })
+        // Delete dependent records first because these FKs are not set to ON DELETE CASCADE.
+        const { error: stockTxnDeleteError } = await supabase
+            .from('stock_transactions')
+            .delete()
             .eq('product_id', req.params.id);
-        if (purchaseUsage > 0) {
-            return res.status(400).json({
-                message: `Cannot delete product. It is referenced in purchase(s).`,
-            });
+        if (stockTxnDeleteError) throw stockTxnDeleteError;
+
+        const { error: saleItemsDeleteError } = await supabase
+            .from('sale_items')
+            .delete()
+            .eq('product_id', req.params.id);
+        if (saleItemsDeleteError) throw saleItemsDeleteError;
+
+        const { error: purchaseItemsDeleteError } = await supabase
+            .from('purchase_items')
+            .delete()
+            .eq('product_id', req.params.id);
+        if (purchaseItemsDeleteError) throw purchaseItemsDeleteError;
+
+        // Delete local product image if present.
+        if (product.productImage) {
+            const imagePath = path.join(__dirname, '../public/uploads', product.productImage);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
         }
 
-        // Delete inventory record too
+        // Delete inventory and product.
         await Inventory.deleteOne({ product: req.params.id });
         await Product.deleteOne(req.params.id);
 
