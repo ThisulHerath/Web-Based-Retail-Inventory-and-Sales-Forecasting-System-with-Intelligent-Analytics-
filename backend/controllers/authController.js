@@ -11,7 +11,7 @@ import {
 // Generate JWT Token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '5m',
+        expiresIn: '30d',
     });
 };
 
