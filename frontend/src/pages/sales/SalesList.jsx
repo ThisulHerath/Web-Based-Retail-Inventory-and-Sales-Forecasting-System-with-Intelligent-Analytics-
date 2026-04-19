@@ -154,7 +154,8 @@ const SalesList = () => {
             fetchSales();
             setAnalyticsData(null); // invalidate analytics cache
         } catch (error) {
-            setToast({ message: 'Error deleting sale', type: 'error' });
+            const errorMessage = error.response?.data?.message || error.message || 'Error deleting sale';
+            setToast({ message: errorMessage, type: 'error' });
         } finally {
             setIsDeletingSale(false);
         }

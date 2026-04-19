@@ -21,7 +21,7 @@ const isValidSLPhone = (phone) => {
 // Generate JWT for Customer
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.CUSTOMER_JWT_SECRET, {
-        expiresIn: '30d',
+        expiresIn: '5m',
     });
 };
 

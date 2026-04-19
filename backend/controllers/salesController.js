@@ -390,10 +390,11 @@ export const deleteSale = async (req, res) => {
             }
         }
 
+        // Delete sale
         await Sale.deleteOne(req.params.id);
 
-        // Log sale deletion to audit trail
-        await SalesAudit.create({
+        // Log sale deletion to audit trail (asynchronously, don't let this block the response)
+        SalesAudit.create({
             saleId: req.params.id,
             userId: req.user?.id || req.user?._id,
             userName: req.user?.name || req.user?.email || 'unknown',
@@ -410,10 +411,14 @@ export const deleteSale = async (req, res) => {
             },
             ipAddress: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress,
             statusCode: 200,
+        }).catch(auditError => {
+            // Log audit failure but don't fail the sale deletion
+            console.error('Error logging sale deletion to audit trail:', auditError.message);
         });
 
         res.status(200).json({ message: 'Sale deleted successfully and stock restored' });
     } catch (error) {
+        console.error('Error deleting sale:', error.message);
         res.status(500).json({ message: error.message });
     }
 };
