@@ -61,6 +61,7 @@ const StockTransaction = {
             quantity: obj.quantity,
             date: obj.date || new Date().toISOString(),
             created_by: obj.createdBy,
+            stock_out_reason: obj.stockOutReason || null,
             notes: obj.notes || '',
         };
         const { data, error } = await supabase.from(TABLE).insert(row).select().single();
@@ -97,6 +98,7 @@ const StockTransaction = {
             referenceId: row.reference_id,
             quantity: row.quantity,
             date: row.date,
+            stockOutReason: row.stock_out_reason || null,
             createdBy: row.created_by,
             createdById: row.created_by,
             notes: row.notes,

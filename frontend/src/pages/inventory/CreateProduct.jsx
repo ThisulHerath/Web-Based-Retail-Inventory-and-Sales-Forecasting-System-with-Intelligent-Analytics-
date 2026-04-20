@@ -34,7 +34,7 @@ const CreateProduct = () => {
         if (formData.sellingPrice === '' || Number(formData.sellingPrice) < 0)
             errors.sellingPrice = 'Selling price must be 0 or more';
         else if (Number(formData.costPrice) > 0 && Number(formData.sellingPrice) < Number(formData.costPrice))
-            errors.sellingPrice = 'Selling price must be â‰¥ cost price';
+            errors.sellingPrice = 'Selling price must be greater than or equal to cost price';
         return errors;
     };
 
@@ -125,7 +125,7 @@ const CreateProduct = () => {
                 </Link>
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Add New Product</h1>
-                    <p className="text-gray-500 text-sm">Stock starts at 0 â€” use Stock In to add initial stock</p>
+                    <p className="text-gray-500 text-sm">Stock starts at 0 - use Stock In to add initial stock</p>
                 </div>
             </div>
 

@@ -21,9 +21,9 @@ const generateToken = (id) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const attemptKey = getLoginAttemptKey(req, email);
+        const attemptKey = getLoginAttemptKey(req, email, 'staff');
 
-        if (isLoginBlocked(attemptKey)) {
+        if (isLoginBlocked(attemptKey, 'staff')) {
             const retryAfter = getRetryAfterSeconds(attemptKey);
             if (retryAfter) {
                 res.set('Retry-After', String(retryAfter));
@@ -42,14 +42,14 @@ export const login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            recordFailedLogin(attemptKey);
+            recordFailedLogin(attemptKey, 'staff');
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         const isPasswordCorrect = await user.comparePassword(password);
 
         if (!isPasswordCorrect) {
-            recordFailedLogin(attemptKey);
+            recordFailedLogin(attemptKey, 'staff');
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 

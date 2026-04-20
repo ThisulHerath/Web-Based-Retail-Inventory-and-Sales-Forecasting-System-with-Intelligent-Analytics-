@@ -218,6 +218,7 @@ CREATE TABLE IF NOT EXISTS stock_transactions (
     quantity INTEGER NOT NULL CHECK (quantity >= 1),
     date TIMESTAMPTZ DEFAULT NOW(),
     created_by UUID NOT NULL REFERENCES users(id),
+    stock_out_reason VARCHAR(20) DEFAULT NULL CHECK (stock_out_reason IN ('expired', 'damaged', 'other') OR stock_out_reason IS NULL),
     notes TEXT DEFAULT '',
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -239,6 +240,7 @@ CREATE INDEX idx_purchases_date ON purchases(purchase_date);
 CREATE INDEX idx_purchase_items_purchase ON purchase_items(purchase_id);
 CREATE INDEX idx_stock_transactions_product ON stock_transactions(product_id);
 CREATE INDEX idx_stock_transactions_type ON stock_transactions(type);
+CREATE INDEX idx_stock_transactions_stock_out_reason ON stock_transactions(stock_out_reason);
 CREATE INDEX idx_coupons_customer ON coupons(customer_id);
 CREATE INDEX idx_coupons_code ON coupons(code);
 CREATE INDEX idx_users_email ON users(email);

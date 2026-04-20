@@ -136,9 +136,23 @@ const CreateSale = () => {
             return;
         }
 
+        // Optional email validation
+        const trimmedEmail = walkInDraft.email?.trim();
+        if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+            setToast({ message: 'Invalid email address format for walk-in customer', type: 'error' });
+            return;
+        }
+
         // Sri Lankan phone validation
         const phoneRegex = /^(?:0[1-9][0-9]{8}|\+?94[1-9][0-9]{8})$/;
         const cleanedPhone = walkInDraft.phone.replace(/[\s\-()]/g, '');
+        if (/[A-Za-z]/.test(cleanedPhone)) {
+            setToast({
+                message: 'Phone field accepts numbers only. Enter full name in the first field (e.g., Saman Perera).',
+                type: 'error',
+            });
+            return;
+        }
         if (!phoneRegex.test(cleanedPhone)) {
             setToast({ message: 'Invalid phone number. Use Sri Lankan format (e.g., 07X XXXXXXX or +94XXXXXXXXX)', type: 'error' });
             return;
@@ -148,7 +162,7 @@ const CreateSale = () => {
             const created = await createWalkInCustomer({
                 fullName: walkInDraft.fullName.trim(),
                 phone: walkInDraft.phone.trim(),
-                email: walkInDraft.email?.trim() || undefined,
+                email: trimmedEmail || undefined,
             });
             setWalkInCustomers((prev) => [created, ...prev]);
             setWalkInDraft({ fullName: '', phone: '', email: '' });
@@ -638,21 +652,21 @@ const CreateSale = () => {
                                             </select>
                                             <input
                                                 type="text"
-                                                placeholder="Walk-in full name"
+                                                placeholder="Full name (e.g., Saman Perera)"
                                                 value={walkInDraft.fullName}
                                                 onChange={(e) => setWalkInDraft((prev) => ({ ...prev, fullName: e.target.value }))}
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                                             />
                                             <input
                                                 type="text"
-                                                placeholder="Walk-in phone"
+                                                placeholder="Phone (e.g., 0771234567 or +94771234567)"
                                                 value={walkInDraft.phone}
                                                 onChange={(e) => setWalkInDraft((prev) => ({ ...prev, phone: e.target.value }))}
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                                             />
                                             <input
                                                 type="email"
-                                                placeholder="Walk-in email (optional)"
+                                                placeholder="Email (optional, e.g., saman@mail.com)"
                                                 value={walkInDraft.email}
                                                 onChange={(e) => setWalkInDraft((prev) => ({ ...prev, email: e.target.value }))}
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"

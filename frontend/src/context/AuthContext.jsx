@@ -1,5 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { login as loginService } from '../services/authService';
+import useIdleLogout from '../hooks/useIdleLogout';
+
+const IDLE_LOGOUT_TIMEOUT_MS = 4 * 60 * 1000;
 
 const AuthContext = createContext();
 
@@ -40,9 +43,21 @@ export const AuthProvider = ({ children }) => {
             setUser(data);
             return { success: true };
         } catch (error) {
+            const retryAfterHeader = error.response?.headers?.['retry-after'];
+            const retryAfterSeconds = Number(
+                error.response?.data?.retryAfterSeconds
+                || retryAfterHeader
+                || 0,
+            );
+
             return {
                 success: false,
                 message: error.response?.data?.message || 'Login failed',
+                code: error.response?.data?.code
+                    || (error.response?.status === 429 ? 'AUTH_RATE_LIMITED' : undefined),
+                retryAfterSeconds: Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+                    ? retryAfterSeconds
+                    : undefined,
             };
         }
     };
@@ -54,6 +69,12 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         window.dispatchEvent(new Event('storage'));
     };
+
+    useIdleLogout({
+        enabled: Boolean(user),
+        timeoutMs: IDLE_LOGOUT_TIMEOUT_MS,
+        onIdle: logout,
+    });
 
     // Role checking helpers
     const isAdmin = () => user?.role === 'admin';

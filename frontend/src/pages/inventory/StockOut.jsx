@@ -10,6 +10,7 @@ const StockOut = () => {
     const { id } = useParams(); // productId
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState('');
+    const [stockOutReason, setStockOutReason] = useState('');
     const [notes, setNotes] = useState('');
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -45,12 +46,23 @@ const StockOut = () => {
             return;
         }
 
+        if (!stockOutReason) {
+            setToast({ type: 'error', message: 'Please select a stock out reason' });
+            return;
+        }
+
+        if (stockOutReason === 'other' && !notes.trim()) {
+            setToast({ type: 'error', message: 'Please provide details when reason is Other' });
+            return;
+        }
+
         setSubmitting(true);
         try {
             await stockOutService({
                 productId: id,
                 quantity: Number(quantity),
-                notes: notes || 'Manual Stock Out',
+                stockOutReason,
+                notes: notes || '',
             });
             setToast({ type: 'success', message: 'Stock removed successfully' });
             setTimeout(() => {
@@ -109,14 +121,31 @@ const StockOut = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Notes (Optional)
+                            Stock Out Reason
+                        </label>
+                        <select
+                            required
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            value={stockOutReason}
+                            onChange={(e) => setStockOutReason(e.target.value)}
+                        >
+                            <option value="">Select reason</option>
+                            <option value="expired">Out of date (Expired)</option>
+                            <option value="damaged">Damaged</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            {stockOutReason === 'other' ? 'Reason Details (Required)' : 'Notes (Optional)'}
                         </label>
                         <textarea
                             className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
                             rows="3"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Reason for stock out (e.g. Damage, Expired)..."
+                            placeholder={stockOutReason === 'other' ? 'Explain the reason for this stock out' : 'Additional notes'}
                         ></textarea>
                     </div>
 

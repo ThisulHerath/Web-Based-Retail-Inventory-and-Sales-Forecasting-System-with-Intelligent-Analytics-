@@ -22,9 +22,16 @@ const validateDates = (fromDate, toDate) => {
 };
 
 const buildReportData = async (fromDate, toDate) => {
+    const reasonDefaults = {
+        expired: { actions: 0, quantity: 0 },
+        damaged: { actions: 0, quantity: 0 },
+        other: { actions: 0, quantity: 0 },
+        unspecified: { actions: 0, quantity: 0 },
+    };
+
     let txQuery = supabase
         .from('stock_transactions')
-        .select('id, product_id, type, quantity, date, created_by, notes, created_at')
+        .select('id, product_id, type, quantity, date, created_by, notes, stock_out_reason, created_at')
         .gte('date', fromDate)
         .lte('date', toDate)
         .order('date', { ascending: false });
@@ -77,6 +84,7 @@ const buildReportData = async (fromDate, toDate) => {
         sku: productMap[tx.product_id]?.sku || '',
         type: tx.type,
         quantity: tx.quantity,
+        stockOutReason: tx.stock_out_reason || null,
         date: tx.date,
         createdAt: tx.created_at,
         createdBy: userMap[tx.created_by]?.userName || 'Unknown User',
@@ -94,6 +102,13 @@ const buildReportData = async (fromDate, toDate) => {
             if (tx.type === 'stock-out') {
                 acc.stockOutActions += 1;
                 acc.totalStockOutQty += Number(tx.quantity) || 0;
+
+                const reason = tx.stockOutReason || 'unspecified';
+                if (!acc.stockOutReasons[reason]) {
+                    acc.stockOutReasons[reason] = { actions: 0, quantity: 0 };
+                }
+                acc.stockOutReasons[reason].actions += 1;
+                acc.stockOutReasons[reason].quantity += Number(tx.quantity) || 0;
             }
             return acc;
         },
@@ -103,6 +118,7 @@ const buildReportData = async (fromDate, toDate) => {
             stockOutActions: 0,
             totalStockInQty: 0,
             totalStockOutQty: 0,
+            stockOutReasons: reasonDefaults,
         }
     );
 

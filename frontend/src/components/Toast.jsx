@@ -1,14 +1,18 @@
 import { useEffect } from 'react';
 import { CheckCircle, XCircle, X } from 'lucide-react';
 
-const Toast = ({ message, type = 'success', onClose }) => {
+const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
     useEffect(() => {
+        if (duration == null) {
+            return undefined;
+        }
+
         const timer = setTimeout(() => {
             onClose();
-        }, 3000);
+        }, duration);
 
         return () => clearTimeout(timer);
-    }, [onClose]);
+    }, [duration, onClose]);
 
     return (
         <div className="fixed top-4 right-4 z-[9999] animate-slide-in">

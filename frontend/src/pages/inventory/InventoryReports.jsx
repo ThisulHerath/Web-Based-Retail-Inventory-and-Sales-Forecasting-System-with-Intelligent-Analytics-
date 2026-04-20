@@ -30,6 +30,13 @@ const getNowLocal = () => {
     return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 };
 
+const stockOutReasonLabels = {
+    expired: 'Out of date',
+    damaged: 'Damaged',
+    other: 'Other',
+    unspecified: 'Unspecified',
+};
+
 const validateDateRange = (fromDate, toDate) => {
     if (!fromDate || !toDate) {
         return { valid: false, message: 'Date range is required' };
@@ -350,6 +357,21 @@ const InventoryReports = () => {
                                 </div>
                             </div>
 
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div className="bg-red-50 rounded-lg p-3">
+                                    <p className="text-xs text-red-700">Out of Date Qty</p>
+                                    <p className="text-xl font-bold text-red-800">{viewReport.summary?.stockOutReasons?.expired?.quantity || 0}</p>
+                                </div>
+                                <div className="bg-amber-50 rounded-lg p-3">
+                                    <p className="text-xs text-amber-700">Damaged Qty</p>
+                                    <p className="text-xl font-bold text-amber-800">{viewReport.summary?.stockOutReasons?.damaged?.quantity || 0}</p>
+                                </div>
+                                <div className="bg-slate-100 rounded-lg p-3">
+                                    <p className="text-xs text-slate-700">Other Qty</p>
+                                    <p className="text-xl font-bold text-slate-800">{viewReport.summary?.stockOutReasons?.other?.quantity || 0}</p>
+                                </div>
+                            </div>
+
                             <p className="text-sm text-gray-600">
                                 <span className="font-medium">Range:</span> {new Date(viewReport.fromDate).toLocaleString()} - {new Date(viewReport.toDate).toLocaleString()}
                             </p>
@@ -366,6 +388,7 @@ const InventoryReports = () => {
                                             <th className="text-left py-2.5 px-3">Product</th>
                                             <th className="text-left py-2.5 px-3">SKU</th>
                                             <th className="text-left py-2.5 px-3">Type</th>
+                                            <th className="text-left py-2.5 px-3">Reason</th>
                                             <th className="text-right py-2.5 px-3">Qty</th>
                                             <th className="text-left py-2.5 px-3">User</th>
                                             <th className="text-left py-2.5 px-3">Notes</th>
@@ -374,7 +397,7 @@ const InventoryReports = () => {
                                     <tbody>
                                         {(viewReport.transactions || []).length === 0 ? (
                                             <tr>
-                                                <td colSpan={7} className="py-6 text-center text-gray-500">No inventory actions in this range.</td>
+                                                <td colSpan={8} className="py-6 text-center text-gray-500">No inventory actions in this range.</td>
                                             </tr>
                                         ) : (
                                             (viewReport.transactions || []).map((tx) => (
@@ -383,6 +406,11 @@ const InventoryReports = () => {
                                                     <td className="py-2 px-3 text-gray-800">{tx.productName}</td>
                                                     <td className="py-2 px-3 text-gray-500">{tx.sku || '-'}</td>
                                                     <td className="py-2 px-3 capitalize">{tx.type?.replace('-', ' ')}</td>
+                                                    <td className="py-2 px-3 text-gray-600">
+                                                        {tx.type === 'stock-out'
+                                                            ? stockOutReasonLabels[tx.stockOutReason || 'unspecified']
+                                                            : '-'}
+                                                    </td>
                                                     <td className="py-2 px-3 text-right font-semibold">{tx.quantity}</td>
                                                     <td className="py-2 px-3">{tx.createdBy}</td>
                                                     <td className="py-2 px-3 text-gray-500">{tx.notes || '-'}</td>

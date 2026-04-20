@@ -199,6 +199,22 @@ export const validateStockMovement = [
     handleValidation,
 ];
 
+export const validateStockOutMovement = [
+    body('productId').isUUID().withMessage('Valid product id is required'),
+    body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
+    body('stockOutReason')
+        .isIn(['expired', 'damaged', 'other'])
+        .withMessage('stockOutReason must be one of: expired, damaged, other'),
+    body('notes').optional().trim().isLength({ max: 500 }).withMessage('Notes must be less than 500 characters'),
+    body('notes').custom((value, { req }) => {
+        if (req.body.stockOutReason === 'other' && !String(value || '').trim()) {
+            throw new Error('Please provide details in notes when stockOutReason is other');
+        }
+        return true;
+    }),
+    handleValidation,
+];
+
 export const validateCreateFeedback = [
     body('rating').isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
     body('comment')

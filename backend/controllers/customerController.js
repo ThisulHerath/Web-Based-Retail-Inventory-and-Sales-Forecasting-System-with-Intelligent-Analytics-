@@ -107,9 +107,9 @@ export const registerCustomer = async (req, res) => {
 export const loginCustomer = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const attemptKey = getLoginAttemptKey(req, email);
+        const attemptKey = getLoginAttemptKey(req, email, 'customer');
 
-        if (isLoginBlocked(attemptKey)) {
+        if (isLoginBlocked(attemptKey, 'customer')) {
             const retryAfter = getRetryAfterSeconds(attemptKey);
             if (retryAfter) {
                 res.set('Retry-After', String(retryAfter));
@@ -140,7 +140,7 @@ export const loginCustomer = async (req, res) => {
                 token: generateToken(customer._id),
             });
         } else {
-            recordFailedLogin(attemptKey);
+            recordFailedLogin(attemptKey, 'customer');
             res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {

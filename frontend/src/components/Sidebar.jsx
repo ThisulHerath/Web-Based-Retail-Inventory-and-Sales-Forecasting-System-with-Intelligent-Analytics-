@@ -50,6 +50,12 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
                     roles: ['admin', 'manager'],
                 },
                 {
+                    name: 'Products',
+                    path: '/admin/products',
+                    icon: Package,
+                    roles: ['admin', 'manager'],
+                },
+                {
                     name: 'Suppliers',
                     path: '/admin/suppliers',
                     icon: Truck,
@@ -65,12 +71,6 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
                     name: 'Inventory',
                     path: '/admin/inventory',
                     icon: Layers,
-                    roles: ['admin', 'manager'],
-                },
-                {
-                    name: 'Products',
-                    path: '/admin/products',
-                    icon: Package,
                     roles: ['admin', 'manager'],
                 },
             ],

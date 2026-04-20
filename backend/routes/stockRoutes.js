@@ -10,6 +10,7 @@ import {
 import {
     validateProductIdParam,
     validateStockMovement,
+    validateStockOutMovement,
 } from '../middleware/validators.js';
 
 const router = express.Router();
@@ -20,7 +21,7 @@ router.use(verifyRole('admin', 'manager'));
 
 // Stock management routes
 router.post('/in', validateStockMovement, stockIn);
-router.post('/out', validateStockMovement, stockOut);
+router.post('/out', validateStockOutMovement, stockOut);
 router.get('/transactions', getAllTransactions);
 router.get('/history/:productId', validateProductIdParam, getStockHistory);
 

@@ -165,13 +165,13 @@ const CustomerRegister = () => {
 
     const breachMessage = () => {
         if (!formData.password || formData.password.length < PASSWORD_MIN_LENGTH) return null;
-        if (breachStatus.state === 'checking') return { text: t('password_strength.checking'), className: 'text-amber-600' };
-        if (breachStatus.state === 'error') return { text: t('password_strength.check_failed'), className: 'text-amber-600' };
+        if (breachStatus.state === 'checking') return { text: t('password_strength.checking'), className: 'text-amber-200 font-semibold' };
+        if (breachStatus.state === 'error') return { text: t('password_strength.check_failed'), className: 'text-amber-200 font-semibold' };
         if (breachStatus.state === 'done' && !breachStatus.skipped) {
             if (breachStatus.breached) {
-                return { text: t('password_strength.breached'), className: 'text-red-500' };
+                return { text: t('password_strength.breached'), className: 'text-red-200 font-semibold' };
             }
-            return { text: t('password_strength.safe'), className: 'text-green-600' };
+            return { text: t('password_strength.safe'), className: 'text-emerald-200 font-semibold' };
         }
         return null;
     };
@@ -198,6 +198,13 @@ const CustomerRegister = () => {
         } catch (error) {
             if (error.response?.data?.code === 'EMAIL_EXISTS') {
                 setFieldErrors((prev) => ({ ...prev, email: t('register.validation.email_exists') }));
+                return;
+            }
+            if (error.response?.data?.code === 'PHONE_EXISTS') {
+                setFieldErrors((prev) => ({
+                    ...prev,
+                    phone: error.response?.data?.message || t('register.validation.phone_invalid'),
+                }));
                 return;
             }
             if (error.response?.data?.code === 'INVALID_PHONE') {
@@ -402,9 +409,9 @@ const CustomerRegister = () => {
                                     maxLength={PASSWORD_MAX_LENGTH}
                                         error={fieldErrors.password}
                                 />
-                                <PasswordStrengthMeter password={formData.password} />
+                                <PasswordStrengthMeter password={formData.password} tone="dark" />
                                 {breachInfo && !fieldErrors.password && (
-                                    <p className={`mt-1 text-xs ${breachInfo.className}`}>{breachInfo.text}</p>
+                                    <p className={`mt-1.5 text-sm leading-snug ${breachInfo.className}`}>{breachInfo.text}</p>
                                 )}
                             </div>
                             <div>

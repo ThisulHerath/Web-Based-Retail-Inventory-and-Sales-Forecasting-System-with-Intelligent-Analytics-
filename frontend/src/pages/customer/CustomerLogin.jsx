@@ -51,12 +51,14 @@ const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoCompl
 };
 
 const CustomerLogin = () => {
+    const LOCKOUT_MESSAGE_PREFIX = 'Too many login attempts. Please try again later.';
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState(null);
+    const [lockoutSeconds, setLockoutSeconds] = useState(null);
     const { login } = useCustomer();
     const navigate = useNavigate();
 
@@ -69,22 +71,57 @@ const CustomerLogin = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (!toast?.code || !['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(toast.code) || lockoutSeconds == null) {
+            return undefined;
+        }
+
+        if (lockoutSeconds <= 0) {
+            setToast(null);
+            setLockoutSeconds(null);
+            return undefined;
+        }
+
+        const timer = setTimeout(() => {
+            setLockoutSeconds((current) => Math.max(current - 1, 0));
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [toast?.code, lockoutSeconds]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!email.trim()) {
             setToast({ message: t('auth_extra.enter_email'), type: 'error' });
+            setLockoutSeconds(null);
             return;
         }
 
         if (!password) {
             setToast({ message: t('auth_extra.enter_password'), type: 'error' });
+            setLockoutSeconds(null);
             return;
         }
 
         setLoading(true);
         try {
-            await login(email, password);
+            const result = await login(email, password);
+
+            if (!result.success) {
+                if (['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(result.code) && result.retryAfterSeconds) {
+                    setToast({
+                        message: result.message || LOCKOUT_MESSAGE_PREFIX,
+                        type: 'error',
+                        code: result.code,
+                    });
+                    setLockoutSeconds(Math.max(result.retryAfterSeconds, 60));
+                } else {
+                    setToast({ message: result.message || t('auth_extra.login_failed'), type: 'error' });
+                    setLockoutSeconds(null);
+                }
+                return;
+            }
             
             // Handle Remember Me functionality
             if (rememberMe) {
@@ -94,8 +131,6 @@ const CustomerLogin = () => {
             }
             
             navigate('/my-account');
-        } catch (error) {
-            setToast({ message: error.response?.data?.message || t('auth_extra.login_failed'), type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -103,7 +138,16 @@ const CustomerLogin = () => {
 
     return (
         <div className="min-h-screen flex">
-            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+            {toast && (
+                <Toast
+                    message={['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(toast.code) && lockoutSeconds != null
+                        ? `${LOCKOUT_MESSAGE_PREFIX} Try again in ${lockoutSeconds}s.`
+                        : toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                    duration={['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(toast.code) ? null : 5000}
+                />
+            )}
 
             {/* LEFT â€” Form Panel */}
             <div className="w-full md:w-1/2 flex flex-col justify-between bg-[var(--color-bg-secondary)] dark:bg-[var(--color-card-bg)] px-10 sm:px-16 py-10 animate-fade-in-up">

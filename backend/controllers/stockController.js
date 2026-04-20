@@ -40,6 +40,7 @@ export const stockIn = async (req, res) => {
             type: 'stock-in',
             quantity: requestedQty,
             createdBy: req.user._id,
+            stockOutReason: null,
             notes: notes || 'Transfer from stored to displayed',
             referenceType: 'manual',
         });
@@ -65,10 +66,18 @@ export const stockIn = async (req, res) => {
 // @access  Private (Admin & Manager)
 export const stockOut = async (req, res) => {
     try {
-        const { productId, quantity, notes } = req.body;
+        const { productId, quantity, notes, stockOutReason } = req.body;
 
         if (!productId || !quantity || quantity <= 0) {
             return res.status(400).json({ message: 'Please provide valid product and quantity' });
+        }
+
+        if (!['expired', 'damaged', 'other'].includes(stockOutReason)) {
+            return res.status(400).json({ message: 'Please select a valid stock out reason' });
+        }
+
+        if (stockOutReason === 'other' && !String(notes || '').trim()) {
+            return res.status(400).json({ message: 'Please provide notes when reason is Other' });
         }
 
         const product = await Product.findByIdPopulated(productId);
@@ -94,6 +103,7 @@ export const stockOut = async (req, res) => {
             type: 'stock-out',
             quantity: requestedQty,
             createdBy: req.user._id,
+            stockOutReason,
             notes: notes || '',
             referenceType: 'manual',
         });
@@ -120,8 +130,7 @@ export const getStockHistory = async (req, res) => {
     try {
         const { productId } = req.params;
         const { page = 1, limit = 20 } = req.query;
-
-        const product = await Product.findById(productId);
+        const product = await Product.findByIdPopulated(productId);
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
         const inv = await Inventory.findOne({ product: productId });

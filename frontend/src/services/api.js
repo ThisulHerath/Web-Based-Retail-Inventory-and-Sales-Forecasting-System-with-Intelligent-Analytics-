@@ -33,9 +33,12 @@ api.interceptors.response.use(
     (error) => {
         if (error.response) {
             const { status, data } = error.response;
+            const requestUrl = error.config?.url || '';
+            const isAuthLoginRequest = requestUrl.includes('/auth/login');
+            const isAuthRegisterRequest = requestUrl.includes('/auth/register');
 
             // 401: Unauthorized (Token invalid/expired) -> Only redirect if on admin pages
-            if (status === 401) {
+            if (status === 401 && !isAuthLoginRequest && !isAuthRegisterRequest) {
                 const isAdminPage = window.location.pathname.startsWith('/admin');
                 if (isAdminPage) {
                     localStorage.removeItem('token');

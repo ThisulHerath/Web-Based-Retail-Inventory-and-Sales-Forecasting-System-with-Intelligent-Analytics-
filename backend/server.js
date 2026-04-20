@@ -53,9 +53,20 @@ const apiLimiter = rateLimit({
     },
 });
 
-const authLimiter = rateLimit({
-    windowMs: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000),
+const staffAuthLimiter = rateLimit({
+    windowMs: Number(process.env.STAFF_AUTH_RATE_LIMIT_WINDOW_MS || 60 * 1000),
     max: Number(process.env.AUTH_RATE_LIMIT_MAX || 10),
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        message: 'Too many login attempts. Please try again later.',
+        code: 'AUTH_RATE_LIMITED',
+    },
+});
+
+const customerAuthLimiter = rateLimit({
+    windowMs: Number(process.env.CUSTOMER_AUTH_RATE_LIMIT_WINDOW_MS || 60 * 1000),
+    max: Number(process.env.CUSTOMER_AUTH_RATE_LIMIT_MAX || 10),
     standardHeaders: true,
     legacyHeaders: false,
     message: {
@@ -80,8 +91,8 @@ app.use(cors({
     credentials: true,
 }));
 app.use('/api', apiLimiter);
-app.use('/api/auth/login', authLimiter);
-app.use('/api/customers/login', authLimiter);
+app.use('/api/auth/login', staffAuthLimiter);
+app.use('/api/customers/login', customerAuthLimiter);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 

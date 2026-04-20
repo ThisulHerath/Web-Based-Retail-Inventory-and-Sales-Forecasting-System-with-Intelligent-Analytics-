@@ -9,6 +9,11 @@ const isValidSLPhone = (phone) => {
     return /^(?:0[1-9][0-9]{8}|\+?94[1-9][0-9]{8})$/.test(cleaned);
 };
 
+const isValidEmail = (email) => {
+    if (!email) return true;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
+};
+
 export const getAllWalkInCustomers = async (req, res) => {
     try {
         const { page = 1, limit = 10, search = '' } = req.query;
@@ -66,6 +71,9 @@ export const createWalkInCustomer = async (req, res) => {
         if (!isValidSLPhone(phone)) {
             return res.status(400).json({ message: 'Invalid phone number format. Use Sri Lankan format (e.g., 07X XXXXXXX)' });
         }
+        if (email && !isValidEmail(email)) {
+            return res.status(400).json({ message: 'Invalid email address format for walk-in customer' });
+        }
 
         const existing = await WalkInCustomer.findOne({ phone });
         if (existing) {
@@ -115,7 +123,13 @@ export const updateWalkInCustomer = async (req, res) => {
                 return res.status(400).json({ message: 'This phone number is already registered as a customer' });
             }
         }
-        if (req.body.email !== undefined) updates.email = req.body.email?.trim() || null;
+        if (req.body.email !== undefined) {
+            const nextEmail = req.body.email?.trim();
+            if (nextEmail && !isValidEmail(nextEmail)) {
+                return res.status(400).json({ message: 'Invalid email address format for walk-in customer' });
+            }
+            updates.email = nextEmail || null;
+        }
         if (req.body.address !== undefined) updates.address = req.body.address?.trim() || null;
         if (req.body.isActive !== undefined) updates.isActive = Boolean(req.body.isActive);
 

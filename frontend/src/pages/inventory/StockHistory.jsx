@@ -4,6 +4,12 @@ import { getStockHistory } from '../../services/stockService';
 import { getProductById } from '../../services/productService';
 import { ArrowLeft, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 
+const reasonLabelMap = {
+    expired: 'Out of date',
+    damaged: 'Damaged',
+    other: 'Other',
+};
+
 const StockHistory = () => {
     const { id } = useParams(); // productId
     const [transactions, setTransactions] = useState([]);
@@ -56,6 +62,7 @@ const StockHistory = () => {
                         <tr>
                             <th className="px-6 py-4 font-semibold text-gray-600">Date/Time</th>
                             <th className="px-6 py-4 font-semibold text-gray-600">Type</th>
+                            <th className="px-6 py-4 font-semibold text-gray-600">Reason</th>
                             <th className="px-6 py-4 font-semibold text-gray-600 text-center">Quantity</th>
                             <th className="px-6 py-4 font-semibold text-gray-600">User</th>
                             <th className="px-6 py-4 font-semibold text-gray-600">Notes</th>
@@ -64,7 +71,7 @@ const StockHistory = () => {
                     <tbody className="divide-y divide-gray-50">
                         {transactions.length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
                                     No history found for this product.
                                 </td>
                             </tr>
@@ -86,6 +93,11 @@ const StockHistory = () => {
                                                 {tx.type.replace('-', ' ')}
                                             </span>
                                         </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-600 text-sm">
+                                        {tx.type === 'stock-out'
+                                            ? reasonLabelMap[tx.stockOutReason] || 'Unspecified'
+                                            : '-'}
                                     </td>
                                     <td className="px-6 py-4 text-center font-bold text-gray-800">
                                         {tx.quantity}
