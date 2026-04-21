@@ -163,7 +163,7 @@ const StoreMap = () => {
                             <div className="space-y-4 text-sm">
                                 <div>
                                     <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.address')}</h4>
-                                    <p className="text-[var(--color-text-secondary)]">Horana - Anguruwatota - Mathugama - Aluthgama Road, Horana</p>
+                                    <p className="text-[var(--color-text-secondary)]">No.250, Aguruwathota road, Wewala, Horana</p>
                                 </div>
                                 <div>
                                     <h4 className="font-semibold text-[var(--color-text-primary)] mb-1">{t('location.coordinates')}</h4>
@@ -178,7 +178,7 @@ const StoreMap = () => {
                                 </div>
                                 <div>
                                     <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.contact')}</h4>
-                                    <p className="text-[var(--color-text-secondary)]">+94 34 220 0000</p>
+                                    <p className="text-[var(--color-text-secondary)]">0342 261 511</p>
                                     <p className="text-[var(--color-text-secondary)]">hello@7supercity.lk</p>
                                 </div>
                             </div>

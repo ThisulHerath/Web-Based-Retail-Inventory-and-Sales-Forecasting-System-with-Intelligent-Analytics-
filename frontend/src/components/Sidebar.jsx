@@ -122,59 +122,74 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
     };
 
     return (
-        <aside className={`bg-[#155c27] text-white min-h-screen fixed left-0 top-0 transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'}`}>
-            <div className="p-6">
-                <div className={`mb-8 ${isCollapsed ? 'space-y-4' : 'flex items-start justify-between gap-3'}`}>
-                    <div className={`flex items-center gap-2 ${isCollapsed ? 'justify-center' : ''}`}>
+        <aside className={`bg-[#155c27] text-white min-h-screen fixed left-0 top-0 transition-all duration-300 shadow-2xl ${isCollapsed ? 'w-24' : 'w-64'}`}>
+            <div className={`flex ${isCollapsed ? 'flex-col items-center' : 'flex-col'}`}>
+                {/* Header Section with Toggle Button */}
+                <div className={`w-full px-4 py-6 border-b border-white/10 ${isCollapsed ? 'flex flex-col items-center gap-4' : 'flex items-start justify-between gap-3'}`}>
+                    {/* Logo */}
+                    <div className={`flex items-center justify-center ${isCollapsed ? 'w-full' : ''}`}>
                         {!isCollapsed ? (
                             <BrandLogo className="h-10 w-auto" />
                         ) : (
-                            <ShoppingBag className="w-8 h-8 text-[#f5d800] flex-shrink-0" />
+                            <ShoppingBag className="w-8 h-8 text-[#f5d800]" />
                         )}
                     </div>
+                    
+                    {/* Toggle Button - More Visible */}
                     <button
                         type="button"
                         onClick={onToggleCollapse}
-                        className="p-2 rounded-lg bg-[#0d3d1a] hover:bg-[#0d3d1a]/80 text-gray-200 transition-colors"
+                           className={`relative group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#f5d800] hover:bg-[#e6c700] text-[#155c27] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105`}
                         title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                     >
                         {isCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+                        {!isCollapsed && <span className="font-bold text-xs whitespace-nowrap">Collapse</span>}
                     </button>
                 </div>
 
+                {/* User Info Section */}
                 {!isCollapsed ? (
-                    <div className="mb-5 px-3 py-2.5 bg-[#0d3d1a] rounded-lg border border-white/10">
-                        <p className="text-[10px] uppercase tracking-[0.12em] text-gray-300">Logged in as</p>
-                        <div className="mt-2 flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2 min-w-0">
-                                <div className="w-8 h-8 rounded-full bg-[#f5d800] text-[#155c27] text-xs font-bold flex items-center justify-center">
-                                    {getInitials(user?.name || '')}
+                    <div className="w-full px-4 py-4 border-b border-white/10">
+                        <div className="px-3 py-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 hover:border-white/20 transition-all">
+                            <p className="text-[10px] uppercase tracking-[0.12em] text-gray-300 font-bold">Logged in as</p>
+                            <div className="mt-3 flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <div className="w-9 h-9 rounded-full bg-[#f5d800] text-[#155c27] text-xs font-bold flex items-center justify-center shadow-md">
+                                        {getInitials(user?.name || '')}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="font-bold text-sm truncate">{user?.name || 'User'}</p>
+                                        <p className="text-xs text-gray-300">Staff</p>
+                                    </div>
                                 </div>
-                                <p className="font-semibold text-[13.5px] tracking-[0.01em] truncate">{user?.name || 'User'}</p>
+                                <span className="text-[10px] px-2 py-1 rounded-full bg-[#f5d800] text-[#155c27] capitalize font-bold">
+                                    {user?.role?.[0]?.toUpperCase() || 'U'}
+                                </span>
                             </div>
-                            <span className="text-[11px] px-2 py-0.5 rounded bg-[#f5d800] text-[#155c27] capitalize border border-[#f5d800] font-semibold tracking-[0.01em]">
-                                {user?.role}
-                            </span>
                         </div>
                     </div>
                 ) : (
-                    <div className="mb-6 flex justify-center">
-                        <span className="text-xs px-2 py-0.5 rounded bg-[#f5d800] text-[#155c27] capitalize border border-[#f5d800] font-semibold" title={user?.role || 'User'}>
-                            {user?.role?.[0]?.toUpperCase() || 'U'}
-                        </span>
+                    <div className="w-full px-4 py-4 border-b border-white/10 flex justify-center">
+                        <div className="w-12 h-12 rounded-lg bg-[#f5d800] text-[#155c27] font-bold flex items-center justify-center shadow-md text-lg" title={`${user?.name} (${user?.role})`}>
+                            {getInitials(user?.name || '')}
+                        </div>
                     </div>
                 )}
 
-                <nav>
+                {/* Navigation Section */}
+                <nav className={`flex-1 w-full ${isCollapsed ? 'py-4 px-2' : 'p-4'}`}>
                     {filteredSections.map((section, sectionIndex) => (
-                        <div key={section.label} className={`${sectionIndex > 0 ? 'mt-3 pt-3 border-t border-white/10' : ''}`}>
+                        <div key={section.label} className={isCollapsed ? 'flex flex-col gap-2' : 'mb-4'}>
+                            {!isCollapsed && sectionIndex > 0 && <div className="mb-4 border-t border-white/10"></div>}
+                            
                             {!isCollapsed && (
-                                <p className="px-3 mb-1 text-[10px] uppercase tracking-[0.12em] text-gray-300">
+                                <p className="px-3 mb-2 text-[11px] uppercase tracking-[0.15em] text-white/60 font-bold">
                                     {section.label}
                                 </p>
                             )}
-                            <div className="space-y-1">
+                            
+                            <div className={isCollapsed ? 'flex flex-col gap-2' : 'space-y-1'}>
                                 {section.items.map((item) => {
                                     const Icon = item.icon;
                                     const active = isActive(item.path);
@@ -184,13 +199,20 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
                                             key={item.path}
                                             to={item.path}
                                             title={item.name}
-                                            className={`flex items-center ${isCollapsed ? 'justify-center px-2.5' : 'gap-3 px-3.5'} py-2.5 rounded-md transition-all ${active
-                                                ? 'bg-[#f5d800] text-[#155c27] font-semibold shadow-md'
-                                                : 'text-gray-200 hover:bg-[#0d3d1a] hover:text-white'
+                                            className={`group relative flex items-center ${isCollapsed ? 'justify-center w-full' : 'justify-start gap-3'} px-3 py-2.5 rounded-lg transition-all duration-200 transform ${active
+                                                ? 'bg-[#f5d800] text-[#155c27] font-bold shadow-lg scale-105'
+                                                : 'text-gray-200 hover:bg-white/10 hover:text-white'
                                                 }`}
                                         >
-                                            <Icon className="w-[18px] h-[18px]" strokeWidth={1.8} />
-                                            {!isCollapsed && <span className="font-medium text-[13.5px] tracking-[0.01em]">{item.name}</span>}
+                                            <Icon className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 ${active ? 'drop-shadow-md' : 'group-hover:scale-110'}`} strokeWidth={1.8} />
+                                            {!isCollapsed && <span className="font-medium text-sm">{item.name}</span>}
+                                            
+                                            {/* Tooltip for collapsed state */}
+                                            {isCollapsed && (
+                                                <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                                                    {item.name}
+                                                </div>
+                                            )}
                                         </Link>
                                     );
                                 })}

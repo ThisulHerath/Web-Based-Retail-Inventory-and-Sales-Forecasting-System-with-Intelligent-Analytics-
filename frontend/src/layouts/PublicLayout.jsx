@@ -274,11 +274,11 @@ const PublicLayout = () => {
                             <ul className="space-y-3 text-gray-400 text-sm">
                                 <li className="flex items-start gap-3 group">
                                     <MapPin className="w-5 h-5 text-[#f5d800] mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-                                    <span>6°42'35.1"N 80°03'57.0"E<br />7 Super City, Horana</span>
+                                    <span>No.250, Aguruwathota road, Wewala, Horana</span>
                                 </li>
                                 <li className="flex items-center gap-3 group">
                                     <Phone className="w-5 h-5 text-[#f5d800] shrink-0 group-hover:scale-110 transition-transform" />
-                                    <span>+94 34 220 0000</span>
+                                    <span>0342 261 511</span>
                                 </li>
                                 <li className="flex items-center gap-3 group">
                                     <Mail className="w-5 h-5 text-[#f5d800] shrink-0 group-hover:scale-110 transition-transform" />
@@ -290,7 +290,7 @@ const PublicLayout = () => {
                         <div className="animate-fade-in-up stagger-3">
                             <h4 className="text-lg font-bold mb-4">{t('footer.follow_us')}</h4>
                             <div className="flex gap-4">
-                                <a href="#" className="bg-[#1e7a34] dark:bg-[#1e7a34] p-2.5 rounded-xl hover:bg-[#f5d800] hover:text-[#155c27] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Facebook className="w-5 h-5" /></a>
+                                <a href="https://www.facebook.com/sevenssupercity/" className="bg-[#1e7a34] dark:bg-[#1e7a34] p-2.5 rounded-xl hover:bg-[#f5d800] hover:text-[#155c27] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Facebook className="w-5 h-5" /></a>
                                 <a href="#" className="bg-[#1e7a34] dark:bg-[#1e7a34] p-2.5 rounded-xl hover:bg-[#f5d800] hover:text-[#155c27] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Instagram className="w-5 h-5" /></a>
                                 <a href="#" className="bg-[#1e7a34] dark:bg-[#1e7a34] p-2.5 rounded-xl hover:bg-[#f5d800] hover:text-[#155c27] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Twitter className="w-5 h-5" /></a>
                             </div>

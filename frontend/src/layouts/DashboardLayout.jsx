@@ -20,14 +20,44 @@ const DashboardLayout = ({ children }) => {
     }, [isSidebarCollapsed]);
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen">
             <Sidebar
                 isCollapsed={isSidebarCollapsed}
                 onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
             />
-            <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
+            <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-24' : 'ml-64'}`}>
                 <Navbar />
-                <main className="p-6">{children}</main>
+                <main 
+                    className="p-6 relative min-h-[calc(100vh-73px)]"
+                    style={{
+                        background: `
+                            linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(245, 245, 245, 0.95) 100%),
+                            url('/7supercity-logo.jpg')
+                        `,
+                        backgroundSize: '120%, cover',
+                        backgroundPosition: 'center 20%',
+                        backgroundAttachment: 'fixed',
+                    }}
+                >
+                    {/* Blurred background overlay */}
+                    <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                            backgroundImage: `url('/7supercity-logo.jpg')`,
+                            backgroundSize: '120%',
+                            backgroundPosition: 'center 20%',
+                            backgroundAttachment: 'fixed',
+                            filter: 'blur(12px)',
+                            opacity: 0.15,
+                            zIndex: 0,
+                        }}
+                    />
+                    
+                    {/* Content wrapper with higher z-index */}
+                    <div className="relative z-10">
+                        {children}
+                    </div>
+                </main>
             </div>
             <BusinessAssistantBot />
         </div>
