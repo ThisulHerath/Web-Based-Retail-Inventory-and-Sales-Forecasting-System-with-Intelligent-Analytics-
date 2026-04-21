@@ -1,5 +1,6 @@
 import Inventory from '../models/Inventory.js';
 import Product from '../models/Product.js';
+import StockTransaction from '../models/StockTransaction.js';
 
 // @desc    Get all inventory records (joined with product & category)
 // @route   GET /api/inventory
@@ -25,6 +26,37 @@ export const getAllInventory = async (req, res) => {
                 lowStock !== 'true' ||
                 inv.displayedStock <= inv.product.minimumStockLevel;
             return matchSearch && matchCategory && matchLowStock;
+        });
+
+        // Default ordering: most recently updated via supplier purchases first.
+        const purchaseStockIns = await StockTransaction.find({
+            type: 'stock-in',
+            referenceType: 'purchase',
+        });
+
+        const latestPurchaseByProduct = new Map();
+        for (const tx of purchaseStockIns) {
+            const txTime = new Date(tx.createdAt || tx.date || 0).getTime();
+            if (!Number.isFinite(txTime)) continue;
+
+            const existing = latestPurchaseByProduct.get(tx.productId) || 0;
+            if (txTime > existing) {
+                latestPurchaseByProduct.set(tx.productId, txTime);
+            }
+        }
+
+        filtered.sort((a, b) => {
+            const aPurchaseTime = latestPurchaseByProduct.get(a.product?._id) || 0;
+            const bPurchaseTime = latestPurchaseByProduct.get(b.product?._id) || 0;
+
+            if (aPurchaseTime !== bPurchaseTime) {
+                return bPurchaseTime - aPurchaseTime;
+            }
+
+            // Fallback keeps ordering stable when purchase timestamps are equal/missing.
+            const aLastUpdated = new Date(a.lastUpdated || 0).getTime() || 0;
+            const bLastUpdated = new Date(b.lastUpdated || 0).getTime() || 0;
+            return bLastUpdated - aLastUpdated;
         });
 
         const total = filtered.length;
