@@ -30,7 +30,7 @@ const User = {
         if (query.role) q = q.eq('role', query.role);
         if (query.isActive !== undefined) q = q.eq('is_active', query.isActive);
         if (options.excludePassword) {
-            q = supabase.from(TABLE).select('id, name, email, role, is_active, created_at, updated_at, last_login_date');
+            q = supabase.from(TABLE).select('id, name, email, role, is_active, password_change_required, created_at, updated_at, last_login_date');
             if (query.role) q = q.eq('role', query.role);
             if (query.isActive !== undefined) q = q.eq('is_active', query.isActive);
         }
@@ -51,6 +51,7 @@ const User = {
             password: hashedPassword,
             role: obj.role || 'cashier',
             is_active: obj.isActive !== undefined ? obj.isActive : true,
+            password_change_required: obj.passwordChangeRequired !== undefined ? obj.passwordChangeRequired : false,
         };
         const { data, error } = await supabase.from(TABLE).insert(row).select().single();
         if (error) throw error;
@@ -63,6 +64,7 @@ const User = {
         if (updates.email !== undefined) row.email = updates.email.toLowerCase();
         if (updates.role !== undefined) row.role = updates.role;
         if (updates.isActive !== undefined) row.is_active = updates.isActive;
+        if (updates.passwordChangeRequired !== undefined) row.password_change_required = updates.passwordChangeRequired;
         if (updates.password) {
             const salt = await bcrypt.genSalt(10);
             row.password = await bcrypt.hash(updates.password, salt);
@@ -107,6 +109,7 @@ const User = {
             password: row.password,
             role: row.role,
             isActive: row.is_active,
+            mustChangePassword: row.password_change_required || false,
             createdAt: row.created_at,
             updatedAt: row.updated_at,
             lastLoginDate: row.last_login_date,

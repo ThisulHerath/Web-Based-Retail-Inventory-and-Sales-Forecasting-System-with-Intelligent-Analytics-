@@ -65,7 +65,12 @@ const Login = () => {
         const result = await login(email, password);
 
         if (result.success) {
-            navigate('/admin/dashboard');
+            const sessionUser = JSON.parse(localStorage.getItem('user') || '{}');
+            if (sessionUser?.mustChangePassword) {
+                navigate('/admin/change-password');
+            } else {
+                navigate('/admin/dashboard');
+            }
         } else {
             if (['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(result.code) && result.retryAfterSeconds) {
                 setToast({

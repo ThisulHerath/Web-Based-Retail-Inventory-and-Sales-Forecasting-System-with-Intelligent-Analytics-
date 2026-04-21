@@ -259,6 +259,7 @@ const Users = () => {
                             <th className="px-6 py-4 font-semibold text-gray-600">User</th>
                             <th className="px-6 py-4 font-semibold text-gray-600">Role</th>
                             <th className="px-6 py-4 font-semibold text-gray-600">Status</th>
+                            <th className="px-6 py-4 font-semibold text-gray-600">Password</th>
                             <th className="px-6 py-4 font-semibold text-gray-600">Last Login</th>
                             <th className="px-6 py-4 font-semibold text-gray-600">Joined</th>
                             <th className="px-6 py-4 font-semibold text-gray-600 text-right">Actions</th>
@@ -267,13 +268,13 @@ const Users = () => {
                     <tbody className="divide-y divide-gray-50">
                         {loading ? (
                             <tr>
-                                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                                <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
                                     Loading users...
                                 </td>
                             </tr>
                         ) : displayUsers.length === 0 ? (
                             <tr>
-                                <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                                <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
                                     No users found
                                 </td>
                             </tr>
@@ -291,6 +292,17 @@ const Users = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <StatusBadge isActive={user.isActive} />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {user.mustChangePassword ? (
+                                            <span className="inline-flex items-center rounded-full bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1">
+                                                Reset Required
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1">
+                                                Up to Date
+                                            </span>
+                                        )}
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">
                                         {user.lastLoginDate
@@ -328,7 +340,7 @@ const Users = () => {
                                                 <button
                                                     onClick={() => handleResendClick(user)}
                                                     className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#c5a600] hover:bg-[#fffdf0] border border-transparent hover:border-[#f5d800] rounded-lg transition-colors"
-                                                    title="Resend Welcome Email"
+                                                    title="Reset Password and Resend Email"
                                                 >
                                                     <Mail className="w-4 h-4" />
                                                     Resend
@@ -362,11 +374,14 @@ const Users = () => {
                                 <Mail className="w-6 h-6 text-blue-600" />
                             </div>
                             <div>
-                                <h2 className="text-4xl font-bold text-blue-600 leading-tight">Resend Welcome Email?</h2>
+                                <h2 className="text-4xl font-bold text-blue-600 leading-tight">Reset Password and Resend Email?</h2>
                             </div>
                         </div>
                         <p className="text-gray-700 text-xl font-semibold leading-snug mb-7">
-                            Are you sure you want to generate a new password and resend the welcome email to {userToResend?.name}?
+                            This will override the user&apos;s current password immediately, generate a new temporary password, and send it by email to {userToResend?.name}.
+                        </p>
+                        <p className="text-amber-700 text-sm font-medium mb-7 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                            Use this only when the staff member forgot the password or cannot access the account.
                         </p>
                         <div className="flex justify-end gap-4">
                             <button
@@ -386,7 +401,7 @@ const Users = () => {
                                 disabled={isResendingEmail}
                                 className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isResendingEmail ? 'Resending...' : 'Resend Email'}
+                                {isResendingEmail ? 'Resetting...' : 'Reset & Resend'}
                             </button>
                         </div>
                     </div>

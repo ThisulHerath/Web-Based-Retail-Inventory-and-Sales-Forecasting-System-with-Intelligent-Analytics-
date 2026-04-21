@@ -70,9 +70,46 @@ export const login = async (req, res) => {
             email: user.email,
             role: user.role,
             isActive: user.isActive,
+            mustChangePassword: user.mustChangePassword,
             token,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Change own password (staff)
+// @route   POST /api/auth/change-password
+// @access  Private
+export const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isCurrentPasswordValid = await user.comparePassword(currentPassword);
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({ message: 'Current password is incorrect' });
+        }
+
+        const isSameAsCurrent = await user.comparePassword(newPassword);
+        if (isSameAsCurrent) {
+            return res.status(400).json({ message: 'New password must be different from current password' });
+        }
+
+        await User.updateById(user._id, {
+            password: newPassword,
+            passwordChangeRequired: false,
+        });
+
+        return res.status(200).json({
+            message: 'Password changed successfully',
+            mustChangePassword: false,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 };

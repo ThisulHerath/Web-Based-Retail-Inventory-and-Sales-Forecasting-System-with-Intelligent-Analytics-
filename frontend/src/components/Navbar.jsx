@@ -1,4 +1,4 @@
-import { LogOut, User } from 'lucide-react';
+import { KeyRound, LogOut, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -11,6 +11,10 @@ const Navbar = () => {
 
     const handleLogoutClick = () => {
         setShowLogoutConfirm(true);
+    };
+
+    const handleChangePasswordClick = () => {
+        navigate('/admin/change-password');
     };
 
     const confirmLogout = () => {
@@ -43,6 +47,14 @@ const Navbar = () => {
                             <p className="text-xs text-white/70 capitalize font-semibold">{user?.role}</p>
                         </div>
                     </div>
+
+                    <button
+                        onClick={handleChangePasswordClick}
+                        className="flex items-center gap-2 px-4 py-3 bg-[#f5d800] hover:bg-[#e6c700] text-[#155c27] rounded-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                    >
+                        <KeyRound className="w-5 h-5" />
+                        <span>Change Password</span>
+                    </button>
 
                     <button
                         onClick={handleLogoutClick}

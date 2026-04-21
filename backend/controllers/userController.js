@@ -69,6 +69,7 @@ export const createUser = async (req, res) => {
             password,
             role: role || 'cashier',
             isActive: isActive !== undefined ? isActive : true,
+            passwordChangeRequired: true,
         });
 
         // NEW: Try sending the welcome email in the background
@@ -95,6 +96,7 @@ export const createUser = async (req, res) => {
             email: user.email,
             role: user.role,
             isActive: user.isActive,
+            mustChangePassword: user.mustChangePassword,
             emailSent: emailSent,
             emailErrorMessage,
         });
@@ -130,6 +132,7 @@ export const updateUser = async (req, res) => {
             email: updatedUser.email,
             role: updatedUser.role,
             isActive: updatedUser.isActive,
+            mustChangePassword: updatedUser.mustChangePassword,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -255,6 +258,7 @@ export const resendWelcomeEmail = async (req, res) => {
 
         await User.updateById(req.params.id, {
             password: temporaryPassword,
+            passwordChangeRequired: true,
         });
 
         const emailHtml = getWelcomeEmailTemplate(user.name, user.role, user.email, temporaryPassword);
@@ -267,6 +271,7 @@ export const resendWelcomeEmail = async (req, res) => {
         return res.status(200).json({
             message: `Welcome email resent successfully to ${user.email}`,
             emailSent: true,
+            mustChangePassword: true,
         });
     } catch (error) {
         return res.status(500).json({ message: error.message });

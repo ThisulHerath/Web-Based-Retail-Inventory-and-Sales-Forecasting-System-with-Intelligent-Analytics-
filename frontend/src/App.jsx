@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Admin pages
 import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
+import ChangePassword from './pages/admin/ChangePassword';
 import AIPrediction from './pages/admin/AIPrediction';
 import SalesList from './pages/sales/SalesList';
 import CreateSale from './pages/sales/CreateSale';
@@ -101,6 +102,7 @@ function App() {
             >
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
+                <Route path="change-password" element={<ChangePassword />} />
 
                 {/* AI Prediction Route (Admin Only) */}
                 <Route

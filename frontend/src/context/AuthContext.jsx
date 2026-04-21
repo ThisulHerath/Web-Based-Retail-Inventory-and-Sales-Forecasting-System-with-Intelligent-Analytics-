@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { login as loginService } from '../services/authService';
+import { login as loginService, changePassword as changePasswordService } from '../services/authService';
 import useIdleLogout from '../hooks/useIdleLogout';
 
 const IDLE_LOGOUT_TIMEOUT_MS = 4 * 60 * 1000;
@@ -70,6 +70,41 @@ export const AuthProvider = ({ children }) => {
         window.dispatchEvent(new Event('storage'));
     };
 
+    const updateSessionUser = (partialData) => {
+        if (!user) return;
+        const updatedUser = { ...user, ...partialData };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+    };
+
+    const changePassword = async (currentPassword, newPassword, confirmNewPassword) => {
+        try {
+            const data = await changePasswordService(currentPassword, newPassword, confirmNewPassword);
+            updateSessionUser({ mustChangePassword: false });
+            return { success: true, message: data?.message || 'Password changed successfully' };
+        } catch (error) {
+            const validationErrors = error.response?.data?.errors;
+            const fieldErrors = {};
+
+            if (Array.isArray(validationErrors)) {
+                validationErrors.forEach((entry) => {
+                    if (entry?.field) {
+                        fieldErrors[entry.field] = entry.message || 'Invalid value';
+                    }
+                });
+            }
+
+            return {
+                success: false,
+                message:
+                    Object.values(fieldErrors)[0]
+                    || error.response?.data?.message
+                    || 'Failed to change password',
+                fieldErrors,
+            };
+        }
+    };
+
     useIdleLogout({
         enabled: Boolean(user),
         timeoutMs: IDLE_LOGOUT_TIMEOUT_MS,
@@ -86,6 +121,8 @@ export const AuthProvider = ({ children }) => {
         user,
         login,
         logout,
+        changePassword,
+        updateSessionUser,
         loading,
         isAdmin,
         isManager,

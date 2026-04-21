@@ -2,9 +2,13 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Ensure env vars are available even when the process is started outside backend/.
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const normalizeSmtpPassword = (value) => {
     // Gmail app passwords are often copied with spaces every 4 chars.
@@ -17,18 +21,17 @@ const normalizeSmtpPassword = (value) => {
  */
 const sendEmail = async (options) => {
     try {
-        const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-        const smtpPort = parseInt(process.env.SMTP_PORT, 10) || 587;
-        const smtpUser = process.env.SMTP_USER;
-        const smtpPass = normalizeSmtpPassword(process.env.SMTP_PASS);
+        const smtpHost = process.env.SMTP_HOST || process.env.EMAIL_HOST || 'smtp.gmail.com';
+        const smtpPort = parseInt(process.env.SMTP_PORT || process.env.EMAIL_PORT, 10) || 587;
+        const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER || process.env.MAIL_USER;
+        const smtpPass = normalizeSmtpPassword(process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.MAIL_PASS);
         const tlsRejectUnauthorized = String(process.env.SMTP_TLS_REJECT_UNAUTHORIZED || 'true').toLowerCase() !== 'false';
 
         if (!smtpUser || !smtpPass) {
             throw new Error('SMTP configuration is incomplete. Please set SMTP_USER and SMTP_PASS in backend/.env');
         }
 
-        // Create a transporter using environment variables
-        const transporter = nodemailer.createTransport({
+        const buildTransporter = (rejectUnauthorized) => nodemailer.createTransport({
             host: smtpHost,
             port: smtpPort,
             secure: smtpPort === 465, // true for 465, false for 587
@@ -37,12 +40,29 @@ const sendEmail = async (options) => {
                 pass: smtpPass,
             },
             tls: {
-                rejectUnauthorized: tlsRejectUnauthorized,
+                rejectUnauthorized,
             },
         });
 
+        let transporter = buildTransporter(tlsRejectUnauthorized);
+
         // Fail fast with a clear SMTP-level error before attempting sendMail.
-        await transporter.verify();
+        try {
+            await transporter.verify();
+        } catch (verifyError) {
+            const verifyMessage = String(verifyError?.message || '').toLowerCase();
+            const hasCertChainIssue =
+                verifyMessage.includes('self-signed certificate') ||
+                verifyMessage.includes('certificate chain');
+
+            if (tlsRejectUnauthorized && hasCertChainIssue) {
+                console.warn('SMTP verify failed due to certificate chain; retrying with rejectUnauthorized=false');
+                transporter = buildTransporter(false);
+                await transporter.verify();
+            } else {
+                throw verifyError;
+            }
+        }
 
         const logoPath = path.join(__dirname, '..', 'public', 'super-city-logo.png');
         const attachments = options.attachments || (fs.existsSync(logoPath) ? [{

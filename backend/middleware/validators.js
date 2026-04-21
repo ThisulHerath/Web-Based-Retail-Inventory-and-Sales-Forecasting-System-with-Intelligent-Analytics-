@@ -58,6 +58,19 @@ export const validateLogin = [
     handleValidation,
 ];
 
+export const validateChangePassword = [
+    body('currentPassword').isString().notEmpty().withMessage('Current password is required'),
+    passwordPolicyValidator('newPassword'),
+    body('confirmNewPassword').isString().notEmpty().withMessage('Confirm password is required'),
+    body('confirmNewPassword').custom((value, { req }) => {
+        if (value !== req.body.newPassword) {
+            throw new Error('Confirm password must match new password');
+        }
+        return true;
+    }),
+    handleValidation,
+];
+
 export const validateCreateUser = [
     body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
     body('email').isEmail().withMessage('Valid email is required'),
