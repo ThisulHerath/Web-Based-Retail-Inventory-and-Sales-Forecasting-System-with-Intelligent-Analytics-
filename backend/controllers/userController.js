@@ -261,7 +261,7 @@ export const resendWelcomeEmail = async (req, res) => {
             passwordChangeRequired: true,
         });
 
-        const emailHtml = getWelcomeEmailTemplate(user.name, user.role, user.email, temporaryPassword);
+        const emailHtml = getWelcomeEmailTemplate(user.name, user.role, user.email, temporaryPassword, 'Your New Password');
         await sendEmail({
             email: user.email,
             subject: 'Welcome Back to 7 Super City POS - Your Updated Login Details',
