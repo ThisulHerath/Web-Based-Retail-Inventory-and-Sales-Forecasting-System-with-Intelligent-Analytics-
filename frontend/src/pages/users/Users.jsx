@@ -96,7 +96,7 @@ const Users = () => {
             setShowResendModal(false);
             setUserToResend(null);
         } catch (error) {
-            setToast({ type: 'error', message: error.response?.data?.message || 'Failed to resend welcome email' });
+            setToast({ type: 'error', message: error.response?.data?.message || 'Failed to reset password' });
         } finally {
             setIsResendingEmail(false);
         }
@@ -340,10 +340,10 @@ const Users = () => {
                                                 <button
                                                     onClick={() => handleResendClick(user)}
                                                     className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#c5a600] hover:bg-[#fffdf0] border border-transparent hover:border-[#f5d800] rounded-lg transition-colors"
-                                                    title="Reset Password and Resend Email"
+                                                    title="Reset Password & Send New Password by Email"
                                                 >
                                                     <Mail className="w-4 h-4" />
-                                                    Resend
+                                                    Reset Password
                                                 </button>
                                             )}
                                             {user._id !== currentUser._id && (
@@ -365,7 +365,7 @@ const Users = () => {
                 </table>
             </div>
 
-            {/* Resend Welcome Email Confirmation Modal */}
+            {/* Reset Password Confirmation Modal */}
             {showResendModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 animate-fade-in border border-gray-100">
@@ -374,11 +374,11 @@ const Users = () => {
                                 <Mail className="w-6 h-6 text-blue-600" />
                             </div>
                             <div>
-                                <h2 className="text-4xl font-bold text-blue-600 leading-tight">Reset Password and Resend Email?</h2>
+                                <h2 className="text-4xl font-bold text-blue-600 leading-tight">Reset Password?</h2>
                             </div>
                         </div>
                         <p className="text-gray-700 text-xl font-semibold leading-snug mb-7">
-                            This will override the user&apos;s current password immediately, generate a new temporary password, and send it by email to {userToResend?.name}.
+                            This will reset <strong>{userToResend?.name}</strong>&apos;s password immediately and send the new password to their email.
                         </p>
                         <p className="text-amber-700 text-sm font-medium mb-7 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                             Use this only when the staff member forgot the password or cannot access the account.
@@ -401,7 +401,7 @@ const Users = () => {
                                 disabled={isResendingEmail}
                                 className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isResendingEmail ? 'Resetting...' : 'Reset & Resend'}
+                                {isResendingEmail ? 'Resetting...' : 'Reset Password'}
                             </button>
                         </div>
                     </div>
