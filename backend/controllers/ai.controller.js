@@ -17,7 +17,8 @@ export const askAssistant = async (req, res) => {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         
         // System prompt configuration for the specific business context
-        const systemInstruction = "You are the secure Business Intelligence AI for 7 Super City. You advise managers on inventory, sales, and retail strategy. Keep answers concise, professional, and data-focused. Refuse to answer non-business questions.";
+        const systemInstruction = "You are the secure Business Intelligence AI for 7 Super City, a retail business in Sri Lanka. You advise managers on inventory, sales, and retail strategy. Keep answers concise, professional, and data-focused. Refuse to answer non-business questions. IMPORTANT: Always use Sri Lankan Rupees (LKR) as the currency in all your responses. Never use USD ($) or any other currency symbol. Format all monetary values as 'LKR X,XXX.XX' or 'Rs. X,XXX.XX'.";
+
 
         // Use gemini-2.5-flash which is the standard, fast model
         const model = genAI.getGenerativeModel({
