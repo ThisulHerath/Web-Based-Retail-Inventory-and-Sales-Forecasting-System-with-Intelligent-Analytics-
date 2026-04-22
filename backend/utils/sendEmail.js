@@ -92,7 +92,7 @@ const sendEmail = async (options) => {
 /**
  * Returns the HTML template for the 7 Super City Welcome Email.
  */
-export const getWelcomeEmailTemplate = (name, role, email, password) => {
+export const getWelcomeEmailTemplate = (name, role, email, password, passwordLabel = 'Temporary Password') => {
     return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
         <div style="background-color: #1e7a34; padding: 20px; text-align: center;">
@@ -106,7 +106,7 @@ export const getWelcomeEmailTemplate = (name, role, email, password) => {
             <div style="background-color: #f8f9fa; border-left: 4px solid #1e7a34; padding: 15px; margin: 25px 0;">
                 <p style="margin: 0 0 10px 0; font-size: 16px; color: #555;"><strong>Your official login details:</strong></p>
                 <p style="margin: 0 0 5px 0; font-size: 18px;">Email: <strong>${email}</strong></p>
-                <p style="margin: 0; font-size: 18px;">Temporary Password: <strong>${password}</strong></p>
+                <p style="margin: 0; font-size: 18px;">${passwordLabel}: <strong>${password}</strong></p>
             </div>
             
             <p style="color: #e74c3c; font-size: 15px; font-weight: bold;">
