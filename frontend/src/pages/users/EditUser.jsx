@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { updateUser, getAllUsers } from '../../services/userService'; // Assuming single user fetch isn't separate, but if needed I can filter or fetch. Actually, I only have getAll.
@@ -103,7 +104,7 @@ const EditUser = () => {
             </div>
 
             <div className="max-w-2xl bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Full Name
@@ -183,7 +184,7 @@ const EditUser = () => {
                             <span>{saving ? 'Saving...' : 'Save Changes'}</span>
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
 
             {toast && (

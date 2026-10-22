@@ -1,67 +1,54 @@
+import useFocusTrap from '../hooks/useFocusTrap';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import BusinessAssistantBot from '../components/BusinessAssistantBot';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { ChevronRight } from 'lucide-react';
 
 const DashboardLayout = ({ children }) => {
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-        return localStorage.getItem('adminSidebarCollapsed') === 'true';
-    });
-
-    // Force light mode for admin dashboard
+    const { pathname } = useLocation();
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('adminSidebarCollapsed') === 'true');
+    const [mobileOpen, setMobileOpen] = useState(false);
+    useFocusTrap(mobileOpen, '#admin-navigation', () => setMobileOpen(false));
     useEffect(() => {
-        const root = document.documentElement;
-        root.classList.remove('dark');
-        root.classList.add('light');
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
     }, []);
-
+    useEffect(() => localStorage.setItem('adminSidebarCollapsed', String(isSidebarCollapsed)), [isSidebarCollapsed]);
+    useEffect(() => setMobileOpen(false), [pathname]);
     useEffect(() => {
-        localStorage.setItem('adminSidebarCollapsed', String(isSidebarCollapsed));
-    }, [isSidebarCollapsed]);
-
+        if (!mobileOpen) return;
+        const previous = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        const close = (event) => { if (event.key === 'Escape') setMobileOpen(false); };
+        document.addEventListener('keydown', close);
+        return () => { document.body.style.overflow = previous; document.removeEventListener('keydown', close); };
+    }, [mobileOpen]);
+    const segments = pathname.split('/').filter(Boolean).slice(1);
+    const label = (segment) => segment === 'ai-prediction' ? 'AI Prediction' : segment.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     return (
-        <div className="flex min-h-screen">
-            <Sidebar
-                isCollapsed={isSidebarCollapsed}
-                onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
-            />
-            <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-24' : 'ml-64'}`}>
-                <Navbar />
-                <main 
-                    className="p-6 relative min-h-[calc(100vh-73px)]"
-                    style={{
-                        background: `
-                            linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(245, 245, 245, 0.95) 100%),
-                            url('/7supercity-logo.jpg')
-                        `,
-                        backgroundSize: '120%, cover',
-                        backgroundPosition: 'center 20%',
-                        backgroundAttachment: 'fixed',
-                    }}
-                >
-                    {/* Blurred background overlay */}
-                    <div
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                            backgroundImage: `url('/7supercity-logo.jpg')`,
-                            backgroundSize: '120%',
-                            backgroundPosition: 'center 20%',
-                            backgroundAttachment: 'fixed',
-                            filter: 'blur(12px)',
-                            opacity: 0.15,
-                            zIndex: 0,
-                        }}
-                    />
-                    
-                    {/* Content wrapper with higher z-index */}
-                    <div className="relative z-10">
-                        {children}
-                    </div>
+        <div className={`admin-shell ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+            <a href="#main-content" className="skip-link">Skip to content</a>
+            {mobileOpen && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
+            <Sidebar isCollapsed={isSidebarCollapsed && !mobileOpen} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)} />
+            <div className="admin-workspace" inert={mobileOpen ? '' : undefined}>
+                <Navbar mobileOpen={mobileOpen} onMenuClick={() => setMobileOpen(prev => !prev)} />
+                <main id="main-content" className="admin-main" tabIndex={-1}>
+                    <nav aria-label="Breadcrumb" className="breadcrumbs no-print">
+                        <Link to="/admin/dashboard">Workspace</Link>
+                        {segments.map((segment, index) => (
+                            <span key={index} className="inline-flex items-center gap-2">
+                                <ChevronRight size={14} aria-hidden="true" />
+                                {index === 0 && segments.length > 1 ? <Link to={`/admin/${segment}`}>{label(segment)}</Link> : <span aria-current={index === segments.length - 1 ? 'page' : undefined}>{/^[a-f\d]{24}$/i.test(segment) ? 'Details' : label(segment)}</span>}
+                            </span>
+                        ))}
+                    </nav>
+                    <div key={pathname} className="page-content route-enter"><Suspense fallback={<div role="status" className="route-loading">Loading workspace…</div>}>{children}</Suspense></div>
                 </main>
             </div>
             <BusinessAssistantBot />
         </div>
     );
 };
-
 export default DashboardLayout;

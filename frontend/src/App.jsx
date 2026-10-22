@@ -1,53 +1,54 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import RouteExperience from './components/RouteExperience';
 import DashboardLayout from './layouts/DashboardLayout';
 import PublicLayout from './layouts/PublicLayout';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Admin pages
-import Login from './pages/admin/Login';
-import Dashboard from './pages/admin/Dashboard';
-import ChangePassword from './pages/admin/ChangePassword';
-import AIPrediction from './pages/admin/AIPrediction';
-import SalesList from './pages/sales/SalesList';
-import CreateSale from './pages/sales/CreateSale';
-import ViewSale from './pages/sales/ViewSale';
-import EditSale from './pages/sales/EditSale';
-import Users from './pages/users/Users';
-import CreateUser from './pages/users/CreateUser';
-import EditUser from './pages/users/EditUser';
-import Products from './pages/inventory/Products';
-import CreateProduct from './pages/inventory/CreateProduct';
-import EditProduct from './pages/inventory/EditProduct';
-import StockIn from './pages/inventory/StockIn';
-import StockOut from './pages/inventory/StockOut';
-import StockHistory from './pages/inventory/StockHistory';
-import Suppliers from './pages/suppliers/Suppliers';
-import CreateSupplier from './pages/suppliers/CreateSupplier';
-import EditSupplier from './pages/suppliers/EditSupplier';
-import ViewSupplier from './pages/suppliers/ViewSupplier';
-import Purchases from './pages/purchases/Purchases';
-import CreatePurchase from './pages/purchases/CreatePurchase';
-import ViewPurchase from './pages/purchases/ViewPurchase';
-import Categories from './pages/categories/Categories';
-import CreateCategory from './pages/categories/CreateCategory';
-import EditCategory from './pages/categories/EditCategory';
-import Inventory from './pages/inventory/Inventory';
-import InventoryReports from './pages/inventory/InventoryReports';
-import Customers from './pages/customers/Customers';
-import EditCustomer from './pages/customers/EditCustomer';
-import ValidateCoupon from './pages/coupons/ValidateCoupon';
+const Login = lazy(() => import('./pages/admin/Login'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const ChangePassword = lazy(() => import('./pages/admin/ChangePassword'));
+const AIPrediction = lazy(() => import('./pages/admin/AIPrediction'));
+const SalesList = lazy(() => import('./pages/sales/SalesList'));
+const CreateSale = lazy(() => import('./pages/sales/CreateSale'));
+const ViewSale = lazy(() => import('./pages/sales/ViewSale'));
+const EditSale = lazy(() => import('./pages/sales/EditSale'));
+const Users = lazy(() => import('./pages/users/Users'));
+const CreateUser = lazy(() => import('./pages/users/CreateUser'));
+const EditUser = lazy(() => import('./pages/users/EditUser'));
+const Products = lazy(() => import('./pages/inventory/Products'));
+const CreateProduct = lazy(() => import('./pages/inventory/CreateProduct'));
+const EditProduct = lazy(() => import('./pages/inventory/EditProduct'));
+const StockIn = lazy(() => import('./pages/inventory/StockIn'));
+const StockOut = lazy(() => import('./pages/inventory/StockOut'));
+const StockHistory = lazy(() => import('./pages/inventory/StockHistory'));
+const Suppliers = lazy(() => import('./pages/suppliers/Suppliers'));
+const CreateSupplier = lazy(() => import('./pages/suppliers/CreateSupplier'));
+const EditSupplier = lazy(() => import('./pages/suppliers/EditSupplier'));
+const ViewSupplier = lazy(() => import('./pages/suppliers/ViewSupplier'));
+const Purchases = lazy(() => import('./pages/purchases/Purchases'));
+const CreatePurchase = lazy(() => import('./pages/purchases/CreatePurchase'));
+const ViewPurchase = lazy(() => import('./pages/purchases/ViewPurchase'));
+const Categories = lazy(() => import('./pages/categories/Categories'));
+const CreateCategory = lazy(() => import('./pages/categories/CreateCategory'));
+const EditCategory = lazy(() => import('./pages/categories/EditCategory'));
+const Inventory = lazy(() => import('./pages/inventory/Inventory'));
+const InventoryReports = lazy(() => import('./pages/inventory/InventoryReports'));
+const Customers = lazy(() => import('./pages/customers/Customers'));
+const EditCustomer = lazy(() => import('./pages/customers/EditCustomer'));
+const ValidateCoupon = lazy(() => import('./pages/coupons/ValidateCoupon'));
 
 // Public pages
-import Home from './pages/public/Home';
-import Feedback from './pages/public/Feedback';
-import PublicProducts from './pages/public/PublicProducts';
-import Cart from './pages/public/Cart';
-import CustomerLogin from './pages/customer/CustomerLogin';
-import CustomerRegister from './pages/customer/CustomerRegister';
-import CustomerDashboard from './pages/customer/CustomerDashboard';
+const Home = lazy(() => import('./pages/public/Home'));
+const Feedback = lazy(() => import('./pages/public/Feedback'));
+const PublicProducts = lazy(() => import('./pages/public/PublicProducts'));
+const Cart = lazy(() => import('./pages/public/Cart'));
+const CustomerLogin = lazy(() => import('./pages/customer/CustomerLogin'));
+const CustomerRegister = lazy(() => import('./pages/customer/CustomerRegister'));
+const CustomerDashboard = lazy(() => import('./pages/customer/CustomerDashboard'));
 
 function App() {
     const { user, loading } = useAuth();
@@ -69,6 +70,9 @@ function App() {
     }
 
     return (
+        <>
+        <RouteExperience />
+        <Suspense fallback={<div role="status" className="route-loading">Loading page…</div>}>
         <Routes>
             {/* ========== PUBLIC WEBSITE ROUTES ========== */}
             <Route element={<PublicLayout />}>
@@ -374,6 +378,8 @@ function App() {
             {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
+        </>
     );
 }
 

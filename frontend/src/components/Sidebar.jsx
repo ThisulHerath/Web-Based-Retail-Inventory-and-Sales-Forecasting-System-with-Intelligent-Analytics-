@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users, ShoppingBag, Truck, ClipboardList, Tag, Layers, UserCheck, Gift, PanelLeftClose, PanelLeftOpen, BrainCircuit } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, ShoppingBag, Truck, ClipboardList, Tag, Layers, UserCheck, Gift, PanelLeftClose, PanelLeftOpen, BrainCircuit, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import BrandLogo from './BrandLogo';
 
-const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
+const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, onClose }) => {
     const location = useLocation();
     const { user, hasRole } = useAuth();
 
@@ -122,10 +122,11 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
     };
 
     return (
-        <aside className={`bg-[#155c27] text-white min-h-screen fixed left-0 top-0 transition-all duration-300 shadow-2xl ${isCollapsed ? 'w-24' : 'w-64'}`}>
+        <aside id="admin-navigation" aria-label="Main navigation" className={`admin-sidebar ${mobileOpen ? 'is-open' : ''} bg-[#155c27] text-white min-h-screen fixed left-0 top-0 transition-all duration-300 shadow-2xl ${isCollapsed ? 'w-24' : 'w-64'}`}>
             <div className={`flex ${isCollapsed ? 'flex-col items-center' : 'flex-col'}`}>
                 {/* Header Section with Toggle Button */}
                 <div className={`w-full px-4 py-6 border-b border-white/10 ${isCollapsed ? 'flex flex-col items-center gap-4' : 'flex items-start justify-between gap-3'}`}>
+                    <button type="button" onClick={onClose} className="mobile-sidebar-close" aria-label="Close navigation"><X size={20} /></button>
                     {/* Logo */}
                     <div className={`flex items-center justify-center ${isCollapsed ? 'w-full' : ''}`}>
                         {!isCollapsed ? (
@@ -198,9 +199,11 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse }) => {
                                         <Link
                                             key={item.path}
                                             to={item.path}
+                                            aria-current={active ? 'page' : undefined}
+                                            onClick={onClose}
                                             title={item.name}
                                             className={`group relative flex items-center ${isCollapsed ? 'justify-center w-full' : 'justify-start gap-3'} px-3 py-2.5 rounded-lg transition-all duration-200 transform ${active
-                                                ? 'bg-[#f5d800] text-[#155c27] font-bold shadow-lg scale-105'
+                                                ? 'bg-[#f5d800] text-[#155c27] font-bold shadow-sm'
                                                 : 'text-gray-200 hover:bg-white/10 hover:text-white'
                                                 }`}
                                         >

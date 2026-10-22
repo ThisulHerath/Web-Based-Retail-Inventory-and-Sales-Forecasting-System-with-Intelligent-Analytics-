@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -55,6 +56,7 @@ const CreateSupplier = () => {
             setToast({ message: 'Supplier created successfully', type: 'success' });
             setTimeout(() => navigate('/admin/suppliers'), 1500);
         } catch (error) {
+            setLoading(false);
             if (error.response?.data?.code === 'VALIDATION_ERROR') {
                 const serverErrs = {};
                 error.response.data.errors?.forEach((e) => { serverErrs[e.field] = e.message; });
@@ -62,8 +64,6 @@ const CreateSupplier = () => {
             } else {
                 setToast({ message: error.response?.data?.message || 'Error creating supplier', type: 'error' });
             }
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -82,36 +82,36 @@ const CreateSupplier = () => {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} noValidate>
+                <ValidatedForm onSubmit={handleSubmit} noValidate>
                     <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100 space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Supplier Name *</label>
-                                <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange}
+                                <input required type="text" name="supplierName" value={formData.supplierName} onChange={handleChange}
                                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.supplierName ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.supplierName && <p className="mt-1 text-xs text-red-500">{fieldErrors.supplierName}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
-                                <input type="text" name="companyName" value={formData.companyName} onChange={handleChange}
+                                <input required type="text" name="companyName" value={formData.companyName} onChange={handleChange}
                                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.companyName ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.companyName && <p className="mt-1 text-xs text-red-500">{fieldErrors.companyName}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleChange}
+                                <input required type="email" name="email" value={formData.email} onChange={handleChange}
                                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.email && <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
-                                <input type="text" name="phone" value={formData.phone} onChange={handleChange}
+                                <input required type="tel" name="phone" value={formData.phone} onChange={handleChange}
                                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.phone ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.phone && <p className="mt-1 text-xs text-red-500">{fieldErrors.phone}</p>}
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Address *</label>
-                                <textarea name="address" value={formData.address} onChange={handleChange} rows={3}
+                                <textarea required name="address" value={formData.address} onChange={handleChange} rows={3}
                                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none resize-none ${fieldErrors.address ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.address && <p className="mt-1 text-xs text-red-500">{fieldErrors.address}</p>}
                             </div>
@@ -124,7 +124,7 @@ const CreateSupplier = () => {
                             </button>
                         </div>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

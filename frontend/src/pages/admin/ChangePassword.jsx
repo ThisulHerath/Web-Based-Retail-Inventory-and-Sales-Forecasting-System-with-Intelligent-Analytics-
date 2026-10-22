@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, ShieldCheck } from 'lucide-react';
@@ -112,7 +113,7 @@ const ChangePassword = () => {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-4">
                     <div className="rounded-lg border border-[#f5d800]/40 bg-[#f5d800]/10 p-3 text-sm text-gray-700">
                         <p className="font-semibold text-[#155c27] mb-1">Password rules :</p>
                         <ul className="list-disc ml-5 space-y-1">
@@ -196,7 +197,7 @@ const ChangePassword = () => {
                             {loading ? 'Updating...' : 'Update Password'}
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

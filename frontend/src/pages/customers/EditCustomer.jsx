@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -58,9 +59,8 @@ const EditCustomer = () => {
             setToast({ message: 'Customer updated successfully', type: 'success' });
             setTimeout(() => navigate('/admin/customers'), 1500);
         } catch (error) {
-            setToast({ message: error.response?.data?.message || 'Error updating customer', type: 'error' });
-        } finally {
             setSaving(false);
+            setToast({ message: error.response?.data?.message || 'Error updating customer', type: 'error' });
         }
     };
 
@@ -95,7 +95,7 @@ const EditCustomer = () => {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+            <ValidatedForm onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
                 <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100 space-y-4">
                     <h2 className="text-xl font-bold text-gray-800 mb-2">Customer Information</h2>
 
@@ -178,7 +178,7 @@ const EditCustomer = () => {
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>
-            </form>
+            </ValidatedForm>
         </div>
     );
 };

@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -21,8 +22,9 @@ const CreateCategory = () => {
             setToast({ message: 'Category created!', type: 'success' });
             setTimeout(() => navigate('/admin/categories'), 1200);
         } catch (err) {
+            setLoading(false);
             setToast({ message: err.response?.data?.message || 'Error creating category', type: 'error' });
-        } finally { setLoading(false); }
+        }
     };
 
     return (
@@ -35,7 +37,7 @@ const CreateCategory = () => {
                     <p className="text-gray-600">Add a new product category</p>
                 </div>
             </div>
-            <form onSubmit={handleSubmit} className="max-w-lg bg-white rounded-xl shadow-md p-8 border border-gray-100 space-y-5">
+            <ValidatedForm onSubmit={handleSubmit} className="max-w-lg bg-white rounded-xl shadow-md p-8 border border-gray-100 space-y-5">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Category Name *</label>
                     <input value={form.categoryName} onChange={(e) => setForm({ ...form, categoryName: e.target.value })}
@@ -56,7 +58,7 @@ const CreateCategory = () => {
                         {loading ? 'Saving...' : 'Create Category'}
                     </button>
                 </div>
-            </form>
+            </ValidatedForm>
         </div>
     );
 };

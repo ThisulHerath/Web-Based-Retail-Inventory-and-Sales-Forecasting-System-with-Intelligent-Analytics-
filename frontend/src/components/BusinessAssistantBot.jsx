@@ -15,11 +15,6 @@ const BusinessAssistantBot = () => {
     const messagesEndRef = useRef(null);
     const botRef = useRef(null);
 
-    // Only render for admin and manager roles
-    if (!user || user.role === 'cashier') {
-        return null;
-    }
-
     // Auto-scroll to latest message
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -73,6 +68,11 @@ const BusinessAssistantBot = () => {
         }
     };
 
+    // Only render for admin and manager roles
+    if (!user || user.role === 'cashier') {
+        return null;
+    }
+
     return (
         <div ref={botRef} className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans pointer-events-none">
 
@@ -81,7 +81,8 @@ const BusinessAssistantBot = () => {
                 className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] origin-bottom-right mb-6 bg-white rounded-[28px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.25)] border border-gray-200 overflow-hidden w-[340px] sm:w-[400px] flex flex-col ${
                     isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-[0.92] translate-y-8 pointer-events-none'
                 }`}
-                style={{ height: '560px' }}
+                aria-hidden={!isOpen}
+                style={{ height: 'min(560px, calc(100dvh - 120px))', maxWidth: 'calc(100vw - 48px)', visibility: isOpen ? 'visible' : 'hidden' }}
             >
                 {/* Header */}
                 <div

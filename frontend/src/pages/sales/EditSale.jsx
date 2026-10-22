@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Plus, Trash2, ArrowLeft } from 'lucide-react';
@@ -176,7 +177,7 @@ const EditSale = () => {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                         <h2 className="text-xl font-bold text-gray-800 mb-4">Customer Information</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -198,7 +199,7 @@ const EditSale = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Payment Method *
                                 </label>
-                                <select
+                                <select required
                                     value={formData.paymentMethod}
                                     onChange={(e) =>
                                         setFormData({ ...formData, paymentMethod: e.target.value })
@@ -235,7 +236,7 @@ const EditSale = () => {
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
                                             Product *
                                         </label>
-                                        <select
+                                        <select required
                                             value={item.productId}
                                             onChange={(e) =>
                                                 handleItemChange(index, 'productId', e.target.value)
@@ -254,7 +255,7 @@ const EditSale = () => {
                                         <label className="block text-sm font-medium text-gray-700 mb-2">
                                             Quantity *
                                         </label>
-                                        <input
+                                        <input required
                                             type="number"
                                             min="1"
                                             max={item.productId && Number(item.maxStock) > 0 ? item.maxStock : undefined}
@@ -343,7 +344,7 @@ const EditSale = () => {
                             {loading ? 'Updating...' : 'Update Sale'}
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, User, MapPin, Phone, Mail, Instagram, Facebook, Twitter, Menu, X, ArrowUp } from 'lucide-react';
 import { useCustomer } from '../context/CustomerContext';
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import BrandLogo from '../components/BrandLogo';
 
@@ -24,23 +24,7 @@ const PublicLayout = () => {
     const handleLocationClick = (e) => {
         e.preventDefault();
         
-        // Navigate to home page first if not already there
-        if (window.location.pathname !== '/') {
-            navigate('/');
-            // Wait for navigation to complete, then scroll
-            setTimeout(() => {
-                const locationSection = document.getElementById('location');
-                if (locationSection) {
-                    locationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-        } else {
-            // Already on home page, just scroll
-            const locationSection = document.getElementById('location');
-            if (locationSection) {
-                locationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
+        navigate('/#location');
         setMobileMenuOpen(false);
     };
 
@@ -66,7 +50,7 @@ const PublicLayout = () => {
     }, []);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        setMobileMenuOpen(false);
     }, [location.pathname]);
 
     const requestLogout = () => {
@@ -86,6 +70,7 @@ const PublicLayout = () => {
 
     return (
         <div className="min-h-screen flex flex-col font-sans bg-[var(--color-bg-primary)] transition-colors duration-300 animate-page-fade">
+            <a href="#main-content" className="skip-link">Skip to content</a>
             {/* Navigation Header */}
             <header className={`sticky top-0 z-50 transition-all duration-300 ${
                 scrolled 
@@ -163,6 +148,8 @@ const PublicLayout = () => {
 
                             {/* Mobile Menu Button */}
                             <button
+                                aria-label={mobileMenuOpen ? 'Close navigation' : 'Open navigation'}
+                                aria-expanded={mobileMenuOpen}
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                                 className="md:hidden p-2 text-white hover:text-[#f5d800] transition-colors"
                             >
@@ -229,8 +216,8 @@ const PublicLayout = () => {
             )}
 
             {/* Main Content Area */}
-            <main className="flex-grow">
-                <Outlet />
+            <main id="main-content" className="flex-grow">
+                <div key={location.pathname} className="route-enter"><Suspense fallback={<div role="status" className="route-loading">Loading page…</div>}><Outlet /></Suspense></div>
             </main>
 
             {showScrollTop && (

@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getProductById, updateProduct } from '../../services/productService';
@@ -96,6 +97,10 @@ const EditProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (Number(formData.sellingPrice) < Number(formData.costPrice)) {
+            setToast({ type: 'error', message: 'Selling price must be greater than or equal to cost price' });
+            return;
+        }
         setSaving(true);
         try {
             // Create FormData for multipart/form-data if image is present
@@ -148,7 +153,7 @@ const EditProduct = () => {
             </div>
 
             <div className="max-w-2xl bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-2 gap-6">
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
@@ -243,14 +248,14 @@ const EditProduct = () => {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Cost Price (LKR) *</label>
-                            <input type="number" name="costPrice" required min="0" step="0.1"
+                            <input type="number" name="costPrice" required min="0" step="0.01"
                                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
                                 value={formData.costPrice} onChange={handleChange} />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price (LKR) *</label>
-                            <input type="number" name="sellingPrice" required min="0" step="0.10"
+                            <input type="number" name="sellingPrice" required min="0" step="0.01"
                                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
                                 value={formData.sellingPrice} onChange={handleChange} />
                         </div>
@@ -276,7 +281,7 @@ const EditProduct = () => {
                             <span>{saving ? 'Saving...' : 'Save Changes'}</span>
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -27,8 +28,9 @@ const EditCategory = () => {
             setToast({ message: 'Category updated!', type: 'success' });
             setTimeout(() => navigate('/admin/categories'), 1200);
         } catch (err) {
+            setLoading(false);
             setToast({ message: err.response?.data?.message || 'Error updating category', type: 'error' });
-        } finally { setLoading(false); }
+        }
     };
 
     if (fetching) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div></div>;
@@ -43,7 +45,7 @@ const EditCategory = () => {
                     <p className="text-gray-600">Update category details</p>
                 </div>
             </div>
-            <form onSubmit={handleSubmit} className="max-w-lg bg-white rounded-xl shadow-md p-8 border border-gray-100 space-y-5">
+            <ValidatedForm onSubmit={handleSubmit} className="max-w-lg bg-white rounded-xl shadow-md p-8 border border-gray-100 space-y-5">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Category Name *</label>
                     <input value={form.categoryName} onChange={(e) => setForm({ ...form, categoryName: e.target.value })}
@@ -64,7 +66,7 @@ const EditCategory = () => {
                         {loading ? 'Saving...' : 'Update Category'}
                     </button>
                 </div>
-            </form>
+            </ValidatedForm>
         </div>
     );
 };

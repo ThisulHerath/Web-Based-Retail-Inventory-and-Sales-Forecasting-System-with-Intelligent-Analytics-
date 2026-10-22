@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +40,7 @@ const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoCompl
                     </label>
                     <input
                         id={id}
+                        required
                         type={type}
                         value={value}
                         onChange={onChange}
@@ -87,6 +89,7 @@ const PasswordInput = ({ id, label, value, onChange, onBlur, autoComplete, place
                     </label>
                     <input
                         id={id}
+                        required
                         type={showPassword ? 'text' : 'password'}
                         value={value}
                         onChange={onChange}
@@ -334,7 +337,7 @@ const CustomerRegister = () => {
                     <h1 className="text-3xl font-bold text-[var(--color-text-primary)] dark:text-white mb-1">{t('auth.join_title')}</h1>
                     <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-8">{t('auth.join_sub')}</p>
 
-                    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                    <ValidatedForm onSubmit={handleSubmit} noValidate className="space-y-4">
                         {/* Name Fields Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
@@ -470,7 +473,7 @@ const CustomerRegister = () => {
                         >
                             {loading ? `${t('auth.create_account')}...` : t('auth.create_account')}
                         </button>
-                    </form>
+                    </ValidatedForm>
 
                     <p className="mt-6 text-xs text-center text-gray-500 dark:text-gray-400">
                         {t('auth.have_account')}{' '}

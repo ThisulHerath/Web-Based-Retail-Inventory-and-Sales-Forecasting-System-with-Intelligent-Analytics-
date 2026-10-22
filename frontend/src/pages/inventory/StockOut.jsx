@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { stockOut as stockOutService } from '../../services/stockService';
@@ -100,7 +101,7 @@ const StockOut = () => {
                     <p className="text-sm text-gray-500">Stored Stock: <span className="font-bold text-indigo-700">{product.storedStock ?? 0}</span></p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Quantity to Remove
@@ -167,7 +168,7 @@ const StockOut = () => {
                             <span>{submitting ? 'Removing...' : 'Remove Stock'}</span>
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
 
             {toast && (

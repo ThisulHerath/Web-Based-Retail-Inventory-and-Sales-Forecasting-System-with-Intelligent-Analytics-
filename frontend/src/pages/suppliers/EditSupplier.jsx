@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -62,9 +63,8 @@ const EditSupplier = () => {
             setToast({ message: 'Supplier updated successfully', type: 'success' });
             setTimeout(() => navigate('/admin/suppliers'), 1500);
         } catch (error) {
-            setToast({ message: error.response?.data?.message || 'Error updating supplier', type: 'error' });
-        } finally {
             setLoading(false);
+            setToast({ message: error.response?.data?.message || 'Error updating supplier', type: 'error' });
         }
     };
 
@@ -86,7 +86,7 @@ const EditSupplier = () => {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                <ValidatedForm onSubmit={handleSubmit}>
                     <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100 space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -103,7 +103,7 @@ const EditSupplier = () => {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                                <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none" />
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none" />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
@@ -121,7 +121,7 @@ const EditSupplier = () => {
                             </button>
                         </div>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState } from 'react';
 import { Search, CheckCircle, XCircle, Gift } from 'lucide-react';
 import { validateCoupon } from '../../services/couponService';
@@ -41,7 +42,7 @@ const ValidateCoupon = () => {
             </div>
 
             <div className="max-w-lg">
-                <form onSubmit={handleValidate} className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+                <ValidatedForm onSubmit={handleValidate} className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Coupon Code</label>
@@ -72,7 +73,7 @@ const ValidateCoupon = () => {
                             )}
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
 
                 {/* Result */}
                 {result && (

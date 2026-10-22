@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
@@ -63,9 +64,8 @@ const CreatePurchase = () => {
             setToast({ message: 'Purchase saved. Opening Inventory for stock review...', type: 'success' });
             setTimeout(() => navigate('/admin/inventory'), 1200);
         } catch (error) {
-            setToast({ message: error.response?.data?.message || 'Error creating purchase', type: 'error' });
-        } finally {
             setLoading(false);
+            setToast({ message: error.response?.data?.message || 'Error creating purchase', type: 'error' });
         }
     };
 
@@ -81,7 +81,7 @@ const CreatePurchase = () => {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4">Order Details</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -129,18 +129,18 @@ const CreatePurchase = () => {
                                     {items.map((item, index) => (
                                         <tr key={index} className="border-b border-gray-100">
                                             <td className="py-2 px-3">
-                                                <select value={item.productId} onChange={(e) => updateItem(index, 'productId', e.target.value)}
+                                                <select required aria-label={`Product in row ${index + 1}`} value={item.productId} onChange={(e) => updateItem(index, 'productId', e.target.value)}
                                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm appearance-none">
                                                     <option value="">Select Product</option>
                                                     {products.map(p => <option key={p._id} value={p._id}>{p.productName}</option>)}
                                                 </select>
                                             </td>
                                             <td className="py-2 px-3">
-                                                <input type="number" min="1" value={item.quantity} onChange={(e) => updateItem(index, 'quantity', e.target.value)}
+                                                <input type="number" required aria-label={`Quantity in row ${index + 1}`} min="1" step="1" value={item.quantity} onChange={(e) => updateItem(index, 'quantity', e.target.value)}
                                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm" />
                                             </td>
                                             <td className="py-2 px-3">
-                                                <input type="number" min="0" step="0.01" value={item.costPrice} onChange={(e) => updateItem(index, 'costPrice', e.target.value)}
+                                                <input type="number" required aria-label={`Cost price in row ${index + 1}`} min="0.01" step="0.01" value={item.costPrice} onChange={(e) => updateItem(index, 'costPrice', e.target.value)}
                                                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm" />
                                             </td>
                                             <td className="py-2 px-3 text-right font-semibold text-gray-800 text-sm">
@@ -173,7 +173,7 @@ const CreatePurchase = () => {
                             {loading ? 'Saving & Updating Stock...' : 'Save Purchase & Update Stock'}
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -121,7 +122,7 @@ const Login = () => {
                     <p className="text-white/80">Retail Management System</p>
                 </div>
 
-                <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} noValidate className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-white/90 mb-2">
                             Email Address
@@ -129,7 +130,7 @@ const Login = () => {
                         <div className="relative">
                             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7ecf8f]" />
                             <input
-                                type="email"
+                                type="email" required autoComplete="username"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 border border-[#8bc995]/40 rounded-lg bg-[#f8fff9] text-[#155c27] placeholder:text-[#5a7a5a] focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none transition"
@@ -145,7 +146,7 @@ const Login = () => {
                         <div className="relative">
                             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7ecf8f]" />
                             <input
-                                type="password"
+                                type="password" required autoComplete="current-password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 border border-[#8bc995]/40 rounded-lg bg-[#f8fff9] text-[#155c27] placeholder:text-[#5a7a5a] focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none transition"
@@ -161,7 +162,7 @@ const Login = () => {
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
-                </form>
+                </ValidatedForm>
 
             </div>
         </div>

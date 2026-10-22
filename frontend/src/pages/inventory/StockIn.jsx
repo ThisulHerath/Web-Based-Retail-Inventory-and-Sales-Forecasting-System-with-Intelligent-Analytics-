@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { stockIn as stockInService } from '../../services/stockService';
@@ -89,7 +90,7 @@ const StockIn = () => {
                     <p className="text-xs text-gray-500 mt-2">This transfers quantity from stored stock to displayed stock.</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Quantity to Move to Displayed Stock
@@ -139,7 +140,7 @@ const StockIn = () => {
                             <span>{submitting ? 'Adding...' : 'Add Stock'}</span>
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
 
             {toast && (

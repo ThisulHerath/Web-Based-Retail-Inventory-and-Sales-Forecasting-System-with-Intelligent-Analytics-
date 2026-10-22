@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProduct } from '../../services/productService';
@@ -130,11 +131,11 @@ const CreateProduct = () => {
             </div>
 
             <div className="max-w-2xl bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} noValidate className="space-y-6">
                     <div className="grid grid-cols-2 gap-6">
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
-                            <input type="text" name="productName"
+                            <input required type="text" name="productName"
                                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.productName ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.productName} onChange={handleChange} placeholder="e.g. Rice 5kg" />
                             {fieldErrors.productName && <p className="mt-1 text-xs text-red-500">{fieldErrors.productName}</p>}
@@ -197,7 +198,7 @@ const CreateProduct = () => {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-                            <select name="category"
+                            <select required name="category"
                                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.category ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.category} onChange={handleChange}>
                                 <option value="">Select Category</option>
@@ -218,7 +219,7 @@ const CreateProduct = () => {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Cost Price (LKR) *</label>
-                            <input type="number" name="costPrice" min="0" step="0.01"
+                            <input required type="number" name="costPrice" min="0" step="0.01"
                                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.costPrice ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.costPrice} onChange={handleChange} />
                             {fieldErrors.costPrice && <p className="mt-1 text-xs text-red-500">{fieldErrors.costPrice}</p>}
@@ -226,7 +227,7 @@ const CreateProduct = () => {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price (LKR) *</label>
-                            <input type="number" name="sellingPrice" min="0" step="0.01"
+                            <input required type="number" name="sellingPrice" min="0" step="0.01"
                                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.sellingPrice ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.sellingPrice} onChange={handleChange} />
                             {fieldErrors.sellingPrice && <p className="mt-1 text-xs text-red-500">{fieldErrors.sellingPrice}</p>}
@@ -253,7 +254,7 @@ const CreateProduct = () => {
                             <span>{loading ? 'Creating...' : 'Create Product'}</span>
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

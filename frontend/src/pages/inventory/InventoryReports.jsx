@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Eye, Pencil, Trash2, FileText } from 'lucide-react';
@@ -196,7 +197,7 @@ const InventoryReports = () => {
 
             <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Create Report</h2>
-                <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ValidatedForm onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Report Title</label>
                         <input
@@ -250,7 +251,7 @@ const InventoryReports = () => {
                             {saving ? 'Creating...' : 'Create Report'}
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
 
             <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">

@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUser } from '../../services/userService';
@@ -78,12 +79,12 @@ const CreateUser = () => {
             </div>
 
             <div className="max-w-2xl bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} noValidate className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Full Name *
                         </label>
-                        <input
+                        <input required
                             type="text"
                             name="name"
                             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.name ? 'border-red-500' : 'border-gray-200'}`}
@@ -97,7 +98,7 @@ const CreateUser = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Email Address *
                         </label>
-                        <input
+                        <input required
                             type="email"
                             name="email"
                             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.email ? 'border-red-500' : 'border-gray-200'}`}
@@ -155,7 +156,7 @@ const CreateUser = () => {
                             <span>{loading ? 'Creating...' : 'Create User'}</span>
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
 
             {toast && (

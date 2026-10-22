@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +35,7 @@ const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoCompl
                     </label>
                     <input
                         id={id}
+                        required
                         type={type}
                         value={value}
                         onChange={onChange}
@@ -164,7 +166,7 @@ const CustomerLogin = () => {
                     <h1 className="text-3xl font-bold text-[var(--color-text-primary)] dark:text-white mb-1">{t('auth.welcome')}</h1>
                     <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)] mb-8">{t('auth.sign_in_sub')}</p>
 
-                    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                    <ValidatedForm onSubmit={handleSubmit} noValidate className="space-y-5">
                         <FloatingInput
                             id="email"
                             type="email"
@@ -172,7 +174,7 @@ const CustomerLogin = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             icon={Mail}
-                            autoComplete="off"
+                            autoComplete="username"
                             placeholder="email@example.com"
                         />
 
@@ -216,7 +218,7 @@ const CustomerLogin = () => {
                         >
                             {loading ? `${t('auth.sign_in')}...` : t('auth.continue')}
                         </button>
-                    </form>
+                    </ValidatedForm>
 
                     <p className="mt-6 text-xs text-center text-[var(--color-text-secondary)] dark:text-[var(--color-text-tertiary)]">
                         {t('auth.no_account')}{' '}

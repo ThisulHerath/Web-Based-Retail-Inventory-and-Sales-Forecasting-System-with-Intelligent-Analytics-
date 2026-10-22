@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, ArrowLeft, Search, Tag, UserCheck } from 'lucide-react';
@@ -531,7 +532,7 @@ const CreateSale = () => {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                         <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5 flex items-center gap-2">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#155c27]" />
@@ -613,7 +614,7 @@ const CreateSale = () => {
                                         <label className="block text-sm font-medium text-gray-700 mt-3 mb-1">
                                             Or enter name manually *
                                         </label>
-                                        <input
+                                        <input required
                                             type="text"
                                             placeholder="Walk-in customer name"
                                             value={!formData.customerId ? formData.customerName : ''}
@@ -742,7 +743,7 @@ const CreateSale = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Payment Method *
                                 </label>
-                                <select
+                                <select required
                                     value={formData.paymentMethod}
                                     onChange={(e) =>
                                         setFormData((prev) => ({ ...prev, paymentMethod: e.target.value }))
@@ -949,7 +950,7 @@ const CreateSale = () => {
                             {loading ? 'Creating...' : 'Create Sale'}
                         </button>
                     </div>
-                </form>
+                </ValidatedForm>
             </div>
         </div>
     );

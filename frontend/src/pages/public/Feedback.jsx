@@ -1,3 +1,4 @@
+import ValidatedForm from '../../components/ValidatedForm';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Send, MessageSquare, CheckCircle2, Star } from 'lucide-react';
@@ -94,7 +95,7 @@ const Feedback = () => {
                                 </button>
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="block text-white text-[15px] font-semibold mb-2">
                                         {t('feedback.your_rating')} <span className="text-[#f5d800]">*</span>
@@ -151,7 +152,7 @@ const Feedback = () => {
                                         <Send className="w-4 h-4" />
                                     </button>
                                 </div>
-                            </form>
+                            </ValidatedForm>
                         )
                     ) : (
                         <div className="space-y-4 text-center py-4">
