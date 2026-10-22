@@ -44,7 +44,7 @@ const AIPrediction = () => {
         }));
     };
 
-    const AI_URL = 'http://localhost:5001';
+    const AI_URL = 'http://127.0.0.1:5001';
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
     useEffect(() => {
