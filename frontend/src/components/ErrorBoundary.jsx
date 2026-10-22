@@ -1,52 +1,24 @@
 import React from 'react';
+import { RefreshCw, ArrowRight, Layers } from 'lucide-react';
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { hasError: false, error: null, errorInfo: null };
+        this.state = { hasError: false, error: null };
     }
-
-    static getDerivedStateFromError(error) {
-        return { hasError: true };
+    static getDerivedStateFromError() { return { hasError: true }; }
+    componentDidCatch(error, info) {
+        console.error('Uncaught application error:', error, info);
+        this.setState({ error });
     }
-
-    componentDidCatch(error, errorInfo) {
-        console.error("Uncaught error:", error, errorInfo);
-        this.setState({ error, errorInfo });
-    }
-
     render() {
-        if (this.state.hasError) {
-            return (
-                <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl w-full">
-                        <h1 className="text-2xl font-bold text-red-600 mb-4">Something went wrong.</h1>
-                        <div className="bg-red-50 p-4 rounded-lg border border-red-200 overflow-auto mb-6">
-                            <p className="font-mono text-sm text-red-800 break-words">
-                                {this.state.error && this.state.error.toString()}
-                            </p>
-                            {this.state.errorInfo && (
-                                <pre className="mt-2 text-xs text-red-700 whitespace-pre-wrap">
-                                    {this.state.errorInfo.componentStack}
-                                </pre>
-                            )}
-                        </div>
-                        <button
-                            onClick={() => {
-                                localStorage.clear();
-                                window.location.href = '/';
-                            }}
-                            className="bg-[#155c27] text-white px-6 py-2 rounded-lg hover:bg-[#0d3d1a] transition-colors font-weight-600"
-                        >
-                            Clear Cache & Reload
-                        </button>
-                    </div>
-                </div>
-            );
-        }
-
-        return this.props.children;
+        if (!this.state.hasError) return this.props.children;
+        return <main className="error-screen">
+            <div className="error-card"><span className="error-symbol" aria-hidden="true"><Layers size={32} /></span><span className="eyebrow">LET’S GET YOU BACK ON TRACK</span><h1>A small pause.<br />We’ll get moving again.</h1><p>This page could not finish loading. Reload to try again, or head back to the storefront.</p>
+                <div className="hero-actions"><button type="button" className="button-glow" onClick={() => window.location.reload()}><RefreshCw size={16} />Reload page</button><a className="button-glass" href="/">Go to storefront<ArrowRight size={16} /></a></div>
+                {import.meta.env.DEV && this.state.error && <details><summary>Development details</summary><pre>{String(this.state.error)}</pre></details>}
+            </div>
+        </main>;
     }
 }
-
 export default ErrorBoundary;

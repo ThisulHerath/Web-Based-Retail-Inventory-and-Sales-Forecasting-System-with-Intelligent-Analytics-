@@ -87,17 +87,17 @@ const BusinessAssistantBot = () => {
                 {/* Header */}
                 <div
                     className="relative p-5 shrink-0 flex items-center justify-between overflow-hidden border-b border-green-900"
-                    style={{ background: 'linear-gradient(135deg, #1e7a34 0%, #155c27 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, #6757d9 0%, #18243b 100%)' }}
                 >
                     {/* Decorative glow */}
-                    <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[40px] opacity-20" style={{ background: '#f5d800' }}></div>
+                    <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-[40px] opacity-20" style={{ background: '#c4b5fd' }}></div>
 
                     <div className="flex items-center gap-4 relative z-10">
                         <div
                             className="relative p-2.5 rounded-2xl shadow-inner border border-white/20"
-                            style={{ background: 'rgba(245,216,0,0.15)' }}
+                            style={{ background: 'rgba(196,181,253,0.15)' }}
                         >
-                            <Sparkles className="w-5 h-5 relative z-10" style={{ color: '#f5d800' }} />
+                            <Sparkles className="w-5 h-5 relative z-10" style={{ color: '#c4b5fd' }} />
                         </div>
                         <div>
                             <h3 className="font-semibold text-white tracking-wide text-[16px] drop-shadow-sm flex items-center gap-2">
@@ -109,7 +109,7 @@ const BusinessAssistantBot = () => {
                             </h3>
                             <p
                                 className="font-medium text-[11px] uppercase tracking-widest mt-0.5"
-                                style={{ color: 'rgba(245,216,0,0.85)' }}
+                                style={{ color: 'rgba(196,181,253,0.85)' }}
                             >
                                 7 Super City Advisor
                             </p>
@@ -135,12 +135,12 @@ const BusinessAssistantBot = () => {
                             <div
                                 className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-md"
                                 style={msg.role === 'user'
-                                    ? { background: 'linear-gradient(135deg, #f5d800, #e6c700)' }
-                                    : { background: 'linear-gradient(135deg, #1e7a34, #155c27)' }
+                                    ? { background: 'linear-gradient(135deg, #c4b5fd, #ad97f5)' }
+                                    : { background: 'linear-gradient(135deg, #6757d9, #18243b)' }
                                 }
                             >
                                 {msg.role === 'user'
-                                    ? <User className="w-4 h-4" style={{ color: '#155c27' }} />
+                                    ? <User className="w-4 h-4" style={{ color: '#18243b' }} />
                                     : <Bot className="w-4 h-4 text-white" />
                                 }
                             </div>
@@ -168,15 +168,15 @@ const BusinessAssistantBot = () => {
                         <div className="flex items-end gap-3 flex-row animate-pulse">
                             <div
                                 className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-md"
-                                style={{ background: 'linear-gradient(135deg, #1e7a34, #155c27)' }}
+                                style={{ background: 'linear-gradient(135deg, #6757d9, #18243b)' }}
                             >
                                 <Sparkles className="w-4 h-4 text-white" />
                             </div>
                             <div className="px-5 py-3.5 bg-white border border-gray-200 rounded-[20px] rounded-bl-sm shadow-sm flex items-center gap-3">
                                 <div className="flex gap-1.5">
-                                    <div className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: '#1e7a34', animationDelay: '0ms' }}></div>
-                                    <div className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: '#1e7a34', animationDelay: '150ms' }}></div>
-                                    <div className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: '#1e7a34', animationDelay: '300ms' }}></div>
+                                    <div className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: '#6757d9', animationDelay: '0ms' }}></div>
+                                    <div className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: '#6757d9', animationDelay: '150ms' }}></div>
+                                    <div className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: '#6757d9', animationDelay: '300ms' }}></div>
                                 </div>
                                 <span className="text-gray-400 text-[13px] font-medium tracking-wide ml-1">Analyzing data...</span>
                             </div>
@@ -195,17 +195,18 @@ const BusinessAssistantBot = () => {
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask about inventory, sales..."
                             className="flex-1 pl-5 pr-14 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none text-[14px] text-gray-800 placeholder-gray-400 shadow-inner transition-all"
-                            onFocus={e => e.target.style.borderColor = '#1e7a34'}
+                            onFocus={e => e.target.style.borderColor = '#6757d9'}
                             onBlur={e => e.target.style.borderColor = ''}
                             disabled={loading}
                         />
                         <button
                             type="submit"
+                            aria-label="Send message"
                             disabled={!input.trim() || loading}
                             className="absolute right-2 p-2.5 text-white rounded-xl transition-all duration-300 disabled:opacity-50 disabled:scale-95 shadow-md hover:shadow-lg hover:-translate-y-0.5 group"
-                            style={{ background: '#1e7a34' }}
-                            onMouseEnter={e => e.currentTarget.style.background = '#155c27'}
-                            onMouseLeave={e => e.currentTarget.style.background = '#1e7a34'}
+                            style={{ background: '#6757d9' }}
+                            onMouseEnter={e => e.currentTarget.style.background = '#18243b'}
+                            onMouseLeave={e => e.currentTarget.style.background = '#6757d9'}
                         >
                             <Send className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                         </button>
@@ -215,11 +216,13 @@ const BusinessAssistantBot = () => {
 
             {/* Toggle Button */}
             <button
+                aria-label={isOpen ? 'Close business assistant' : 'Open business assistant'}
+                aria-expanded={isOpen}
                 onClick={() => setIsOpen(!isOpen)}
                 className="group relative p-4 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 flex items-center justify-center overflow-hidden border pointer-events-auto text-white"
-                style={{ background: '#1e7a34', borderColor: '#1e7a34' }}
-                onMouseEnter={e => e.currentTarget.style.background = '#155c27'}
-                onMouseLeave={e => e.currentTarget.style.background = '#1e7a34'}
+                style={{ background: '#6757d9', borderColor: '#6757d9' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#18243b'}
+                onMouseLeave={e => e.currentTarget.style.background = '#6757d9'}
             >
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 {isOpen ? (

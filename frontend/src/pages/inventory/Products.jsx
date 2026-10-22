@@ -1,3 +1,4 @@
+import EmptyState from '../../components/EmptyState';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Search, Edit, Trash2, Tag, Filter, AlertTriangle } from 'lucide-react';
@@ -107,7 +108,7 @@ const Products = () => {
                     <h1 className="text-3xl font-bold text-gray-800">Products</h1>
                     <p className="text-gray-600 mt-1">Manage product catalogue</p>
                 </div>
-                <Link to="/admin/products/create" className="flex items-center gap-2 bg-[#f5d800] text-[#155c27] font-weight-600 px-4 py-2 rounded-lg hover:bg-[#e6c700] transition-colors shadow-lg">
+                <Link to="/admin/products/create" className="flex items-center gap-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 px-4 py-2 rounded-lg hover:bg-[#ad97f5] transition-colors shadow-lg">
                     <Plus className="w-5 h-5" /> <span>Add Product</span>
                 </Link>
             </div>
@@ -117,12 +118,12 @@ const Products = () => {
                 <div className="relative flex-1 min-w-48">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search name, SKU..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] text-sm" />
+                        placeholder="Search name, SKU..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] text-sm" />
                 </div>
                 <div className="relative min-w-40">
                     <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] text-sm appearance-none">
+                        className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] text-sm appearance-none">
                         <option value="">All Categories</option>
                         {categories.map(c => <option key={c._id} value={c._id}>{c.categoryName}</option>)}
                     </select>
@@ -151,20 +152,20 @@ const Products = () => {
                         {loading ? (
                             <tr><td colSpan="8" className="px-6 py-10 text-center text-gray-500">Loading products...</td></tr>
                         ) : filtered.length === 0 ? (
-                            <tr><td colSpan="8" className="px-6 py-10 text-center text-gray-500">No products found.</td></tr>
+                            <tr><td colSpan="8" className="px-6 py-10 text-center text-gray-500"><EmptyState title="No products found" description="Try a different search or add a new product to your catalog." /></td></tr>
                         ) : filtered.map((product) => (
                             <tr key={product._id} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <p className="font-medium text-gray-900">{product.productName}</p>
                                     {product.description && <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{product.description}</p>}
                                 </td>
-                                <td className="px-6 py-4 font-mono text-xs text-gray-400">{product.sku || 'â€”'}</td>
+                                <td className="px-6 py-4 font-mono text-xs text-gray-400">{product.sku || '—'}</td>
                                 <td className="px-6 py-4">
                                     {product.category ? (
-                                        <span className="flex items-center gap-1 text-xs px-2 py-1 bg-[#1a6e309c] text-[#f5d800] rounded-full w-fit">
+                                        <span className="flex items-center gap-1 text-xs px-2 py-1 bg-[#2637549c] text-[#c4b5fd] rounded-full w-fit">
                                             <Tag className="w-3 h-3" />{product.category.categoryName}
                                         </span>
-                                    ) : <span className="text-gray-400 text-xs">â€”</span>}
+                                    ) : <span className="text-gray-400 text-xs">—</span>}
                                 </td>
                                 <td className="px-6 py-4 text-right text-gray-500 text-sm">LKR {product.costPrice?.toFixed(2)}</td>
                                 <td className="px-6 py-4 text-right font-medium text-gray-900">LKR {product.sellingPrice?.toFixed(2)}</td>

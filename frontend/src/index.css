@@ -11,109 +11,109 @@
 :root {
   /* Light theme colors */
   /* Light theme - 7 Super City brand colors */
-  --color-bg-primary: #f5f9f5;
+  --color-bg-primary: #f7f8fc;
   --color-bg-secondary: #ffffff;
   --color-bg-tertiary: #ffffff;
-  --color-text-primary: #155c27;
+  --color-text-primary: #18243b;
   --color-text-body: #2d2d2d;
-  --color-text-secondary: #5a7a5a;
-  --color-text-tertiary: #8aab8a;
-  --color-border: #d4e8d4;
-  --color-border-hover: #a8c5a8;
+  --color-text-secondary: #68758e;
+  --color-text-tertiary: #8893a8;
+  --color-border: #e5e8f1;
+  --color-border-hover: #b4bdd1;
   --color-card-bg: #ffffff;
-  --color-card-border: #d4e8d4;
-  --color-card-shadow: rgba(30, 122, 52, 0.12);
+  --color-card-border: #e5e8f1;
+  --color-card-shadow: rgba(103, 87, 217, 0.12);
   --color-overlay: rgba(0, 0, 0, 0.45);
-  --color-button-primary: #1e7a34;
-  --color-button-primary-hover: #155c27;
+  --color-button-primary: #6757d9;
+  --color-button-primary-hover: #18243b;
   --color-button-text: #ffffff;
-  --color-link: #1e7a34;
-  --color-link-hover: #155c27;
-  --color-icon: #1e7a34;
-  --color-accent: #f5d800;
-  --color-accent-text: #155c27;
-  --color-badge-success-bg: #1e7a34;
+  --color-link: #6757d9;
+  --color-link-hover: #18243b;
+  --color-icon: #6757d9;
+  --color-accent: #c4b5fd;
+  --color-accent-text: #18243b;
+  --color-badge-success-bg: #6757d9;
   --color-badge-success-text: #ffffff;
-  --color-badge-new-bg: #f5d800;
-  --color-badge-new-text: #155c27;
+  --color-badge-new-bg: #c4b5fd;
+  --color-badge-new-text: #18243b;
   --color-search-bg: #ffffff;
-  --color-search-border: #b8d8b8;
+  --color-search-border: #ced3e1;
   --color-search-text: #2d2d2d;
-  --color-search-placeholder: #8aab8a;
-  --color-search-focus: #1e7a34;
-  --color-search-focus-ring: rgba(30, 122, 52, 0.2);
-  --color-panel-bg: #eaf4ea;
-  --color-panel-border: #c0dcc0;
+  --color-search-placeholder: #8893a8;
+  --color-search-focus: #6757d9;
+  --color-search-focus-ring: rgba(103, 87, 217, 0.2);
+  --color-panel-bg: #f0effa;
+  --color-panel-border: #dcd9f0;
   --color-navbar-bg: #ffffff;
-  --color-navbar-border: #d4e8d4;
-  --color-navbar-text: #155c27;
-  --color-footer-bg: #155c27;
+  --color-navbar-border: #e5e8f1;
+  --color-navbar-text: #18243b;
+  --color-footer-bg: #18243b;
   --color-footer-text: #ffffff;
-  --color-footer-muted: #a8d8b0;
+  --color-footer-muted: #a2b4ce;
   --color-footer-divider: rgba(255, 255, 255, 0.15);
-  --color-scroll-to-top-bg: #1e7a34;
+  --color-scroll-to-top-bg: #6757d9;
   --color-scroll-to-top-icon: #ffffff;
   --shop-filter-bg: rgba(255, 255, 255, 0.9);
   --shop-filter-border: rgba(212, 232, 212, 0.8);
   --shop-filter-text: #2d2d2d;
-  --shop-filter-divider: rgba(30, 122, 52, 0.1);
-  --shop-filter-focus-border: #1e7a34;
-  --shop-filter-focus-shadow: 0 0 0 4px rgba(30, 122, 52, 0.15);
-  --shop-filter-shadow: 0 10px 24px rgba(30, 122, 52, 0.08);
-  --shop-filter-shadow-hover: 0 14px 30px rgba(30, 122, 52, 0.12);
+  --shop-filter-divider: rgba(103, 87, 217, 0.1);
+  --shop-filter-focus-border: #6757d9;
+  --shop-filter-focus-shadow: 0 0 0 4px rgba(103, 87, 217, 0.15);
+  --shop-filter-shadow: 0 10px 24px rgba(103, 87, 217, 0.08);
+  --shop-filter-shadow-hover: 0 14px 30px rgba(103, 87, 217, 0.12);
 }
 
 .dark {
   /* Dark theme colors */
   /* Dark theme colors */
-  --color-bg-primary: #0d1f16;
-  --color-bg-secondary: #1a6e30;
-  --color-bg-tertiary: #1e7a34;
+  --color-bg-primary: #101828;
+  --color-bg-secondary: #263754;
+  --color-bg-tertiary: #6757d9;
   --color-text-primary: #f1f5f9;
   --color-text-body: #f1f5f9;
   --color-text-secondary: #cbd5e1;
   --color-text-tertiary: #94a3b8;
-  --color-border: #1e7a34;
+  --color-border: #6757d9;
   --color-border-hover: #2a8a3f;
-  --color-card-bg: #1a6e30;
+  --color-card-bg: #263754;
   --color-card-border: #2d8c3a;
   --color-card-shadow: rgba(0, 0, 0, 0.3);
   --color-overlay: rgba(0, 0, 0, 0.7);
-  --color-button-primary: #f5d800;
-  --color-button-primary-hover: #e6c700;
-  --color-button-text: #155c27;
-  --color-link: #f5d800;
-  --color-link-hover: #e6c700;
-  --color-icon: #f5d800;
-  --color-accent: #f5d800;
-  --color-accent-text: #155c27;
-  --color-badge-success-bg: #f5d800;
-  --color-badge-success-text: #155c27;
-  --color-badge-new-bg: #f5d800;
-  --color-badge-new-text: #155c27;
-  --color-search-bg: #1a6e30;
-  --color-search-border: rgba(245, 216, 0, 0.15);
+  --color-button-primary: #c4b5fd;
+  --color-button-primary-hover: #ad97f5;
+  --color-button-text: #18243b;
+  --color-link: #c4b5fd;
+  --color-link-hover: #ad97f5;
+  --color-icon: #c4b5fd;
+  --color-accent: #c4b5fd;
+  --color-accent-text: #18243b;
+  --color-badge-success-bg: #c4b5fd;
+  --color-badge-success-text: #18243b;
+  --color-badge-new-bg: #c4b5fd;
+  --color-badge-new-text: #18243b;
+  --color-search-bg: #263754;
+  --color-search-border: rgba(196, 181, 253, 0.15);
   --color-search-text: #f1f5f9;
   --color-search-placeholder: #cbd5e1;
-  --color-search-focus: #f5d800;
-  --color-search-focus-ring: rgba(245, 216, 0, 0.25);
-  --color-panel-bg: #1a6e30;
+  --color-search-focus: #c4b5fd;
+  --color-search-focus-ring: rgba(196, 181, 253, 0.25);
+  --color-panel-bg: #263754;
   --color-panel-border: #2d8c3a;
-  --color-navbar-bg: #155c27;
-  --color-navbar-border: #1e7a34;
+  --color-navbar-bg: #18243b;
+  --color-navbar-border: #6757d9;
   --color-navbar-text: #ffffff;
-  --color-footer-bg: #0d3d1a;
+  --color-footer-bg: #111b30;
   --color-footer-text: #ffffff;
-  --color-footer-muted: #a8d8b0;
+  --color-footer-muted: #a2b4ce;
   --color-footer-divider: rgba(255, 255, 255, 0.15);
-  --color-scroll-to-top-bg: #f5d800;
-  --color-scroll-to-top-icon: #155c27;
+  --color-scroll-to-top-bg: #c4b5fd;
+  --color-scroll-to-top-icon: #18243b;
   --shop-filter-bg: rgba(26, 110, 48, 0.6);
-  --shop-filter-border: rgba(245, 216, 0, 0.15);
+  --shop-filter-border: rgba(196, 181, 253, 0.15);
   --shop-filter-text: #f8f9fa;
-  --shop-filter-divider: rgba(245, 216, 0, 0.12);
-  --shop-filter-focus-border: #f5d800;
-  --shop-filter-focus-shadow: 0 0 0 4px rgba(245, 216, 0, 0.25);
+  --shop-filter-divider: rgba(196, 181, 253, 0.12);
+  --shop-filter-focus-border: #c4b5fd;
+  --shop-filter-focus-shadow: 0 0 0 4px rgba(196, 181, 253, 0.25);
   --shop-filter-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
   --shop-filter-shadow-hover: 0 16px 34px rgba(0, 0, 0, 0.45);
 }
@@ -168,7 +168,7 @@ textarea,
   bottom: 0;
   width: 100%;
   height: 2px;
-  background: #f5d800;
+  background: #c4b5fd;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.2s ease;
@@ -300,7 +300,7 @@ select:-webkit-autofill {
 
 .shop-filter-unit {
   background: var(--shop-filter-bg);
-  border: 1.5px solid rgba(245, 216, 0, 0.35);
+  border: 1.5px solid rgba(196, 181, 253, 0.35);
   border-radius: 12px;
   backdrop-filter: blur(10px);
   box-shadow: var(--shop-filter-shadow);
@@ -313,14 +313,14 @@ select:-webkit-autofill {
 }
 
 .shop-filter-unit:focus-within {
-  border: 2px solid #f5d800;
-  box-shadow: 0 0 0 3px rgba(245, 216, 0, 0.15);
+  border: 2px solid #c4b5fd;
+  box-shadow: 0 0 0 3px rgba(196, 181, 253, 0.15);
 }
 
 .shop-filter-divider {
   width: 1px;
   height: 28px;
-  background: rgba(245, 216, 0, 0.3);
+  background: rgba(196, 181, 253, 0.3);
 }
 
 .shop-card-reveal {
@@ -390,7 +390,7 @@ select:-webkit-autofill {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

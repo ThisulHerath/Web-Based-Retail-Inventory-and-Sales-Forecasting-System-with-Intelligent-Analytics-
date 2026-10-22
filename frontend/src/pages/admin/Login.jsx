@@ -1,6 +1,7 @@
+import RetailOrbit from '../../components/RetailOrbit';
 import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Mail, Lock } from 'lucide-react';
 import Toast from '../../components/Toast';
@@ -15,6 +16,7 @@ const Login = () => {
     const [lockoutSeconds, setLockoutSeconds] = useState(null);
     const { login, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Force light mode for admin login
     useEffect(() => {
@@ -70,7 +72,8 @@ const Login = () => {
             if (sessionUser?.mustChangePassword) {
                 navigate('/admin/change-password');
             } else {
-                navigate('/admin/dashboard');
+                const from = location.state?.from;
+                navigate(from?.pathname?.startsWith('/admin/') && from.pathname !== '/admin/login' ? `${from.pathname}${from.search || ''}${from.hash || ''}` : '/admin/dashboard', { replace: true });
             }
         } else {
             if (['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(result.code) && result.retryAfterSeconds) {
@@ -90,19 +93,10 @@ const Login = () => {
     };
 
     return (
-        <div className="relative min-h-screen overflow-hidden flex items-center justify-center p-4 bg-[#0f3518]">
-            <div
-                className="absolute inset-0 scale-110 blur-[9px] brightness-[0.72] saturate-[1.05]"
-                style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1920')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                }}
-                aria-hidden="true"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0f3518]/86 via-[#155c27]/72 to-[#071d0d]/84" aria-hidden="true" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,216,0,0.12),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_30%)]" aria-hidden="true" />
+        <div className="staff-auth relative min-h-screen overflow-hidden flex items-center justify-center p-4 bg-[#101828]">
+            <div className="hero-mesh" aria-hidden="true" /><div className="staff-auth-scene"><RetailOrbit /></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#101828]/86 via-[#18243b]/72 to-[#111b30]/84" aria-hidden="true" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(196,181,253,0.12),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_30%)]" aria-hidden="true" />
             {toast && (
                 <Toast
                     message={['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(toast.code) && lockoutSeconds != null
@@ -114,12 +108,12 @@ const Login = () => {
                 />
             )}
 
-            <div className="relative z-10 w-full max-w-md p-8 rounded-2xl border border-[#f5d800]/25 bg-[#0f4a22]/82 backdrop-blur-xl shadow-[0_24px_80px_rgba(0,0,0,0.4)]">
+            <div className="staff-auth-card relative z-10 w-full max-w-md p-8 rounded-2xl border border-[#c4b5fd]/25 bg-[#19253b]/90 backdrop-blur-xl shadow-[0_24px_80px_rgba(0,0,0,0.4)]">
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center mb-4">
                         <BrandLogo className="h-16 w-auto" />
                     </div>
-                    <p className="text-white/80">Retail Management System</p>
+                    <h1 className="text-xl font-bold text-white mt-3">Your retail workspace</h1><p className="text-xs text-slate-400 mt-2">Sign in to keep your business moving.</p>
                 </div>
 
                 <ValidatedForm onSubmit={handleSubmit} noValidate className="space-y-6">
@@ -128,12 +122,12 @@ const Login = () => {
                             Email Address
                         </label>
                         <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7ecf8f]" />
+                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#ae9df3]" />
                             <input
                                 type="email" required autoComplete="username"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-[#8bc995]/40 rounded-lg bg-[#f8fff9] text-[#155c27] placeholder:text-[#5a7a5a] focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none transition"
+                                className="w-full pl-10 pr-4 py-3 border border-[#a495d1]/40 rounded-lg bg-[#fafaff] text-[#18243b] placeholder:text-[#68758e] focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none transition"
                                 placeholder="Enter your email"
                             />
                         </div>
@@ -144,12 +138,12 @@ const Login = () => {
                             Password
                         </label>
                         <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7ecf8f]" />
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#ae9df3]" />
                             <input
                                 type="password" required autoComplete="current-password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-[#8bc995]/40 rounded-lg bg-[#f8fff9] text-[#155c27] placeholder:text-[#5a7a5a] focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none transition"
+                                className="w-full pl-10 pr-4 py-3 border border-[#a495d1]/40 rounded-lg bg-[#fafaff] text-[#18243b] placeholder:text-[#68758e] focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none transition"
                                 placeholder="Enter your password"
                             />
                         </div>
@@ -158,7 +152,7 @@ const Login = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#f5d800] text-[#155c27] py-3 rounded-lg font-semibold hover:bg-[#e6c700] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[0_0_0_4px_rgba(245,216,0,0.2)]"
+                        className="w-full bg-[#c4b5fd] text-[#18243b] py-3 rounded-lg font-semibold hover:bg-[#ad97f5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-[0_0_0_4px_rgba(196,181,253,0.2)]"
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>

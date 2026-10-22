@@ -122,7 +122,7 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, on
     };
 
     return (
-        <aside id="admin-navigation" aria-label="Main navigation" className={`admin-sidebar ${mobileOpen ? 'is-open' : ''} bg-[#155c27] text-white min-h-screen fixed left-0 top-0 transition-all duration-300 shadow-2xl ${isCollapsed ? 'w-24' : 'w-64'}`}>
+        <aside id="admin-navigation" aria-label="Main navigation" className={`admin-sidebar ${mobileOpen ? 'is-open' : ''} bg-[#18243b] text-white min-h-screen fixed left-0 top-0 transition-all duration-300 shadow-2xl ${isCollapsed ? 'w-24' : 'w-64'}`}>
             <div className={`flex ${isCollapsed ? 'flex-col items-center' : 'flex-col'}`}>
                 {/* Header Section with Toggle Button */}
                 <div className={`w-full px-4 py-6 border-b border-white/10 ${isCollapsed ? 'flex flex-col items-center gap-4' : 'flex items-start justify-between gap-3'}`}>
@@ -132,15 +132,15 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, on
                         {!isCollapsed ? (
                             <BrandLogo className="h-10 w-auto" />
                         ) : (
-                            <ShoppingBag className="w-8 h-8 text-[#f5d800]" />
+                            <ShoppingBag className="w-8 h-8 text-[#c4b5fd]" />
                         )}
                     </div>
-                    
+
                     {/* Toggle Button - More Visible */}
                     <button
                         type="button"
                         onClick={onToggleCollapse}
-                           className={`relative group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#f5d800] hover:bg-[#e6c700] text-[#155c27] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105`}
+                           className={`relative group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#c4b5fd] hover:bg-[#ad97f5] text-[#18243b] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105`}
                         title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                     >
@@ -156,7 +156,7 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, on
                             <p className="text-[10px] uppercase tracking-[0.12em] text-gray-300 font-bold">Logged in as</p>
                             <div className="mt-3 flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2 min-w-0">
-                                    <div className="w-9 h-9 rounded-full bg-[#f5d800] text-[#155c27] text-xs font-bold flex items-center justify-center shadow-md">
+                                    <div className="w-9 h-9 rounded-full bg-[#c4b5fd] text-[#18243b] text-xs font-bold flex items-center justify-center shadow-md">
                                         {getInitials(user?.name || '')}
                                     </div>
                                     <div className="min-w-0">
@@ -164,7 +164,7 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, on
                                         <p className="text-xs text-gray-300">Staff</p>
                                     </div>
                                 </div>
-                                <span className="text-[10px] px-2 py-1 rounded-full bg-[#f5d800] text-[#155c27] capitalize font-bold">
+                                <span className="text-[10px] px-2 py-1 rounded-full bg-[#c4b5fd] text-[#18243b] capitalize font-bold">
                                     {user?.role?.[0]?.toUpperCase() || 'U'}
                                 </span>
                             </div>
@@ -172,7 +172,7 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, on
                     </div>
                 ) : (
                     <div className="w-full px-4 py-4 border-b border-white/10 flex justify-center">
-                        <div className="w-12 h-12 rounded-lg bg-[#f5d800] text-[#155c27] font-bold flex items-center justify-center shadow-md text-lg" title={`${user?.name} (${user?.role})`}>
+                        <div className="w-12 h-12 rounded-lg bg-[#c4b5fd] text-[#18243b] font-bold flex items-center justify-center shadow-md text-lg" title={`${user?.name} (${user?.role})`}>
                             {getInitials(user?.name || '')}
                         </div>
                     </div>
@@ -183,13 +183,13 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, on
                     {filteredSections.map((section, sectionIndex) => (
                         <div key={section.label} className={isCollapsed ? 'flex flex-col gap-2' : 'mb-4'}>
                             {!isCollapsed && sectionIndex > 0 && <div className="mb-4 border-t border-white/10"></div>}
-                            
+
                             {!isCollapsed && (
                                 <p className="px-3 mb-2 text-[11px] uppercase tracking-[0.15em] text-white/60 font-bold">
                                     {section.label}
                                 </p>
                             )}
-                            
+
                             <div className={isCollapsed ? 'flex flex-col gap-2' : 'space-y-1'}>
                                 {section.items.map((item) => {
                                     const Icon = item.icon;
@@ -203,13 +203,13 @@ const Sidebar = ({ isCollapsed = false, onToggleCollapse, mobileOpen = false, on
                                             onClick={onClose}
                                             title={item.name}
                                             className={`group relative flex items-center ${isCollapsed ? 'justify-center w-full' : 'justify-start gap-3'} px-3 py-2.5 rounded-lg transition-all duration-200 transform ${active
-                                                ? 'bg-[#f5d800] text-[#155c27] font-bold shadow-sm'
+                                                ? 'bg-[#c4b5fd] text-[#18243b] font-bold shadow-sm'
                                                 : 'text-gray-200 hover:bg-white/10 hover:text-white'
                                                 }`}
                                         >
                                             <Icon className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 ${active ? 'drop-shadow-md' : 'group-hover:scale-110'}`} strokeWidth={1.8} />
                                             {!isCollapsed && <span className="font-medium text-sm">{item.name}</span>}
-                                            
+
                                             {/* Tooltip for collapsed state */}
                                             {isCollapsed && (
                                                 <div className="absolute left-full ml-3 px-3 py-2 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">

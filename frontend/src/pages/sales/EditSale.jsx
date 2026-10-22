@@ -191,7 +191,7 @@ const EditSale = () => {
                                     onChange={(e) =>
                                         setFormData({ ...formData, customerName: e.target.value })
                                     }
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                     required
                                 />
                             </div>
@@ -204,7 +204,7 @@ const EditSale = () => {
                                     onChange={(e) =>
                                         setFormData({ ...formData, paymentMethod: e.target.value })
                                     }
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                 >
                                     <option value="Cash">Cash</option>
                                     <option value="Card">Card</option>
@@ -241,7 +241,7 @@ const EditSale = () => {
                                             onChange={(e) =>
                                                 handleItemChange(index, 'productId', e.target.value)
                                             }
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                         >
                                             <option value="">Select Product</option>
                                             {products.map(p => (
@@ -263,7 +263,7 @@ const EditSale = () => {
                                             onChange={(e) =>
                                                 handleItemChange(index, 'quantity', e.target.value)
                                             }
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                         />
                                         {item.productId && (
                                             <p className={`text-xs mt-1 ${item.quantity > item.maxStock ? 'text-red-500' : 'text-gray-500'}`}>
@@ -339,7 +339,7 @@ const EditSale = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-1 px-6 py-3 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 px-6 py-3 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? 'Updating...' : 'Update Sale'}
                         </button>

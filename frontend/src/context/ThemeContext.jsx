@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const ThemeContext = createContext();
@@ -14,13 +14,13 @@ export const useTheme = () => {
 export const ThemeProvider = ({ children }) => {
     const location = useLocation();
     const isAdminRoute = location?.pathname?.startsWith('/admin');
-    const [theme] = useState('dark');
+    const theme = isAdminRoute ? 'light' : 'dark';
 
     useEffect(() => {
-        // Force dark mode globally.
+        // Admin uses porcelain surfaces; the storefront uses the same palette in midnight.
         const root = document.documentElement;
         root.classList.remove('light', 'dark');
-        root.classList.add('dark');
+        root.classList.add(theme);
     }, [theme, isAdminRoute]);
 
     const toggleTheme = () => {};

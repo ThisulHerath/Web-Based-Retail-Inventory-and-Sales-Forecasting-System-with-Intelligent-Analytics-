@@ -10,7 +10,7 @@ const DashboardLayout = ({ children }) => {
     const { pathname } = useLocation();
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('adminSidebarCollapsed') === 'true');
     const [mobileOpen, setMobileOpen] = useState(false);
-    useFocusTrap(mobileOpen, '#admin-navigation', () => setMobileOpen(false));
+    useFocusTrap(mobileOpen, '#admin-navigation', () => setMobileOpen(false), '#admin-menu-trigger');
     useEffect(() => {
         document.documentElement.classList.remove('dark');
         document.documentElement.classList.add('light');
@@ -35,6 +35,7 @@ const DashboardLayout = ({ children }) => {
             <div className="admin-workspace" inert={mobileOpen ? '' : undefined}>
                 <Navbar mobileOpen={mobileOpen} onMenuClick={() => setMobileOpen(prev => !prev)} />
                 <main id="main-content" className="admin-main" tabIndex={-1}>
+                    <div className="workspace-atmosphere no-print" aria-hidden="true"><span /><span /><span /></div>
                     <nav aria-label="Breadcrumb" className="breadcrumbs no-print">
                         <Link to="/admin/dashboard">Workspace</Link>
                         {segments.map((segment, index) => (

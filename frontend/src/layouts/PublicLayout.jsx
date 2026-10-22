@@ -23,7 +23,7 @@ const PublicLayout = () => {
 
     const handleLocationClick = (e) => {
         e.preventDefault();
-        
+
         navigate('/#location');
         setMobileMenuOpen(false);
     };
@@ -69,14 +69,14 @@ const PublicLayout = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col font-sans bg-[var(--color-bg-primary)] transition-colors duration-300 animate-page-fade">
+        <div className="public-shell min-h-screen flex flex-col font-sans bg-[var(--color-bg-primary)] transition-colors duration-300 animate-page-fade">
             <a href="#main-content" className="skip-link">Skip to content</a>
             {/* Navigation Header */}
-            <header className={`sticky top-0 z-50 transition-all duration-300 ${
-                scrolled 
-                    ? 'bg-[#155c27]/92 shadow-lg backdrop-blur-[8px]' 
-                    : 'bg-[#155c27]/96 shadow-sm backdrop-blur-[8px]'
-            } border-b-2 border-[#f5d800]`}>
+            <header className={`store-header sticky top-0 z-50 transition-all duration-300 ${
+                scrolled
+                    ? 'bg-[#18243b]/92 shadow-lg backdrop-blur-[8px]'
+                    : 'bg-[#18243b]/96 shadow-sm backdrop-blur-[8px]'
+            } border-b-2 border-[#c4b5fd]`}>
                 <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
                         <div className="flex items-center gap-2 animate-slide-in-left">
@@ -88,23 +88,23 @@ const PublicLayout = () => {
                         <div className="hidden md:flex items-center space-x-8">
                             <NavLink
                                 to="/"
-                                className={({ isActive }) => `nav-link-animated text-white hover:text-[#f5d800] font-medium transition-all duration-200 ${isActive ? 'active' : ''}`}
+                                className={({ isActive }) => `nav-link-animated text-white hover:text-[#c4b5fd] font-medium transition-all duration-200 ${isActive ? 'active' : ''}`}
                             >
                                 {t('nav.home')}
                             </NavLink>
                             <NavLink
                                 to="/products"
-                                className={({ isActive }) => `nav-link-animated text-white hover:text-[#f5d800] font-medium transition-all duration-200 ${isActive ? 'active' : ''}`}
+                                className={({ isActive }) => `nav-link-animated text-white hover:text-[#c4b5fd] font-medium transition-all duration-200 ${isActive ? 'active' : ''}`}
                             >
                                 {t('nav.shop')}
                             </NavLink>
                             <NavLink
                                 to="/feedback"
-                                className={({ isActive }) => `nav-link-animated text-white hover:text-[#f5d800] font-medium transition-all duration-200 ${isActive ? 'active' : ''}`}
+                                className={({ isActive }) => `nav-link-animated text-white hover:text-[#c4b5fd] font-medium transition-all duration-200 ${isActive ? 'active' : ''}`}
                             >
                                 {t('nav.feedback')}
                             </NavLink>
-                            <a href="/#location" onClick={handleLocationClick} className="nav-link-animated text-white hover:text-[#f5d800] font-medium transition-all duration-200 cursor-pointer">{t('nav.location')}</a>
+                            <a href="/#location" onClick={handleLocationClick} className="nav-link-animated text-white hover:text-[#c4b5fd] font-medium transition-all duration-200 cursor-pointer">{t('nav.location')}</a>
                         </div>
 
                         <div className="flex items-center space-x-2 sm:space-x-4 animate-slide-in-right">
@@ -115,10 +115,10 @@ const PublicLayout = () => {
                                 {i18n.language === 'en' ? 'සිං' : 'EN'}
                             </button>
 
-                            <Link to="/cart" className="relative p-2 text-white hover:text-[#f5d800] transition-all duration-200 hover:scale-110 rounded-xl hover:bg-[rgba(245,216,0,0.1)]">
+                            <Link to="/cart" className="relative p-2 text-white hover:text-[#c4b5fd] transition-all duration-200 hover:scale-110 rounded-xl hover:bg-[rgba(196,181,253,0.1)]">
                                 <ShoppingCart className="w-6 h-6" />
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#f5d800] to-[#e6c700] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-[var(--color-card-bg)] animate-scale-in">
+                                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#c4b5fd] to-[#ad97f5] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-[var(--color-card-bg)] animate-scale-in">
                                         {cartCount}
                                     </span>
                                 )}
@@ -126,23 +126,23 @@ const PublicLayout = () => {
 
                             {isCustomerAuthenticated() ? (
                                 <div className="hidden md:flex items-center gap-4">
-                                    <Link to="/my-account" className="flex items-center gap-2 text-white hover:text-[#f5d800] font-medium transition-all duration-200 hover:scale-105 border border-[#f5d800] px-2.5 py-1.5 rounded-xl">
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#f5d800] to-[#e6c700] flex items-center justify-center text-[#155c27] font-bold border-2 border-[rgba(245,216,0,0.3)] shadow-lg">
+                                    <Link to="/my-account" className="flex items-center gap-2 text-white hover:text-[#c4b5fd] font-medium transition-all duration-200 hover:scale-105 border border-[#c4b5fd] px-2.5 py-1.5 rounded-xl">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#c4b5fd] to-[#ad97f5] flex items-center justify-center text-[#18243b] font-bold border-2 border-[rgba(196,181,253,0.3)] shadow-lg">
                                             {customer.firstName[0]}
                                         </div>
                                         <span className="hidden sm:inline">{t('nav.hi')}, {customer.firstName}</span>
                                     </Link>
                                     <button
                                         onClick={requestLogout}
-                                        className="text-sm text-white hover:text-red-400 transition-colors px-3 py-2 rounded-lg hover:bg-[rgba(245,216,0,0.1)]"
+                                        className="text-sm text-white hover:text-red-400 transition-colors px-3 py-2 rounded-lg hover:bg-[rgba(196,181,253,0.1)]"
                                     >
                                         {t('nav.logout')}
                                     </button>
                                 </div>
                             ) : (
                                 <div className="hidden md:flex items-center gap-2">
-                                    <Link to="/login" className="text-white hover:text-[#f5d800] font-medium transition-all duration-200 px-4 py-2 rounded-xl hover:bg-[rgba(245,216,0,0.1)] hover:scale-105">{t('nav.login')}</Link>
-                                    <Link to="/register" className="bg-[#f5d800] text-[#155c27] px-5 py-2 rounded-xl hover:shadow-lg hover:shadow-[rgba(245,216,0,0.3)] transition-all duration-200 font-medium hover:scale-105 font-weight-600">{t('nav.join_points')}</Link>
+                                    <Link to="/login" className="text-white hover:text-[#c4b5fd] font-medium transition-all duration-200 px-4 py-2 rounded-xl hover:bg-[rgba(196,181,253,0.1)] hover:scale-105">{t('nav.login')}</Link>
+                                    <Link to="/register" className="bg-[#c4b5fd] text-[#18243b] px-5 py-2 rounded-xl hover:shadow-lg hover:shadow-[rgba(196,181,253,0.3)] transition-all duration-200 font-medium hover:scale-105 font-weight-600">{t('nav.join_points')}</Link>
                                 </div>
                             )}
 
@@ -151,7 +151,7 @@ const PublicLayout = () => {
                                 aria-label={mobileMenuOpen ? 'Close navigation' : 'Open navigation'}
                                 aria-expanded={mobileMenuOpen}
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="md:hidden p-2 text-white hover:text-[#f5d800] transition-colors"
+                                className="md:hidden p-2 text-white hover:text-[#c4b5fd] transition-colors"
                             >
                                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                             </button>
@@ -161,20 +161,20 @@ const PublicLayout = () => {
                     {/* Mobile Menu */}
                     {mobileMenuOpen && (
                         <div className="md:hidden py-4 space-y-2 animate-fade-in-up border-t border-[rgba(255,255,255,0.1)]">
-                            <Link to="/" className="block px-4 py-2 text-white hover:text-[#f5d800] hover:bg-[rgba(245,216,0,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.home')}</Link>
-                            <Link to="/products" className="block px-4 py-2 text-white hover:text-[#f5d800] hover:bg-[rgba(245,216,0,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.shop')}</Link>
-                            <Link to="/feedback" className="block px-4 py-2 text-white hover:text-[#f5d800] hover:bg-[rgba(245,216,0,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.feedback')}</Link>
-                            <a href="/#location" onClick={handleLocationClick} className="block px-4 py-2 text-white hover:text-[#f5d800] hover:bg-[rgba(245,216,0,0.1)] rounded-lg transition-colors cursor-pointer">{t('nav.location')}</a>
+                            <Link to="/" className="block px-4 py-2 text-white hover:text-[#c4b5fd] hover:bg-[rgba(196,181,253,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.home')}</Link>
+                            <Link to="/products" className="block px-4 py-2 text-white hover:text-[#c4b5fd] hover:bg-[rgba(196,181,253,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.shop')}</Link>
+                            <Link to="/feedback" className="block px-4 py-2 text-white hover:text-[#c4b5fd] hover:bg-[rgba(196,181,253,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.feedback')}</Link>
+                            <a href="/#location" onClick={handleLocationClick} className="block px-4 py-2 text-white hover:text-[#c4b5fd] hover:bg-[rgba(196,181,253,0.1)] rounded-lg transition-colors cursor-pointer">{t('nav.location')}</a>
                             {!isCustomerAuthenticated() && (
                                 <>
-                                    <Link to="/login" className="block px-4 py-2 text-white hover:text-[#f5d800] hover:bg-[rgba(245,216,0,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.login')}</Link>
-                                    <Link to="/register" className="block px-4 py-2 bg-[#f5d800] text-[#155c27] rounded-lg text-center font-medium font-weight-600" onClick={() => setMobileMenuOpen(false)}>{t('nav.join_points')}</Link>
+                                    <Link to="/login" className="block px-4 py-2 text-white hover:text-[#c4b5fd] hover:bg-[rgba(196,181,253,0.1)] rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.login')}</Link>
+                                    <Link to="/register" className="block px-4 py-2 bg-[#c4b5fd] text-[#18243b] rounded-lg text-center font-medium font-weight-600" onClick={() => setMobileMenuOpen(false)}>{t('nav.join_points')}</Link>
                                 </>
                             )}
                             {isCustomerAuthenticated() && (
                                 <button
                                     onClick={requestLogout}
-                                    className="block w-full text-left px-4 py-2 text-white hover:text-red-400 hover:bg-[rgba(245,216,0,0.1)] rounded-lg transition-colors"
+                                    className="block w-full text-left px-4 py-2 text-white hover:text-red-400 hover:bg-[rgba(196,181,253,0.1)] rounded-lg transition-colors"
                                 >
                                     {t('nav.logout')}
                                 </button>
@@ -186,8 +186,8 @@ const PublicLayout = () => {
 
             {showLogoutConfirm && (
                 <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-[2px] flex items-center justify-center p-4">
-                    <div className="w-full max-w-sm rounded-2xl border border-[#f5d800]/40 bg-[#0f4a21] text-white shadow-2xl">
-                        <div className="p-5 border-b border-[#f5d800]/20">
+                    <div className="w-full max-w-sm rounded-2xl border border-[#c4b5fd]/40 bg-[#1c2942] text-white shadow-2xl">
+                        <div className="p-5 border-b border-[#c4b5fd]/20">
                             <h3 className="text-lg font-semibold">
                                 {t('nav.logout_confirm_title', { defaultValue: 'Confirm Logout' })}
                             </h3>
@@ -206,7 +206,7 @@ const PublicLayout = () => {
                             <button
                                 type="button"
                                 onClick={confirmLogout}
-                                className="px-4 py-2 rounded-lg bg-[#f5d800] text-[#155c27] font-semibold hover:bg-[#e6c700] transition-colors"
+                                className="px-4 py-2 rounded-lg bg-[#c4b5fd] text-[#18243b] font-semibold hover:bg-[#ad97f5] transition-colors"
                             >
                                 {t('nav.logout', { defaultValue: 'Logout' })}
                             </button>
@@ -227,14 +227,14 @@ const PublicLayout = () => {
                     className="fixed bottom-6 right-6 z-50 group"
                     aria-label="Back to top"
                 >
-                    <span className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#f5d800] text-[#155c27] shadow-xl shadow-[rgba(245,216,0,0.3)] border-2 border-[#155c27] transition-transform duration-200 group-hover:scale-105 font-weight-600">
+                    <span className="flex items-center justify-center w-12 h-12 rounded-xl bg-[#c4b5fd] text-[#18243b] shadow-xl shadow-[rgba(196,181,253,0.3)] border-2 border-[#18243b] transition-transform duration-200 group-hover:scale-105 font-weight-600">
                         <ArrowUp className="w-5 h-5 scroll-top-icon" />
                     </span>
                 </button>
             )}
 
             {/* Footer */}
-            <footer className="bg-[#0d3d1a] text-white pt-12 pb-8 mt-12 border-t-2 border-[rgba(245,216,0,0.2)]">
+            <footer className="bg-[#111b30] text-white pt-12 pb-8 mt-12 border-t-2 border-[rgba(196,181,253,0.2)]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                         <div className="col-span-1 md:col-span-1 animate-fade-in-up">
@@ -249,10 +249,10 @@ const PublicLayout = () => {
                         <div className="animate-fade-in-up stagger-1">
                             <h4 className="text-lg font-bold mb-4">{t('footer.quick_links')}</h4>
                             <ul className="space-y-2 text-gray-400 text-sm">
-                                <li><Link to="/products" className="hover:text-[#f5d800] transition-all duration-150 hover:translate-x-1 inline-block">{t('footer.catalog')}</Link></li>
-                                <li><Link to="/register" className="hover:text-[#f5d800] transition-all duration-150 hover:translate-x-1 inline-block">{t('footer.loyalty')}</Link></li>
-                                <li><Link to="/feedback" className="hover:text-[#f5d800] transition-all duration-150 hover:translate-x-1 inline-block">{t('footer.share_feedback')}</Link></li>
-                                <li><a href="/#location" onClick={handleLocationClick} className="hover:text-[#f5d800] transition-all duration-150 hover:translate-x-1 inline-block cursor-pointer">{t('footer.find_store')}</a></li>
+                                <li><Link to="/products" className="hover:text-[#c4b5fd] transition-all duration-150 hover:translate-x-1 inline-block">{t('footer.catalog')}</Link></li>
+                                <li><Link to="/register" className="hover:text-[#c4b5fd] transition-all duration-150 hover:translate-x-1 inline-block">{t('footer.loyalty')}</Link></li>
+                                <li><Link to="/feedback" className="hover:text-[#c4b5fd] transition-all duration-150 hover:translate-x-1 inline-block">{t('footer.share_feedback')}</Link></li>
+                                <li><a href="/#location" onClick={handleLocationClick} className="hover:text-[#c4b5fd] transition-all duration-150 hover:translate-x-1 inline-block cursor-pointer">{t('footer.find_store')}</a></li>
                             </ul>
                         </div>
 
@@ -260,15 +260,15 @@ const PublicLayout = () => {
                             <h4 className="text-lg font-bold mb-4">{t('footer.contact_info')}</h4>
                             <ul className="space-y-3 text-gray-400 text-sm">
                                 <li className="flex items-start gap-3 group">
-                                    <MapPin className="w-5 h-5 text-[#f5d800] mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+                                    <MapPin className="w-5 h-5 text-[#c4b5fd] mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
                                     <span>No.250, Aguruwathota road, Wewala, Horana</span>
                                 </li>
                                 <li className="flex items-center gap-3 group">
-                                    <Phone className="w-5 h-5 text-[#f5d800] shrink-0 group-hover:scale-110 transition-transform" />
+                                    <Phone className="w-5 h-5 text-[#c4b5fd] shrink-0 group-hover:scale-110 transition-transform" />
                                     <span>0342 261 511</span>
                                 </li>
                                 <li className="flex items-center gap-3 group">
-                                    <Mail className="w-5 h-5 text-[#f5d800] shrink-0 group-hover:scale-110 transition-transform" />
+                                    <Mail className="w-5 h-5 text-[#c4b5fd] shrink-0 group-hover:scale-110 transition-transform" />
                                     <span>hello@7supercity.lk</span>
                                 </li>
                             </ul>
@@ -277,9 +277,9 @@ const PublicLayout = () => {
                         <div className="animate-fade-in-up stagger-3">
                             <h4 className="text-lg font-bold mb-4">{t('footer.follow_us')}</h4>
                             <div className="flex gap-4">
-                                <a href="https://www.facebook.com/sevenssupercity/" className="bg-[#1e7a34] dark:bg-[#1e7a34] p-2.5 rounded-xl hover:bg-[#f5d800] hover:text-[#155c27] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Facebook className="w-5 h-5" /></a>
-                                <a href="#" className="bg-[#1e7a34] dark:bg-[#1e7a34] p-2.5 rounded-xl hover:bg-[#f5d800] hover:text-[#155c27] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Instagram className="w-5 h-5" /></a>
-                                <a href="#" className="bg-[#1e7a34] dark:bg-[#1e7a34] p-2.5 rounded-xl hover:bg-[#f5d800] hover:text-[#155c27] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Twitter className="w-5 h-5" /></a>
+                                <a href="https://www.facebook.com/sevenssupercity/" className="bg-[#6757d9] dark:bg-[#6757d9] p-2.5 rounded-xl hover:bg-[#c4b5fd] hover:text-[#18243b] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Facebook className="w-5 h-5" /></a>
+                                <a href="#" className="bg-[#6757d9] dark:bg-[#6757d9] p-2.5 rounded-xl hover:bg-[#c4b5fd] hover:text-[#18243b] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Instagram className="w-5 h-5" /></a>
+                                <a href="#" className="bg-[#6757d9] dark:bg-[#6757d9] p-2.5 rounded-xl hover:bg-[#c4b5fd] hover:text-[#18243b] transition-all duration-200 hover:scale-110 hover:-translate-y-1 hover:shadow-lg"><Twitter className="w-5 h-5" /></a>
                             </div>
                         </div>
                     </div>

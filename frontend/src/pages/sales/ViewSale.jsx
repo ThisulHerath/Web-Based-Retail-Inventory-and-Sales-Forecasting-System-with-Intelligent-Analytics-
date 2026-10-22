@@ -42,7 +42,7 @@ const ViewSale = () => {
                 <p className="text-gray-500">Sale not found</p>
                 <button
                     onClick={() => navigate('/admin/sales')}
-                    className="mt-4 px-4 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700]"
+                    className="mt-4 px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5]"
                 >
                     Back to Sales
                 </button>
@@ -68,14 +68,14 @@ const ViewSale = () => {
                 <div className="flex gap-3">
                     <Link
                         to={`/admin/sales/edit/${sale._id}`}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#f5d800] text-[#5c1515] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-[#c4b5fd] text-[#5c1515] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors"
                     >
                         <Edit className="w-4 h-4" />
                         Edit
                     </Link>
                     <button
                         onClick={handlePrint}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#f5d800] text-[#5c1515] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-[#c4b5fd] text-[#5c1515] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors"
                     >
                         <Printer className="w-4 h-4" />
                         Print
@@ -88,7 +88,7 @@ const ViewSale = () => {
                 <div className="border-b-2 border-gray-300 pb-6 mb-6">
                     <div className="flex justify-between items-start">
                         <div>
-                            <h1 className="text-4xl font-bold text-[#03a132] mb-2">
+                            <h1 className="text-4xl font-bold text-[#6753cc] mb-2">
                                 7 Super City
                             </h1>
                             <p className="text-gray-600">Retail Management System</p>
@@ -203,7 +203,7 @@ const ViewSale = () => {
                         </div>
                         <div className="flex justify-between py-3 border-t-2 border-gray-300 mt-2">
                             <span className="text-xl font-bold text-gray-800">Grand Total:</span>
-                            <span className="text-xl font-bold text-[#03a132]">
+                            <span className="text-xl font-bold text-[#6753cc]">
                                 LKR {sale.grandTotal.toFixed(2)}
                             </span>
                         </div>

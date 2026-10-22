@@ -265,12 +265,12 @@ const CreateSale = () => {
         }
 
         const discountedSubtotal = subtotal - discount;
-        
+
         // Calculate loyalty points discount
         const redeemRequested = Number(redeemPoints || 0);
         const loyaltyDiscount = Math.min(redeemRequested, discountedSubtotal);
         const finalDiscountedSubtotal = discountedSubtotal - loyaltyDiscount;
-        
+
         const tax = finalDiscountedSubtotal * 0.1;
         const grandTotal = finalDiscountedSubtotal + tax;
         return { subtotal, discount, discountedSubtotal, loyaltyDiscount, finalDiscountedSubtotal, tax, grandTotal };
@@ -375,16 +375,16 @@ const CreateSale = () => {
     const getStepStyles = (stepId) => {
         if (stepId < currentStep) {
             return {
-                bubble: 'bg-[#f5d800] border-[#f5d800] text-[#155c27]',
-                text: 'text-[#155c27]',
-                bar: 'bg-[#f5d800]',
+                bubble: 'bg-[#c4b5fd] border-[#c4b5fd] text-[#18243b]',
+                text: 'text-[#18243b]',
+                bar: 'bg-[#c4b5fd]',
             };
         }
         if (stepId === currentStep) {
             return {
-                bubble: 'bg-[#f5d800] border-[#f5d800] text-[#155c27]',
-                text: 'text-[#155c27]',
-                bar: 'bg-[#f5d800]/70',
+                bubble: 'bg-[#c4b5fd] border-[#c4b5fd] text-[#18243b]',
+                text: 'text-[#18243b]',
+                bar: 'bg-[#c4b5fd]/70',
             };
         }
         return {
@@ -401,7 +401,7 @@ const CreateSale = () => {
             {showConfirmModal && confirmPayload && (
                 <div className="fixed inset-0 bg-black/45 flex items-center justify-center z-[70] p-4">
                     <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl border border-gray-100 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5">
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#18243b]/5">
                             <h3 className="text-lg font-bold text-gray-800">Confirm Sale Details</h3>
                             <p className="text-sm text-gray-600">Review this sale before continuing.</p>
                         </div>
@@ -490,7 +490,7 @@ const CreateSale = () => {
                                 type="button"
                                 onClick={handleConfirmCreate}
                                 disabled={loading}
-                                className="px-4 py-2 bg-[#f5d800] text-[#155c27] font-semibold rounded-lg hover:bg-[#e6c700] disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-semibold rounded-lg hover:bg-[#ad97f5] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? 'Creating...' : 'Continue'}
                             </button>
@@ -534,8 +534,8 @@ const CreateSale = () => {
 
                 <ValidatedForm onSubmit={handleSubmit} className="space-y-6">
                     <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5 flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#155c27]" />
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#18243b]/5 flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#18243b]" />
                             <h2 className="text-sm uppercase tracking-[0.08em] font-bold text-gray-700">Customer Information</h2>
                         </div>
                         <div className="p-6">
@@ -575,7 +575,7 @@ const CreateSale = () => {
                                                     setShowCustomerDropdown(true);
                                                 }}
                                                 onFocus={() => setShowCustomerDropdown(true)}
-                                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                             />
                                             {showCustomerDropdown && (
                                                 <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
@@ -585,7 +585,7 @@ const CreateSale = () => {
                                                                 key={customer._id || customer.id}
                                                                 type="button"
                                                                 onClick={() => selectCustomer(customer)}
-                                                                className="w-full text-left px-4 py-2 hover:bg-[#e8f3e6] flex items-center justify-between"
+                                                                className="w-full text-left px-4 py-2 hover:bg-[#f0edff] flex items-center justify-between"
                                                             >
                                                                 <div>
                                                                     <p className="font-medium text-sm">
@@ -595,7 +595,7 @@ const CreateSale = () => {
                                                                         {customer.phone || customer.email}
                                                                     </p>
                                                                 </div>
-                                                                <span className="text-xs text-[#f5d800] font-medium">
+                                                                <span className="text-xs text-[#c4b5fd] font-medium">
                                                                     {customer.loyaltyPoints || 0} pts
                                                                 </span>
                                                             </button>
@@ -626,7 +626,7 @@ const CreateSale = () => {
                                                 }));
                                                 if (fieldErrors.customerName) setFieldErrors(prev => ({ ...prev, customerName: '' }));
                                             }}
-                                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.customerName ? 'border-red-500' : 'border-gray-300'}`}
+                                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.customerName ? 'border-red-500' : 'border-gray-300'}`}
                                         />
                                         {fieldErrors.customerName && <p className="mt-1 text-xs text-red-500">{fieldErrors.customerName}</p>}
                                     </div>
@@ -675,7 +675,7 @@ const CreateSale = () => {
                                             <button
                                                 type="button"
                                                 onClick={handleCreateWalkIn}
-                                                className="px-3 py-2 text-sm font-semibold bg-[#155c27] text-white rounded-lg hover:bg-green-800"
+                                                className="px-3 py-2 text-sm font-semibold bg-[#18243b] text-white rounded-lg hover:bg-green-800"
                                             >
                                                 Save Walk-in Customer
                                             </button>
@@ -712,7 +712,7 @@ const CreateSale = () => {
                                             setFormData((prev) => ({ ...prev, couponCode: val }));
                                         }}
                                         onBlur={handleValidateCoupon}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none font-mono tracking-wider uppercase"
+                                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none font-mono tracking-wider uppercase"
                                     />
                                 </div>
 
@@ -721,7 +721,7 @@ const CreateSale = () => {
                                         type="button"
                                         onClick={handleValidateCoupon}
                                         disabled={couponValidationLoading || !couponCode.trim()}
-                                        className="px-3 py-1.5 text-xs font-semibold bg-[#d4e8d0] text-[#155c27] rounded-lg hover:bg-primary-200 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                                        className="px-3 py-1.5 text-xs font-semibold bg-[#eeebff] text-[#18243b] rounded-lg hover:bg-primary-200 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                                     >
                                         {couponValidationLoading ? 'Validating...' : 'Validate Coupon'}
                                     </button>
@@ -748,7 +748,7 @@ const CreateSale = () => {
                                     onChange={(e) =>
                                         setFormData((prev) => ({ ...prev, paymentMethod: e.target.value }))
                                     }
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                 >
                                     <option value="Cash">Cash</option>
                                     <option value="Card">Card</option>
@@ -766,7 +766,7 @@ const CreateSale = () => {
                                         setRedeemPoints(val);
                                         setFormData((prev) => ({ ...prev, loyaltyPointsToRedeem: val }));
                                     }}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                 />
                                 <p className="text-xs text-gray-500 mt-1">
                                     Available points: {selectedCustomer?.loyaltyPoints || selectedWalkInCustomer?.loyaltyPoints || 0}
@@ -777,9 +777,9 @@ const CreateSale = () => {
                     </div>
 
                     <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5 flex items-center justify-between gap-2">
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#18243b]/5 flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#155c27]" />
+                                <span className="w-2.5 h-2.5 rounded-full bg-[#18243b]" />
                                 <h2 className="text-sm uppercase tracking-[0.08em] font-bold text-gray-700">Items</h2>
                             </div>
                             <button
@@ -818,7 +818,7 @@ const CreateSale = () => {
                                                                 setItemErrors(newIE);
                                                             }
                                                         }}
-                                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-sm ${itemErrors[index]?.productId ? 'border-red-500' : 'border-gray-300'}`}
+                                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-sm ${itemErrors[index]?.productId ? 'border-red-500' : 'border-gray-300'}`}
                                                     >
                                                         <option value="">Select Product</option>
                                                         {products.map((p) => (
@@ -847,7 +847,7 @@ const CreateSale = () => {
                                                                 setItemErrors(newIE);
                                                             }
                                                         }}
-                                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-sm ${itemErrors[index]?.quantity || Number(item.quantity) > Number(item.maxStock) ? 'border-red-500' : 'border-gray-300'}`}
+                                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-sm ${itemErrors[index]?.quantity || Number(item.quantity) > Number(item.maxStock) ? 'border-red-500' : 'border-gray-300'}`}
                                                     />
                                                     {itemErrors[index]?.quantity
                                                         ? <p className="text-xs mt-1 text-red-500">{itemErrors[index].quantity}</p>
@@ -894,8 +894,8 @@ const CreateSale = () => {
                     </div>
 
                     <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 bg-[#155c27]/5 flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#155c27]" />
+                        <div className="px-6 py-4 border-b border-gray-100 bg-[#18243b]/5 flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#18243b]" />
                             <h2 className="text-sm uppercase tracking-[0.08em] font-bold text-gray-700">Order Summary</h2>
                         </div>
                         <div className="p-6">
@@ -945,7 +945,7 @@ const CreateSale = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full px-6 py-3 bg-[#f5d800] text-[#155c27] rounded-lg hover:bg-[#e6c700] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full px-6 py-3 bg-[#c4b5fd] text-[#18243b] rounded-lg hover:bg-[#ad97f5] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? 'Creating...' : 'Create Sale'}
                         </button>

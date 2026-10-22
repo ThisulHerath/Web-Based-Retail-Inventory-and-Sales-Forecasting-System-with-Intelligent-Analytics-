@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import './index.css';
 import './ui.css';
+import './design.css';
 import './i18n/index.js';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { CustomerProvider } from './context/CustomerContext.jsx';

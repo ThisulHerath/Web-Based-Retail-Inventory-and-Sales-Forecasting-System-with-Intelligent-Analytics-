@@ -91,32 +91,32 @@ const EditSupplier = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Supplier Name *</label>
-                                <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none" />
+                                <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
-                                <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none" />
+                                <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none" />
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none" />
+                                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none" />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                                <textarea name="address" value={formData.address} onChange={handleChange} rows={3} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none resize-none" />
+                                <textarea name="address" value={formData.address} onChange={handleChange} rows={3} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none resize-none" />
                             </div>
                             <div className="flex items-center gap-3">
-                                <input type="checkbox" id="isActive" name="isActive" checked={formData.isActive} onChange={handleChange} className="w-4 h-4 text-[#f5d800] rounded border-gray-300 focus:ring-[#f5d800]" />
+                                <input type="checkbox" id="isActive" name="isActive" checked={formData.isActive} onChange={handleChange} className="w-4 h-4 text-[#c4b5fd] rounded border-gray-300 focus:ring-[#c4b5fd]" />
                                 <label htmlFor="isActive" className="text-sm font-medium text-gray-700">Active Supplier</label>
                             </div>
                         </div>
                         <div className="flex gap-4 pt-2">
                             <button type="button" onClick={() => navigate('/admin/suppliers')} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">Cancel</button>
-                            <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors font-medium disabled:opacity-50">
+                            <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors font-medium disabled:opacity-50">
                                 {loading ? 'Saving...' : 'Save Changes'}
                             </button>
                         </div>

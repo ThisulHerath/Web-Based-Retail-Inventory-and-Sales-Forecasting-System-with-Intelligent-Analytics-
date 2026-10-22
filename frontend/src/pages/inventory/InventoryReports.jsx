@@ -1,3 +1,4 @@
+import EmptyState from '../../components/EmptyState';
 import ValidatedForm from '../../components/ValidatedForm';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -185,7 +186,7 @@ const InventoryReports = () => {
 
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <Link to="/admin/inventory" className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <Link to="/admin/inventory" className="p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Go back">
                         <ArrowLeft className="w-5 h-5 text-gray-700" />
                     </Link>
                     <div>
@@ -204,7 +205,7 @@ const InventoryReports = () => {
                             type="text"
                             value={form.title}
                             onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                             placeholder="e.g. Weekly Stock Actions"
                             required
                         />
@@ -217,7 +218,7 @@ const InventoryReports = () => {
                             onChange={(e) => setForm((prev) => ({ ...prev, fromDate: e.target.value }))}
                             max={nowLocal}
                             required
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                         />
                     </div>
                     <div>
@@ -229,7 +230,7 @@ const InventoryReports = () => {
                             min={form.fromDate || undefined}
                             max={nowLocal}
                             required
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                         />
                     </div>
                     <div className="md:col-span-2">
@@ -238,7 +239,7 @@ const InventoryReports = () => {
                             value={form.notes}
                             onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
                             rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                             placeholder="Add context for this report"
                         />
                     </div>
@@ -246,7 +247,7 @@ const InventoryReports = () => {
                         <button
                             type="submit"
                             disabled={!canCreate || saving}
-                            className="px-5 py-2.5 bg-[#155c27] text-white rounded-lg hover:bg-[#10481f] disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-5 py-2.5 bg-[#18243b] text-white rounded-lg hover:bg-[#304268] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {saving ? 'Creating...' : 'Create Report'}
                         </button>
@@ -260,7 +261,7 @@ const InventoryReports = () => {
                 {loading ? (
                     <div className="py-10 text-center text-gray-500">Loading reports...</div>
                 ) : reports.length === 0 ? (
-                    <div className="py-10 text-center text-gray-500">No reports found.</div>
+                    <EmptyState title="No reports found" />
                 ) : (
                     <>
                         <div className="overflow-x-auto">
@@ -337,7 +338,7 @@ const InventoryReports = () => {
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
                         <div className="p-5 border-b border-gray-200 flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-[#155c27]" />
+                                <FileText className="w-5 h-5 text-[#18243b]" />
                                 <h3 className="text-lg font-semibold text-gray-800">{viewReport.title}</h3>
                             </div>
                             <button onClick={() => setViewReport(null)} className="px-3 py-1.5 border rounded-lg hover:bg-gray-50">Close</button>
@@ -437,7 +438,7 @@ const InventoryReports = () => {
                                 type="text"
                                 value={editReport.title}
                                 onChange={(e) => setEditReport((prev) => ({ ...prev, title: e.target.value }))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                             />
                         </div>
 
@@ -449,7 +450,7 @@ const InventoryReports = () => {
                                     value={editReport.fromDate}
                                     onChange={(e) => setEditReport((prev) => ({ ...prev, fromDate: e.target.value }))}
                                     max={nowLocal}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                                 />
                             </div>
                             <div>
@@ -460,7 +461,7 @@ const InventoryReports = () => {
                                     onChange={(e) => setEditReport((prev) => ({ ...prev, toDate: e.target.value }))}
                                     min={editReport.fromDate || undefined}
                                     max={nowLocal}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                                 />
                             </div>
                         </div>
@@ -471,7 +472,7 @@ const InventoryReports = () => {
                                 rows={3}
                                 value={editReport.notes || ''}
                                 onChange={(e) => setEditReport((prev) => ({ ...prev, notes: e.target.value }))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
                             />
                         </div>
 
@@ -480,7 +481,7 @@ const InventoryReports = () => {
                             <button
                                 onClick={handleUpdate}
                                 disabled={saving}
-                                className="px-4 py-2 bg-[#155c27] text-white rounded-lg hover:bg-[#10481f] disabled:opacity-50"
+                                className="px-4 py-2 bg-[#18243b] text-white rounded-lg hover:bg-[#304268] disabled:opacity-50"
                             >
                                 {saving ? 'Updating...' : 'Update Report'}
                             </button>

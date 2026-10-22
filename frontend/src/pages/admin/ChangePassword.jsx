@@ -100,7 +100,7 @@ const ChangePassword = () => {
 
             <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
                 <div className="flex items-start gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-[#f5d800]/20 text-[#155c27]">
+                    <div className="p-2 rounded-lg bg-[#c4b5fd]/20 text-[#18243b]">
                         <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
@@ -114,8 +114,8 @@ const ChangePassword = () => {
                 </div>
 
                 <ValidatedForm onSubmit={handleSubmit} className="space-y-4">
-                    <div className="rounded-lg border border-[#f5d800]/40 bg-[#f5d800]/10 p-3 text-sm text-gray-700">
-                        <p className="font-semibold text-[#155c27] mb-1">Password rules :</p>
+                    <div className="rounded-lg border border-[#c4b5fd]/40 bg-[#c4b5fd]/10 p-3 text-sm text-gray-700">
+                        <p className="font-semibold text-[#18243b] mb-1">Password rules :</p>
                         <ul className="list-disc ml-5 space-y-1">
                             <li>Minimum length: {PASSWORD_MIN_LENGTH} characters</li>
                             <li>Must match the confirmation password</li>
@@ -135,7 +135,7 @@ const ChangePassword = () => {
                                     setCurrentPassword(e.target.value);
                                     clearFieldError('currentPassword');
                                 }}
-                                className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.currentPassword ? 'border-red-500 ring-1 ring-red-500/30' : 'border-gray-300'}`}
+                                className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.currentPassword ? 'border-red-500 ring-1 ring-red-500/30' : 'border-gray-300'}`}
                                 placeholder="Enter current password"
                             />
                         </div>
@@ -155,7 +155,7 @@ const ChangePassword = () => {
                                     setNewPassword(e.target.value);
                                     clearFieldError('newPassword');
                                 }}
-                                className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.newPassword ? 'border-red-500 ring-1 ring-red-500/30' : 'border-gray-300'}`}
+                                className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.newPassword ? 'border-red-500 ring-1 ring-red-500/30' : 'border-gray-300'}`}
                                 placeholder={`Minimum ${PASSWORD_MIN_LENGTH} characters`}
                             />
                         </div>
@@ -179,7 +179,7 @@ const ChangePassword = () => {
                                     setConfirmNewPassword(e.target.value);
                                     clearFieldError('confirmNewPassword');
                                 }}
-                                className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.confirmNewPassword ? 'border-red-500 ring-1 ring-red-500/30' : 'border-gray-300'}`}
+                                className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.confirmNewPassword ? 'border-red-500 ring-1 ring-red-500/30' : 'border-gray-300'}`}
                                 placeholder="Re-enter new password"
                             />
                         </div>
@@ -192,7 +192,7 @@ const ChangePassword = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-5 py-2.5 rounded-lg bg-[#155c27] text-white font-medium hover:bg-[#124a20] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="px-5 py-2.5 rounded-lg bg-[#18243b] text-white font-medium hover:bg-[#304268] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                         >
                             {loading ? 'Updating...' : 'Update Password'}
                         </button>

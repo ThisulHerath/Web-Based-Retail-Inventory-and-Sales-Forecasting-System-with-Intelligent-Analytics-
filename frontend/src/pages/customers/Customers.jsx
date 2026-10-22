@@ -134,7 +134,7 @@ const Customers = () => {
                         placeholder="Search by name or email..."
                         value={search}
                         onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                     />
                 </div>
             </div>
@@ -169,7 +169,7 @@ const Customers = () => {
                                     <tr key={customer._id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-full bg-[#177c03] flex items-center justify-center text-[#f5d800] font-bold text-sm">
+                                                <div className="w-9 h-9 rounded-full bg-[#7d68d8] flex items-center justify-center text-[#c4b5fd] font-bold text-sm">
                                                     {customer.firstName[0]}{customer.lastName[0]}
                                                 </div>
                                                 <span className="font-medium text-gray-800">{customer.firstName} {customer.lastName}</span>

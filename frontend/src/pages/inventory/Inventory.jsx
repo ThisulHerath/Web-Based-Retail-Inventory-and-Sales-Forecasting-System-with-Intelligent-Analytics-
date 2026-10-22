@@ -1,3 +1,4 @@
+import EmptyState from '../../components/EmptyState';
 ﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, AlertTriangle, ArrowUpCircle, ArrowDownCircle, History } from 'lucide-react';
@@ -51,7 +52,7 @@ const Inventory = () => {
                 {(isAdmin || isManager) && (
                     <Link
                         to="/admin/inventory/reports"
-                        className="px-4 py-2 bg-[#155c27] text-white rounded-lg hover:bg-[#10481f] transition-colors text-sm font-medium"
+                        className="px-4 py-2 bg-[#18243b] text-white rounded-lg hover:bg-[#304268] transition-colors text-sm font-medium"
                     >
                         Inventory Reports
                     </Link>
@@ -65,12 +66,12 @@ const Inventory = () => {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input value={search} onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
                             placeholder="Search by name or SKU..."
-                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm" />
+                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none text-sm" />
                     </div>
                     <div className="relative">
                         <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <select value={categoryFilter} onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
-                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm appearance-none">
+                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none text-sm appearance-none">
                             <option value="">All Categories</option>
                             {categories.map(c => <option key={c._id} value={c._id}>{c.categoryName}</option>)}
                         </select>
@@ -88,7 +89,7 @@ const Inventory = () => {
                 {loading ? (
                     <div className="flex items-center justify-center h-48"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div></div>
                 ) : inventory.length === 0 ? (
-                    <div className="text-center py-10 text-gray-500">No inventory records found.</div>
+                    <EmptyState title="No inventory records found" />
                 ) : (
                     <>
                         <div className="overflow-x-auto">
@@ -121,8 +122,8 @@ const Inventory = () => {
                                                 <td className="py-3 px-4 font-mono text-xs text-gray-500">{inv.product?.sku || '—'}</td>
                                                 <td className="py-3 px-4">
                                                     {inv.product?.category ? (
-                                                        <span className="inline-block px-3 py-1.5 bg-[#1a6e30ad] text-[#ffffff] rounded-lg text-xs font-medium max-w-xs truncate" title={inv.product.category.categoryName}>{inv.product.category.categoryName}</span>
-                                                    ) : 'â€”'}
+                                                        <span className="inline-block px-3 py-1.5 bg-[#263754ad] text-[#ffffff] rounded-lg text-xs font-medium max-w-xs truncate" title={inv.product.category.categoryName}>{inv.product.category.categoryName}</span>
+                                                    ) : '—'}
                                                 </td>
                                                 <td className="py-3 px-4 text-center"><span className={`text-lg font-bold ${isLow ? 'text-red-600' : 'text-gray-800'}`}>{displayedStock}</span></td>
                                                 <td className="py-3 px-4 text-center"><span className="text-lg font-bold text-indigo-700">{storedStock}</span></td>
@@ -139,22 +140,22 @@ const Inventory = () => {
                                                 </td>
                                                 <td className="py-3 px-4">
                                                     <div className="flex items-center gap-2 flex-wrap">
-                                                        <Link 
-                                                            to={`/admin/inventory/${inv.product?._id}/stock-in`} 
+                                                        <Link
+                                                            to={`/admin/inventory/${inv.product?._id}/stock-in`}
                                                             className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors text-xs font-medium border border-green-200"
                                                         >
                                                             <ArrowUpCircle className="w-4 h-4" />
                                                             Stock In
                                                         </Link>
-                                                        <Link 
-                                                            to={`/admin/inventory/${inv.product?._id}/stock-out`} 
+                                                        <Link
+                                                            to={`/admin/inventory/${inv.product?._id}/stock-out`}
                                                             className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors text-xs font-medium border border-orange-200"
                                                         >
                                                             <ArrowDownCircle className="w-4 h-4" />
                                                             Stock Out
                                                         </Link>
-                                                        <Link 
-                                                            to={`/admin/inventory/${inv.product?._id}/history`} 
+                                                        <Link
+                                                            to={`/admin/inventory/${inv.product?._id}/history`}
                                                             className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-medium border border-blue-200"
                                                         >
                                                             <History className="w-4 h-4" />

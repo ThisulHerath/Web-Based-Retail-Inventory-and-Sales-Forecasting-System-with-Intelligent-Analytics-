@@ -48,7 +48,7 @@ const StoreMap = () => {
             (position) => {
                 const { latitude, longitude } = position.coords;
                 setUserLocation({ lat: latitude, lng: longitude });
-                
+
                 // Update directions URL with user's current location
                 const googleMapsUrl = `https://www.google.com/maps/dir/${latitude},${longitude}/${STORE_COORDINATES[0]},${STORE_COORDINATES[1]}`;
                 setDirectionsUrl(googleMapsUrl);
@@ -106,7 +106,7 @@ const StoreMap = () => {
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            
+
                             {/* User Location Marker */}
                             {userLocation && (
                                 <Marker position={[userLocation.lat, userLocation.lng]} icon={userMarkerIcon}>
@@ -120,7 +120,7 @@ const StoreMap = () => {
                                     </Popup>
                                 </Marker>
                             )}
-                            
+
                             {/* Store Location Marker */}
                             <Marker position={STORE_COORDINATES}>
                                 <Popup>
@@ -148,11 +148,11 @@ const StoreMap = () => {
                     </div>
 
                     {/* Store Info Card */}
-                    <div className="bg-[var(--color-card-bg)] rounded-2xl shadow-lg p-8 border border-[var(--color-border)] border-l-[3px] border-l-[#f5d800] flex flex-col justify-between">
+                    <div className="bg-[var(--color-card-bg)] rounded-2xl shadow-lg p-8 border border-[var(--color-border)] border-l-[3px] border-l-[#c4b5fd] flex flex-col justify-between">
                         <div>
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="bg-[#d4e8d0] dark:bg-[#0d3d1a]/30 p-3 rounded-lg">
-                                    <MapPin className="w-6 h-6 text-[#f5d800]" />
+                                <div className="bg-[#eeebff] dark:bg-[#111b30]/30 p-3 rounded-lg">
+                                    <MapPin className="w-6 h-6 text-[#c4b5fd]" />
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-[var(--color-text-primary)]">7 Super City</h3>
@@ -162,7 +162,7 @@ const StoreMap = () => {
 
                             <div className="space-y-4 text-sm">
                                 <div>
-                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.address')}</h4>
+                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#c4b5fd]" />{t('location.address')}</h4>
                                     <p className="text-[var(--color-text-secondary)]">No.250, Aguruwathota road, Wewala, Horana</p>
                                 </div>
                                 <div>
@@ -170,14 +170,14 @@ const StoreMap = () => {
                                     <p className="text-[var(--color-text-secondary)] font-mono text-xs">6°42'35.1"N 80°03'57.0"E</p>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.opening_hours')}</h4>
+                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#c4b5fd]" />{t('location.opening_hours')}</h4>
                                     <div className="text-[var(--color-text-secondary)] space-y-0.5">
                                         <p>{t('location.weekdays')}</p>
                                         <p>{t('location.sunday')}</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#f5d800]" />{t('location.contact')}</h4>
+                                    <h4 className="font-semibold text-[var(--color-text-primary)] mb-1 flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#c4b5fd]" />{t('location.contact')}</h4>
                                     <p className="text-[var(--color-text-secondary)]">0342 261 511</p>
                                     <p className="text-[var(--color-text-secondary)]">hello@7supercity.lk</p>
                                 </div>
@@ -189,7 +189,7 @@ const StoreMap = () => {
                             <button
                                 onClick={handleGetLocation}
                                 disabled={locationLoading}
-                                className="flex items-center justify-center gap-2 bg-[#f5d800] text-[#155c27] font-weight-600 px-6 py-3 rounded-xl font-semibold hover:bg-[#e6c700] transition-colors w-full border border-[rgba(245,216,0,0.5)] shadow-md shadow-[rgba(245,216,0,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex items-center justify-center gap-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 px-6 py-3 rounded-xl font-semibold hover:bg-[#ad97f5] transition-colors w-full border border-[rgba(196,181,253,0.5)] shadow-md shadow-[rgba(196,181,253,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {locationLoading ? (
                                     <>
@@ -209,7 +209,7 @@ const StoreMap = () => {
                                 href={directionsUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2 bg-[#f5d800] text-[#155c27] font-weight-600 px-6 py-3 rounded-xl font-semibold hover:bg-[#e6c700] transition-colors w-full"
+                                className="flex items-center justify-center gap-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 px-6 py-3 rounded-xl font-semibold hover:bg-[#ad97f5] transition-colors w-full"
                             >
                                 <Navigation className="w-5 h-5" />
                                 {userLocation ? t('shop.get_directions') : t('location.get_directions')}

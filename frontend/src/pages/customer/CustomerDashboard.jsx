@@ -239,20 +239,20 @@ const CustomerDashboard = () => {
             )}
 
             {/* Profile Header */}
-            <div className="glassmorphism rounded-2xl p-8 mb-8 border border-[var(--color-border)] bg-gradient-to-br from-[#f5d800] to-primary-800 text-white animate-fade-in-up">
+            <div className="account-hero glassmorphism rounded-2xl p-8 mb-8 border border-[var(--color-border)] bg-gradient-to-br from-[#c4b5fd] to-primary-800 text-white animate-fade-in-up">
                 <div className="flex items-center gap-6 flex-wrap">
                     <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold backdrop-blur-sm border-2 border-white/30">
                         {customer.firstName[0]}{customer.lastName[0]}
                     </div>
                     <div className="flex-1 min-w-[200px]">
                         <h1 className="text-3xl font-bold">{customer.firstName} {customer.lastName}</h1>
-                        <p className="text-[#f5d800] mt-1">{customer.email}</p>
-                        <p className="text-[#f5d800]">{customer.phone}</p>
+                        <p className="text-[#c4b5fd] mt-1">{customer.email}</p>
+                        <p className="text-[#c4b5fd]">{customer.phone}</p>
                     </div>
                     <div className="text-right hidden md:block">
-                        <p className="text-[#f5d800] text-sm">{t('profile.member')}</p>
+                        <p className="text-[#c4b5fd] text-sm">{t('profile.member')}</p>
                         <p className="text-4xl font-black mt-1">{customer.loyaltyPoints}</p>
-                        <p className="text-[#f5d800] text-sm">{t('profile.loyalty_points')}</p>
+                        <p className="text-[#c4b5fd] text-sm">{t('profile.loyalty_points')}</p>
                     </div>
                     <div className="flex gap-2">
                         <button
@@ -298,12 +298,12 @@ const CustomerDashboard = () => {
                                             type={showPassword.previous ? 'text' : 'password'}
                                             value={passwordForm.previousPassword}
                                             onChange={(e) => setPasswordForm({ ...passwordForm, previousPassword: e.target.value })}
-                                            className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                            className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword((prev) => ({ ...prev, previous: !prev.previous }))}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f5d800] hover:text-[#e6c700]"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#c4b5fd] hover:text-[#ad97f5]"
                                             aria-label={showPassword.previous ? 'Hide password' : 'Show password'}
                                         >
                                             {showPassword.previous ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -314,7 +314,7 @@ const CustomerDashboard = () => {
                                     <button
                                         onClick={handleVerifyPassword}
                                         disabled={isVerifyingPassword}
-                                        className="flex-1 bg-[#f5d800] text-[#155c27] font-weight-600 py-3 rounded-lg font-semibold hover:bg-[#e6c700] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 bg-[#c4b5fd] text-[#18243b] font-weight-600 py-3 rounded-lg font-semibold hover:bg-[#ad97f5] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isVerifyingPassword ? t('profile.verifying_password') : t('profile.verify_continue')}
                                     </button>
@@ -336,7 +336,7 @@ const CustomerDashboard = () => {
                                         type="text"
                                         value={editForm.firstName}
                                         onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
-                                        className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                        className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                     />
                                 </div>
                                 <div>
@@ -345,7 +345,7 @@ const CustomerDashboard = () => {
                                         type="text"
                                         value={editForm.lastName}
                                         onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
-                                        className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                        className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                     />
                                 </div>
                             </div>
@@ -355,7 +355,7 @@ const CustomerDashboard = () => {
                                     type="email"
                                     value={editForm.email}
                                     onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                    className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                 />
                             </div>
                             <div>
@@ -364,7 +364,7 @@ const CustomerDashboard = () => {
                                     type="tel"
                                     value={editForm.phone}
                                     onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                    className="w-full px-4 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                 />
                             </div>
                             <div className="pt-2 border-t border-[var(--color-border)]">
@@ -377,14 +377,14 @@ const CustomerDashboard = () => {
                                                 type={showPassword.next ? 'text' : 'password'}
                                                 value={passwordForm.newPassword}
                                                 onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                                                className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                                className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                                 minLength={PASSWORD_MIN_LENGTH}
                                                 maxLength={PASSWORD_MAX_LENGTH}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword((prev) => ({ ...prev, next: !prev.next }))}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f5d800] hover:text-[#e6c700]"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#c4b5fd] hover:text-[#ad97f5]"
                                                 aria-label={showPassword.next ? 'Hide password' : 'Show password'}
                                             >
                                                 {showPassword.next ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -411,14 +411,14 @@ const CustomerDashboard = () => {
                                                 type={showPassword.confirm ? 'text' : 'password'}
                                                 value={passwordForm.confirmNewPassword}
                                                 onChange={(e) => setPasswordForm({ ...passwordForm, confirmNewPassword: e.target.value })}
-                                                className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
+                                                className="password-input-no-native w-full px-4 pr-11 py-2.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none text-[var(--color-text-primary)] transition-all duration-200"
                                                 minLength={PASSWORD_MIN_LENGTH}
                                                 maxLength={PASSWORD_MAX_LENGTH}
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword((prev) => ({ ...prev, confirm: !prev.confirm }))}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#f5d800] hover:text-[#e6c700]"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#c4b5fd] hover:text-[#ad97f5]"
                                                 aria-label={showPassword.confirm ? 'Hide password' : 'Show password'}
                                             >
                                                 {showPassword.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -430,7 +430,7 @@ const CustomerDashboard = () => {
                             <div className="flex gap-3 pt-4">
                                 <button
                                     onClick={handleUpdateProfile}
-                                    className="flex-1 bg-[#f5d800] text-[#155c27] font-weight-600 py-3 rounded-lg font-semibold hover:bg-[#e6c700] transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 hover:shadow-xl hover:shadow-[rgba(245,216,0,0.3)]"
+                                    className="flex-1 bg-[#c4b5fd] text-[#18243b] font-weight-600 py-3 rounded-lg font-semibold hover:bg-[#ad97f5] transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 hover:shadow-xl hover:shadow-[rgba(196,181,253,0.3)]"
                                 >
                                     <Save className="w-5 h-5" />
                                     {t('profile.save_changes')}
@@ -521,8 +521,8 @@ const CustomerDashboard = () => {
 
                 <div className="glassmorphism rounded-xl p-6 border border-[var(--color-border)] animate-fade-in-up stagger-2 hover:scale-105 transition-all duration-300">
                     <div className="flex items-center gap-4">
-                        <div className="bg-[#1a6e30]/20 p-3 rounded-lg">
-                            <ShoppingBag className="w-6 h-6 text-[#f5d800]" />
+                        <div className="bg-[#263754]/20 p-3 rounded-lg">
+                            <ShoppingBag className="w-6 h-6 text-[#c4b5fd]" />
                         </div>
                         <div>
                             <p className="text-sm text-[var(--color-text-secondary)]">{t('profile.stats_purchases')}</p>
@@ -535,7 +535,7 @@ const CustomerDashboard = () => {
             {/* Coupons Section */}
             <div className="glassmorphism rounded-xl p-6 border border-[var(--color-border)] mb-8 animate-fade-in-up stagger-3">
                 <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
-                    <Gift className="w-5 h-5 text-[#f5d800]" />
+                    <Gift className="w-5 h-5 text-[#c4b5fd]" />
                     {t('profile.my_coupons')}
                 </h2>
 
@@ -619,7 +619,7 @@ const CustomerDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="text-center">
                         <div className="bg-white dark:bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
-                            <ShoppingBag className="w-6 h-6 text-[#f5d800]" />
+                            <ShoppingBag className="w-6 h-6 text-[#c4b5fd]" />
                         </div>
                         <h3 className="font-bold text-[var(--color-text-primary)]">{t('profile.step1_title')}</h3>
                         <p className="text-sm text-[var(--color-text-secondary)] mt-1">{t('profile.step1_sub')}</p>

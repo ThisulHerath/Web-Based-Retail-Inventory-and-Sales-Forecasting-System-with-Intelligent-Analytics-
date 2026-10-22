@@ -6,7 +6,7 @@ const RoleBadge = ({ role }) => {
             case 'admin':
                 return 'bg-purple-100 text-purple-800 border-purple-200';
             case 'manager':
-                return 'bg-[#f5d800] text-[#155c27] border-[#f5d800] font-weight-600';
+                return 'bg-[#c4b5fd] text-[#18243b] border-[#c4b5fd] font-weight-600';
             case 'cashier':
                 return 'bg-green-100 text-green-800 border-green-200';
             default:

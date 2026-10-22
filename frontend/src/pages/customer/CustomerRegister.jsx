@@ -1,3 +1,4 @@
+import AuthArtwork from '../../components/AuthArtwork';
 import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -10,13 +11,13 @@ import PasswordStrengthMeter from '../../components/PasswordStrengthMeter';
 import { usePasswordBreachCheck } from '../../hooks/usePasswordBreachCheck';
 import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from '../../utils/passwordPolicy';
 
-/* Floating-label input â€” label lifts above border on focus or when filled */
+/* Floating-label input — label lifts above border on focus or when filled */
 const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoComplete, placeholder, error }) => {
     const [focused, setFocused] = useState(false);
     const lifted = focused || value.length > 0;
 
     return (
-        <div className="relative mt-1">
+        <div data-field className="relative mt-1">
             <div
                 className={`flex items-center border rounded-lg transition-all duration-200 ${
                     error
@@ -65,7 +66,7 @@ const PasswordInput = ({ id, label, value, onChange, onBlur, autoComplete, place
     const lifted = focused || value.length > 0;
 
     return (
-        <div className="relative mt-1">
+        <div data-field className="relative mt-1">
             <div
                 className={`flex items-center border rounded-lg transition-all duration-200 ${
                     error
@@ -229,7 +230,7 @@ const CustomerRegister = () => {
     const breachInfo = breachMessage();
 
     return (
-        <div className="min-h-screen flex">
+        <div className="customer-auth min-h-screen flex">
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
             {/* TERMS & CONDITIONS MODAL */}
@@ -313,7 +314,7 @@ const CustomerRegister = () => {
                                     setAgreedToTerms(true);
                                     setShowTermsModal(false);
                                 }}
-                                className="flex-1 px-4 py-3 bg-[#f5d800] text-[#155c27] rounded-lg hover:bg-[#e6c700] font-semibold transition-colors"
+                                className="flex-1 px-4 py-3 bg-[#c4b5fd] text-[#18243b] rounded-lg hover:bg-[#ad97f5] font-semibold transition-colors"
                             >
                                 {t('terms.agree_accept')}
                             </button>
@@ -322,8 +323,8 @@ const CustomerRegister = () => {
                 </div>
             )}
 
-            {/* LEFT â€” Form Panel */}
-            <div className="w-full md:w-1/2 flex flex-col justify-between bg-[var(--color-bg-secondary)] dark:bg-[var(--color-card-bg)] px-10 sm:px-16 py-10 animate-fade-in-up">
+            {/* LEFT — Form Panel */}
+            <div className="auth-form-panel w-full md:w-1/2 flex flex-col justify-between bg-[var(--color-bg-secondary)] dark:bg-[var(--color-card-bg)] px-10 sm:px-16 py-10 animate-fade-in-up">
 
                 {/* Brand */}
                 <div>
@@ -434,20 +435,20 @@ const CustomerRegister = () => {
 
                         {/* Terms Checkbox */}
                         <div className={`flex items-start text-sm rounded-lg p-4 border-2 transition-all ${
-                            agreedToTerms 
-                                ? 'bg-[#1a6e30]/20 border-[#1a6e30] dark:bg-[#1a6e30]/30 dark:border-[#1a6e30]' 
+                            agreedToTerms
+                                ? 'bg-[#263754]/20 border-[#263754] dark:bg-[#263754]/30 dark:border-[#263754]'
                                 : 'bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-700'
                         }`}>
-                            <input 
-                                type="checkbox" 
-                                checked={agreedToTerms} 
-                                onChange={(e) => setAgreedToTerms(e.target.checked)} 
-                                   className="w-5 h-5 accent-[var(--color-button-primary)] dark:accent-[var(--color-link)] rounded mr-3 mt-0.5 flex-shrink-0 cursor-pointer" 
+                            <input
+                                type="checkbox"
+                                checked={agreedToTerms}
+                                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                   className="w-5 h-5 accent-[var(--color-button-primary)] dark:accent-[var(--color-link)] rounded mr-3 mt-0.5 flex-shrink-0 cursor-pointer"
                             />
                             <div className="flex-1">
                                 <label className={`cursor-pointer ${
-                                    agreedToTerms 
-                                        ? 'text-[#155c27] dark:text-[#f5d800]' 
+                                    agreedToTerms
+                                        ? 'text-[#18243b] dark:text-[#c4b5fd]'
                                         : 'text-amber-800 dark:text-amber-200'
                                 }`}>
                                     {t('auth.terms')}{' '}
@@ -469,7 +470,7 @@ const CustomerRegister = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[var(--color-button-primary)] text-[var(--color-button-text)] dark:bg-[var(--color-accent)] dark:text-[var(--color-text-body)] hover:bg-[var(--color-button-primary-hover)] dark:hover:bg-[#e6c700] py-3 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+                            className="w-full bg-[var(--color-button-primary)] text-[var(--color-button-text)] dark:bg-[var(--color-accent)] dark:text-[var(--color-text-body)] hover:bg-[var(--color-button-primary-hover)] dark:hover:bg-[#ad97f5] py-3 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
                         >
                             {loading ? `${t('auth.create_account')}...` : t('auth.create_account')}
                         </button>
@@ -484,19 +485,10 @@ const CustomerRegister = () => {
                 </div>
 
                 {/* Footer */}
-                <p className="text-[11px] text-[var(--color-text-tertiary)] dark:text-gray-400 text-center">Â© {new Date().getFullYear()} 7 Super City</p>
+                <p className="text-[11px] text-[var(--color-text-tertiary)] dark:text-gray-400 text-center">© {new Date().getFullYear()} 7 Super City</p>
             </div>
 
-            {/* RIGHT â€” Hero Image (Different from login) */}
-            <div className="hidden md:block md:w-1/2 relative overflow-hidden">
-                <img
-                    src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1200&h=900&fit=crop&auto=format"
-                    alt="Modern retail store shopping experience"
-                    className="absolute inset-0 w-full h-full object-cover"
-                />
-                {/* Subtle overlay */}
-                <div className="absolute inset-0" style={{background: `linear-gradient(to bottom right, var(--color-overlay), transparent)`}} />
-            </div>
+            <AuthArtwork />
         </div>
     );
 };

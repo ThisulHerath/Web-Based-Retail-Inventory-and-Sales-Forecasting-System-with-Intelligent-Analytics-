@@ -121,7 +121,7 @@ const CreateProduct = () => {
         <div className="p-6">
             {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
             <div className="flex items-center gap-4 mb-6">
-                <Link to="/admin/products" className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <Link to="/admin/products" className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Go back">
                     <ArrowLeft className="w-6 h-6 text-gray-600" />
                 </Link>
                 <div>
@@ -136,7 +136,7 @@ const CreateProduct = () => {
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
                             <input required type="text" name="productName"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.productName ? 'border-red-500' : 'border-gray-200'}`}
+                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] ${fieldErrors.productName ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.productName} onChange={handleChange} placeholder="e.g. Rice 5kg" />
                             {fieldErrors.productName && <p className="mt-1 text-xs text-red-500">{fieldErrors.productName}</p>}
                         </div>
@@ -148,9 +148,9 @@ const CreateProduct = () => {
                                 <div className="relative w-full bg-gray-50 rounded-lg border border-gray-200 p-4">
                                     <div className="flex items-start gap-4">
                                         <div className="flex-shrink-0">
-                                            <img 
-                                                src={imagePreview} 
-                                                alt="Preview" 
+                                            <img
+                                                src={imagePreview}
+                                                alt="Preview"
                                                 className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                                             />
                                         </div>
@@ -192,14 +192,14 @@ const CreateProduct = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
                             <input type="text" name="sku"
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] font-mono"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] font-mono"
                                 value={formData.sku} onChange={handleChange} placeholder="Auto-generated if blank" />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
                             <select required name="category"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.category ? 'border-red-500' : 'border-gray-200'}`}
+                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] ${fieldErrors.category ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.category} onChange={handleChange}>
                                 <option value="">Select Category</option>
                                 {categories.map(c => <option key={c._id} value={c._id}>{c.categoryName}</option>)}
@@ -213,14 +213,14 @@ const CreateProduct = () => {
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                             <textarea name="description" rows={2}
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] resize-none"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] resize-none"
                                 value={formData.description} onChange={handleChange} placeholder="Optional description..." />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Cost Price (LKR) *</label>
                             <input required type="number" name="costPrice" min="0" step="0.01"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.costPrice ? 'border-red-500' : 'border-gray-200'}`}
+                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] ${fieldErrors.costPrice ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.costPrice} onChange={handleChange} />
                             {fieldErrors.costPrice && <p className="mt-1 text-xs text-red-500">{fieldErrors.costPrice}</p>}
                         </div>
@@ -228,7 +228,7 @@ const CreateProduct = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price (LKR) *</label>
                             <input required type="number" name="sellingPrice" min="0" step="0.01"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] ${fieldErrors.sellingPrice ? 'border-red-500' : 'border-gray-200'}`}
+                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] ${fieldErrors.sellingPrice ? 'border-red-500' : 'border-gray-200'}`}
                                 value={formData.sellingPrice} onChange={handleChange} />
                             {fieldErrors.sellingPrice && <p className="mt-1 text-xs text-red-500">{fieldErrors.sellingPrice}</p>}
                         </div>
@@ -236,7 +236,7 @@ const CreateProduct = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Min. Stock Warning Level</label>
                             <input type="number" name="minimumStockLevel" min="0"
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                                 value={formData.minimumStockLevel} onChange={handleChange} />
                         </div>
 
@@ -249,7 +249,7 @@ const CreateProduct = () => {
                     <div className="flex justify-end pt-4 gap-3">
                         <button type="button" onClick={() => navigate('/admin/products')} className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">Cancel</button>
                         <button type="submit" disabled={loading}
-                            className={`flex items-center gap-2 px-6 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                            className={`flex items-center gap-2 px-6 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>
                             <Save className="w-5 h-5" />
                             <span>{loading ? 'Creating...' : 'Create Product'}</span>
                         </button>

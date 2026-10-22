@@ -53,7 +53,7 @@ const ValidateCoupon = () => {
                                     value={code}
                                     onChange={(e) => setCode(e.target.value.toUpperCase())}
                                     placeholder="Enter coupon code (e.g., CPN-ABC123)"
-                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none font-mono text-lg tracking-wider"
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none font-mono text-lg tracking-wider"
                                 />
                             </div>
                         </div>
@@ -61,7 +61,7 @@ const ValidateCoupon = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full flex items-center justify-center gap-2 bg-[#f5d800] text-[#155c27] font-weight-600 py-3 rounded-lg hover:bg-[#e6c700] font-semibold disabled:opacity-50 transition-colors"
+                            className="w-full flex items-center justify-center gap-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 py-3 rounded-lg hover:bg-[#ad97f5] font-semibold disabled:opacity-50 transition-colors"
                         >
                             {loading ? (
                                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

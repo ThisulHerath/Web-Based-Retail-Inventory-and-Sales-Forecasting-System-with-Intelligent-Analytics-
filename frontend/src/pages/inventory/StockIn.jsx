@@ -76,7 +76,7 @@ const StockIn = () => {
                 <Link
                     to="/admin/inventory"
                     className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                >
+                 aria-label="Go back">
                     <ArrowLeft className="w-6 h-6 text-gray-600" />
                 </Link>
                 <h1 className="text-2xl font-bold text-gray-800">Stock In</h1>
@@ -100,7 +100,7 @@ const StockIn = () => {
                             required
                             min="1"
                             max={product.storedStock ?? 0}
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] font-medium text-lg"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] font-medium text-lg"
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                             placeholder="0"
@@ -114,7 +114,7 @@ const StockIn = () => {
                             Notes (Optional)
                         </label>
                         <textarea
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                             rows="3"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}

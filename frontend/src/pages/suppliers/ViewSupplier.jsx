@@ -85,7 +85,7 @@ const ViewSupplier = () => {
                 <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold text-gray-800">Supplied Products</h2>
-                        <span className="px-2 py-1 bg-[#e8f3e6] text-[#f5d800] rounded-full text-xs font-medium">{supplier.suppliedProducts?.length || 0} products</span>
+                        <span className="px-2 py-1 bg-[#f0edff] text-[#c4b5fd] rounded-full text-xs font-medium">{supplier.suppliedProducts?.length || 0} products</span>
                     </div>
                     {supplier.suppliedProducts?.length === 0 ? (
                         <p className="text-gray-500 text-sm">No products linked yet. Create a purchase to link products.</p>
@@ -110,7 +110,7 @@ const ViewSupplier = () => {
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold text-gray-800">Purchase History</h2>
-                    <Link to={`/admin/purchases?supplier=${id}`} className="text-[#f5d800] hover:text-[#155c27] text-sm font-medium">View All Purchases â†’</Link>
+                    <Link to={`/admin/purchases?supplier=${id}`} className="text-[#c4b5fd] hover:text-[#18243b] text-sm font-medium">View All Purchases →</Link>
                 </div>
             </div>
         </div>

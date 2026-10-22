@@ -41,12 +41,12 @@ const CreateCategory = () => {
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Category Name *</label>
                     <input value={form.categoryName} onChange={(e) => setForm({ ...form, categoryName: e.target.value })}
-                        placeholder="e.g. Electronics" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none" required />
+                        placeholder="e.g. Electronics" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none" required />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                     <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        rows={3} placeholder="Optional description..." className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none resize-none" />
+                        rows={3} placeholder="Optional description..." className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none resize-none" />
                 </div>
                 <div className="flex items-center gap-3">
                     <input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4" />
@@ -54,7 +54,7 @@ const CreateCategory = () => {
                 </div>
                 <div className="flex gap-3 pt-2">
                     <button type="button" onClick={() => navigate('/admin/categories')} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
-                    <button type="submit" disabled={loading} className="flex-1 px-4 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] disabled:opacity-50">
+                    <button type="submit" disabled={loading} className="flex-1 px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] disabled:opacity-50">
                         {loading ? 'Saving...' : 'Create Category'}
                     </button>
                 </div>

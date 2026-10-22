@@ -36,7 +36,7 @@ const ViewPurchase = () => {
 
             <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden print-area">
                 {/* Invoice Header */}
-                <div className="bg-gradient-to-r from-[#e6c700] to-primary-500 text-white p-8">
+                <div className="bg-gradient-to-r from-[#ad97f5] to-primary-500 text-white p-8">
                     <div className="flex items-start justify-between">
                         <div>
                             <h2 className="text-2xl font-bold">7 Super City</h2>

@@ -2,13 +2,13 @@ import ValidatedForm from '../../components/ValidatedForm';
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { updateUser, getAllUsers } from '../../services/userService'; // Assuming single user fetch isn't separate, but if needed I can filter or fetch. Actually, I only have getAll.
-// Wait, my service doesn't have getUserById in the snippet I wrote earlier? 
-// Let me check userService.js. I wrote getAllUsers, getUserStats, createUser, updateUser, deleteUser. 
+// Wait, my service doesn't have getUserById in the snippet I wrote earlier?
+// Let me check userService.js. I wrote getAllUsers, getUserStats, createUser, updateUser, deleteUser.
 // I *don't* have getUserById. I should probably add it or just fetch all and find one since user list is small.
-// Or I can just pass the user object via state if coming from list, but direct link access would fail. 
+// Or I can just pass the user object via state if coming from list, but direct link access would fail.
 // Actually, for "updateUser", the backend route is `PUT /api/users/:id`.
 // But to *populate* the form, I need to get the user data.
-// I'll add a simple get-by-id logic effectively by finding in the list or assume I can fetch it. 
+// I'll add a simple get-by-id logic effectively by finding in the list or assume I can fetch it.
 // Since I didn't create a specific GET /api/users/:id endpoint in the backend controller (I only see getAllUsers, createUser, updateUser, deleteUser, getUserStats),
 // I will just fetch all users and find the one matching ID for this MVP, or I should update backend to support GET /:id.
 // Looking at backend/routes/userRoutes.js: `router.route('/:id').put(updateUser).delete(deleteUser);` -> NO GET.
@@ -37,7 +37,7 @@ const EditUser = () => {
 
     const fetchUser = async () => {
         try {
-            // Since we lack a direct GET /:id, we fetch all and find. 
+            // Since we lack a direct GET /:id, we fetch all and find.
             // In a real large app, we'd want a specific endpoint.
             const data = await getAllUsers(1, 1000);
             const user = data.users.find(u => u._id === id);
@@ -97,7 +97,7 @@ const EditUser = () => {
                 <Link
                     to="/admin/users"
                     className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                >
+                 aria-label="Go back">
                     <ArrowLeft className="w-6 h-6 text-gray-600" />
                 </Link>
                 <h1 className="text-2xl font-bold text-gray-800">Edit User</h1>
@@ -113,7 +113,7 @@ const EditUser = () => {
                             type="text"
                             name="name"
                             required
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                             value={formData.name}
                             onChange={handleChange}
                         />
@@ -127,7 +127,7 @@ const EditUser = () => {
                             type="email"
                             name="email"
                             required
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] bg-gray-50 cursor-not-allowed"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] bg-gray-50 cursor-not-allowed"
                             value={formData.email}
                             onChange={handleChange}
                             disabled
@@ -142,7 +142,7 @@ const EditUser = () => {
                         </label>
                         <select
                             name="role"
-                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                             value={formData.role}
                             onChange={handleChange}
                         >
@@ -157,7 +157,7 @@ const EditUser = () => {
                             type="checkbox"
                             name="isActive"
                             id="isActive"
-                            className="w-4 h-4 text-[#f5d800] border-gray-300 rounded focus:ring-[#f5d800]"
+                            className="w-4 h-4 text-[#c4b5fd] border-gray-300 rounded focus:ring-[#c4b5fd]"
                             checked={formData.isActive}
                             onChange={handleChange}
                         />
@@ -177,7 +177,7 @@ const EditUser = () => {
                         <button
                             type="submit"
                             disabled={saving}
-                            className={`flex items-center gap-2 px-6 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors ${saving ? 'opacity-70 cursor-not-allowed' : ''
+                            className={`flex items-center gap-2 px-6 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors ${saving ? 'opacity-70 cursor-not-allowed' : ''
                                 }`}
                         >
                             <Save className="w-5 h-5" />

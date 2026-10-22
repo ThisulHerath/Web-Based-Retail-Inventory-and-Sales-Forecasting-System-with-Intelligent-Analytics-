@@ -146,7 +146,7 @@ const EditProduct = () => {
         <div className="p-6">
             {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
             <div className="flex items-center gap-4 mb-6">
-                <Link to="/admin/products" className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <Link to="/admin/products" className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Go back">
                     <ArrowLeft className="w-6 h-6 text-gray-600" />
                 </Link>
                 <h1 className="text-2xl font-bold text-gray-800">Edit Product</h1>
@@ -158,7 +158,7 @@ const EditProduct = () => {
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
                             <input type="text" name="productName" required
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                                 value={formData.productName} onChange={handleChange} />
                         </div>
 
@@ -169,9 +169,9 @@ const EditProduct = () => {
                                 <div className="relative w-full bg-gray-50 rounded-lg border border-gray-200 p-4">
                                     <div className="flex items-start gap-4">
                                         <div className="flex-shrink-0">
-                                            <img 
-                                                src={imagePreview} 
-                                                alt="Preview" 
+                                            <img
+                                                src={imagePreview}
+                                                alt="Preview"
                                                 className="w-24 h-24 object-cover rounded-lg border border-gray-200"
                                             />
                                         </div>
@@ -185,7 +185,7 @@ const EditProduct = () => {
                                                 </p>
                                             )}
                                             <div className="flex gap-2">
-                                                <label className="text-sm text-[#f5d800] hover:text-[#155c27] font-medium cursor-pointer">
+                                                <label className="text-sm text-[#c4b5fd] hover:text-[#18243b] font-medium cursor-pointer">
                                                     <input
                                                         type="file"
                                                         className="hidden"
@@ -225,14 +225,14 @@ const EditProduct = () => {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
                             <input type="text" name="sku"
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] font-mono"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] font-mono"
                                 value={formData.sku} onChange={handleChange} />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
                             <select name="category" required
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                                 value={formData.category} onChange={handleChange}>
                                 <option value="">Select Category</option>
                                 {categories.map(c => <option key={c._id} value={c._id}>{c.categoryName}</option>)}
@@ -242,28 +242,28 @@ const EditProduct = () => {
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                             <textarea name="description" rows={2}
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800] resize-none"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd] resize-none"
                                 value={formData.description} onChange={handleChange} />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Cost Price (LKR) *</label>
                             <input type="number" name="costPrice" required min="0" step="0.01"
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                                 value={formData.costPrice} onChange={handleChange} />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price (LKR) *</label>
                             <input type="number" name="sellingPrice" required min="0" step="0.01"
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                                 value={formData.sellingPrice} onChange={handleChange} />
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Min. Stock Warning Level</label>
                             <input type="number" name="minimumStockLevel" min="0"
-                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                                 value={formData.minimumStockLevel} onChange={handleChange} />
                         </div>
 
@@ -276,7 +276,7 @@ const EditProduct = () => {
                     <div className="flex justify-end pt-4 gap-3">
                         <button type="button" onClick={() => navigate('/admin/products')} className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">Cancel</button>
                         <button type="submit" disabled={saving}
-                            className={`flex items-center gap-2 px-6 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}>
+                            className={`flex items-center gap-2 px-6 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}>
                             <Save className="w-5 h-5" />
                             <span>{saving ? 'Saving...' : 'Save Changes'}</span>
                         </button>

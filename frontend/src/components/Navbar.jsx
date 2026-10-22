@@ -10,7 +10,7 @@ const Navbar = ({ mobileOpen, onMenuClick }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-    useFocusTrap(showLogoutConfirm, '#logout-dialog', () => setShowLogoutConfirm(false));
+    useFocusTrap(showLogoutConfirm, '#logout-dialog', () => setShowLogoutConfirm(false), '#admin-logout-trigger');
 
     const handleLogoutClick = () => {
         setShowLogoutConfirm(true);
@@ -33,7 +33,7 @@ const Navbar = ({ mobileOpen, onMenuClick }) => {
     return (
         <header className="admin-topbar no-print">
             <div className="flex items-center gap-3 min-w-0">
-                <button type="button" className="mobile-menu-button" onClick={onMenuClick} aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="admin-navigation"><Menu size={22} /></button>
+                <button type="button" className="mobile-menu-button" id="admin-menu-trigger" onClick={onMenuClick} aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="admin-navigation"><Menu size={22} /></button>
                 <div className="min-w-0"><p className="font-semibold text-slate-900 truncate">Retail workspace</p><p className="text-xs text-slate-500 hidden sm:block">7 Super City · Inventory & sales</p></div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
@@ -43,7 +43,7 @@ const Navbar = ({ mobileOpen, onMenuClick }) => {
                     <div className="max-w-[180px]"><p className="text-sm font-semibold text-slate-800 truncate">{user?.name || user?.email}</p><p className="text-xs text-slate-500 capitalize">{user?.role}</p></div>
                 </div>
                 <button type="button" onClick={handleChangePasswordClick} className="topbar-action" aria-label="Change password" title="Change password"><KeyRound size={18} /><span className="hidden lg:inline">Password</span></button>
-                <button type="button" onClick={handleLogoutClick} className="topbar-action text-red-700" aria-label="Log out" title="Log out"><LogOut size={18} /><span className="hidden lg:inline">Log out</span></button>
+                <button type="button" id="admin-logout-trigger" onClick={handleLogoutClick} className="topbar-action text-red-700" aria-label="Log out" title="Log out"><LogOut size={18} /><span className="hidden lg:inline">Log out</span></button>
             </div>
 
             {/* Logout Confirmation Modal */}
@@ -56,8 +56,7 @@ const Navbar = ({ mobileOpen, onMenuClick }) => {
                         </p>
                         <div className="flex gap-3 justify-end">
                             <button
-                                autoFocus
-                                onClick={cancelLogout}
+                                                                onClick={cancelLogout}
                                 className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors font-medium"
                             >
                                 Cancel

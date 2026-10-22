@@ -8,6 +8,14 @@ function fieldLabel(field) {
     return (field.getAttribute('aria-label') || label?.textContent || field.name || field.placeholder || 'This field').replace(/\*/g, '').trim();
 }
 
+function feedbackContainer(field) {
+    const registered = field.closest('[data-field]');
+    if (registered) return registered;
+    const parent = field.parentElement;
+    if (parent?.classList.contains('relative') && parent.parentElement?.querySelector(':scope > label')) return parent.parentElement;
+    return parent;
+}
+
 // A normal form with accessible, persistent feedback. Existing submit handlers
 // still own server errors, password policy, stock limits and cross-field rules.
 export default function ValidatedForm({ children, onSubmit, onBlur, onInput, noValidate: _noValidate, ...props }) {
@@ -97,7 +105,7 @@ export default function ValidatedForm({ children, onSubmit, onBlur, onInput, noV
             </div>}
             {children}
             {errors.filter(({ field }) => field.isConnected && field.parentElement).map(({ field, message, id }) => createPortal(
-                <p id={id} className="field-feedback">{message}</p>, field.parentElement, id
+                <p id={id} className="field-feedback">{message}</p>, feedbackContainer(field), id
             ))}
         </form>
     );

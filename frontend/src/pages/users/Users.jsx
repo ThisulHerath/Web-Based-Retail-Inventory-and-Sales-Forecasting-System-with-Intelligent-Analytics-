@@ -60,13 +60,13 @@ const Users = () => {
             setDeleteDependencies(null);
         } catch (error) {
             const errorData = error.response?.data;
-            
+
             // Handle dependency constraint error
             if (errorData?.code === 'USER_HAS_DEPENDENCIES') {
                 setDeleteDependencies(errorData.details);
                 return;
             }
-            
+
             setToast({ type: 'error', message: errorData?.message || 'Failed to delete user' });
             setShowDeleteModal(false);
         } finally {
@@ -108,7 +108,7 @@ const Users = () => {
     );
 
     const roleDistributionData = [
-        { name: 'Admins', value: users.filter((user) => user.role === 'admin').length, color: '#E4D84A' },
+        { name: 'Admins', value: users.filter((user) => user.role === 'admin').length, color: '#b2a0ee' },
         { name: 'Cashiers', value: users.filter((user) => user.role === 'cashier').length, color: '#6AA5F3' },
         { name: 'Managers', value: users.filter((user) => user.role === 'manager').length, color: '#74D58D' }
     ].filter((item) => item.value > 0);
@@ -140,7 +140,7 @@ const Users = () => {
                 </div>
                 <Link
                     to="/admin/users/create"
-                    className="flex items-center gap-2 bg-[#f5d800] text-[#155c27] font-weight-600 px-4 py-2 rounded-lg hover:bg-[#e6c700] transition-colors"
+                    className="flex items-center gap-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 px-4 py-2 rounded-lg hover:bg-[#ad97f5] transition-colors"
                 >
                     <Plus className="w-5 h-5" />
                     <span>Add New User</span>
@@ -215,13 +215,13 @@ const Users = () => {
                     <input
                         type="text"
                         placeholder="Search by name or email..."
-                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
                 <select
-                    className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                    className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                     value={roleFilter}
                     onChange={(e) => setRoleFilter(e.target.value)}
                 >
@@ -232,7 +232,7 @@ const Users = () => {
                 </select>
 
                 <select
-                    className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                    className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                     value={joinSort}
                     onChange={(e) => setJoinSort(e.target.value)}
                 >
@@ -241,7 +241,7 @@ const Users = () => {
                 </select>
 
                 <select
-                    className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                    className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -339,7 +339,7 @@ const Users = () => {
                                             {user._id !== currentUser._id && (
                                                 <button
                                                     onClick={() => handleResendClick(user)}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#c5a600] hover:bg-[#fffdf0] border border-transparent hover:border-[#f5d800] rounded-lg transition-colors"
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#7560df] hover:bg-[#f3f0ff] border border-transparent hover:border-[#c4b5fd] rounded-lg transition-colors"
                                                     title="Reset Password & Send New Password by Email"
                                                 >
                                                     <Mail className="w-4 h-4" />

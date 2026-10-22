@@ -47,7 +47,7 @@ const StockHistory = () => {
                 <Link
                     to="/admin/inventory"
                     className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                >
+                 aria-label="Go back">
                     <ArrowLeft className="w-6 h-6 text-gray-600" />
                 </Link>
                 <div>

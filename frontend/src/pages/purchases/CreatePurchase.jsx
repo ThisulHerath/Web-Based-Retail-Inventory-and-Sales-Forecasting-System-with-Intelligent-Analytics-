@@ -88,7 +88,7 @@ const CreatePurchase = () => {
                             <div className="md:col-span-1">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Supplier *</label>
                                 <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none appearance-none">
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none appearance-none">
                                     <option value="">Select Supplier</option>
                                     {suppliers.map(s => <option key={s._id} value={s._id}>{s.supplierName} {s.companyName ? `(${s.companyName})` : ''}</option>)}
                                 </select>
@@ -96,12 +96,12 @@ const CreatePurchase = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Purchase Date</label>
                                 <input type="date" value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none" />
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none" />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
                                 <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional notes..."
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none" />
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none" />
                             </div>
                         </div>
                     </div>
@@ -109,7 +109,7 @@ const CreatePurchase = () => {
                     <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-semibold text-gray-800">Products</h2>
-                            <button type="button" onClick={addItem} className="flex items-center gap-2 px-3 py-2 bg-[#f5d800] text-[#155c27] border border-[rgba(245,216,0,0.3)] rounded-lg hover:bg-[#e8f3e6] transition-colors text-sm">
+                            <button type="button" onClick={addItem} className="flex items-center gap-2 px-3 py-2 bg-[#c4b5fd] text-[#18243b] border border-[rgba(196,181,253,0.3)] rounded-lg hover:bg-[#f0edff] transition-colors text-sm">
                                 <Plus className="w-4 h-4" /> Add Product
                             </button>
                         </div>
@@ -130,18 +130,18 @@ const CreatePurchase = () => {
                                         <tr key={index} className="border-b border-gray-100">
                                             <td className="py-2 px-3">
                                                 <select required aria-label={`Product in row ${index + 1}`} value={item.productId} onChange={(e) => updateItem(index, 'productId', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm appearance-none">
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none text-sm appearance-none">
                                                     <option value="">Select Product</option>
                                                     {products.map(p => <option key={p._id} value={p._id}>{p.productName}</option>)}
                                                 </select>
                                             </td>
                                             <td className="py-2 px-3">
                                                 <input type="number" required aria-label={`Quantity in row ${index + 1}`} min="1" step="1" value={item.quantity} onChange={(e) => updateItem(index, 'quantity', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm" />
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none text-sm" />
                                             </td>
                                             <td className="py-2 px-3">
                                                 <input type="number" required aria-label={`Cost price in row ${index + 1}`} min="0.01" step="0.01" value={item.costPrice} onChange={(e) => updateItem(index, 'costPrice', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none text-sm" />
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none text-sm" />
                                             </td>
                                             <td className="py-2 px-3 text-right font-semibold text-gray-800 text-sm">
                                                 LKR {item.total.toLocaleString('en-LK', { minimumFractionDigits: 2 })}
@@ -159,7 +159,7 @@ const CreatePurchase = () => {
                                 <tfoot>
                                     <tr>
                                         <td colSpan={3} className="pt-4 px-3 text-right font-bold text-gray-800">Grand Total:</td>
-                                        <td className="pt-4 px-3 text-right font-bold text-xl text-[#039a08]">LKR {grandTotal.toLocaleString('en-LK', { minimumFractionDigits: 2 })}</td>
+                                        <td className="pt-4 px-3 text-right font-bold text-xl text-[#6753cc]">LKR {grandTotal.toLocaleString('en-LK', { minimumFractionDigits: 2 })}</td>
                                         <td></td>
                                     </tr>
                                 </tfoot>
@@ -169,7 +169,7 @@ const CreatePurchase = () => {
 
                     <div className="flex gap-4">
                         <button type="button" onClick={() => navigate('/admin/purchases')} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">Cancel</button>
-                        <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg">
+                        <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg">
                             {loading ? 'Saving & Updating Stock...' : 'Save Purchase & Update Stock'}
                         </button>
                     </div>

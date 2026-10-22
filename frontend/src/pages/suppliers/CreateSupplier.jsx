@@ -88,38 +88,38 @@ const CreateSupplier = () => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Supplier Name *</label>
                                 <input required type="text" name="supplierName" value={formData.supplierName} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.supplierName ? 'border-red-500' : 'border-gray-300'}`} />
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.supplierName ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.supplierName && <p className="mt-1 text-xs text-red-500">{fieldErrors.supplierName}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Company Name *</label>
                                 <input required type="text" name="companyName" value={formData.companyName} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.companyName ? 'border-red-500' : 'border-gray-300'}`} />
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.companyName ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.companyName && <p className="mt-1 text-xs text-red-500">{fieldErrors.companyName}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
                                 <input required type="email" name="email" value={formData.email} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}`} />
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.email && <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
                                 <input required type="tel" name="phone" value={formData.phone} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${fieldErrors.phone ? 'border-red-500' : 'border-gray-300'}`} />
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${fieldErrors.phone ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.phone && <p className="mt-1 text-xs text-red-500">{fieldErrors.phone}</p>}
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Address *</label>
                                 <textarea required name="address" value={formData.address} onChange={handleChange} rows={3}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none resize-none ${fieldErrors.address ? 'border-red-500' : 'border-gray-300'}`} />
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none resize-none ${fieldErrors.address ? 'border-red-500' : 'border-gray-300'}`} />
                                 {fieldErrors.address && <p className="mt-1 text-xs text-red-500">{fieldErrors.address}</p>}
                             </div>
                         </div>
 
                         <div className="flex gap-4 pt-2">
                             <button type="button" onClick={() => navigate('/admin/suppliers')} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">Cancel</button>
-                            <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                                 {loading ? 'Creating...' : 'Create Supplier'}
                             </button>
                         </div>

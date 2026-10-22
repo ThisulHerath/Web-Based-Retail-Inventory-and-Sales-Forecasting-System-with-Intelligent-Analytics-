@@ -1,3 +1,4 @@
+import EmptyState from '../../components/EmptyState';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit, Trash2, Tag, Search } from 'lucide-react';
@@ -90,7 +91,7 @@ const Categories = () => {
                     <p className="text-gray-600 mt-1">Manage product categories</p>
                 </div>
                 {isAdmin() && (
-                    <Link to="/admin/categories/create" className="flex items-center gap-2 px-4 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors shadow-lg">
+                    <Link to="/admin/categories/create" className="flex items-center gap-2 px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors shadow-lg">
                         <Plus className="w-5 h-5" /> <span className="font-medium">New Category</span>
                     </Link>
                 )}
@@ -100,21 +101,21 @@ const Categories = () => {
                 <div className="relative mb-6">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search categories..."
-                        className="w-full sm:w-72 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none" />
+                        className="w-full sm:w-72 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none" />
                 </div>
 
                 {loading ? (
                     <div className="flex items-center justify-center h-40"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div></div>
                 ) : filtered.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">No categories found.</div>
+                    <EmptyState title="No categories found" />
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filtered.map((cat) => (
                             <div key={cat._id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-[#177903] rounded-full flex items-center justify-center">
-                                            <Tag className="w-5 h-5 text-[#f5d800]" />
+                                        <div className="w-10 h-10 bg-[#7d68d8] rounded-full flex items-center justify-center">
+                                            <Tag className="w-5 h-5 text-[#c4b5fd]" />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-gray-800">{cat.categoryName}</h3>

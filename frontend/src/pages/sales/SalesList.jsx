@@ -227,14 +227,14 @@ const SalesList = () => {
                     <div className="flex items-center gap-3">
                         <button
                             onClick={handleToggleAnalytics}
-                            className="flex items-center gap-2 px-4 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors shadow-lg"
+                            className="flex items-center gap-2 px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors shadow-lg"
                         >
                             <BarChart2 className="w-5 h-5" />
                             <span className='font-medium'>Analytics</span>
                         </button>
                         <Link
                             to="/admin/sales/create"
-                            className="flex items-center gap-2 px-4 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors shadow-lg"
+                            className="flex items-center gap-2 px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors shadow-lg"
                         >
                             <Plus className="w-5 h-5" />
                             <span className="font-medium">New Sale</span>
@@ -247,7 +247,7 @@ const SalesList = () => {
                     <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                <BarChart2 className="w-5 h-5 text-[#f5d800]" />
+                                <BarChart2 className="w-5 h-5 text-[#c4b5fd]" />
                                 Sales Analytics
                             </h2>
                             <button
@@ -318,7 +318,7 @@ const SalesList = () => {
 
                                 {/* Charts Row */}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    {/* Pie Chart â€” Payment Methods */}
+                                    {/* Pie Chart — Payment Methods */}
                                     <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                                         <h3 className="text-base font-semibold text-gray-700 mb-4">Payment Method Breakdown</h3>
                                         {analyticsData.paymentBreakdown.length > 0 ? (
@@ -340,7 +340,7 @@ const SalesList = () => {
                                                         </Pie>
                                                         <ReTooltip
                                                             formatter={(value, name, props) => [
-                                                                `${value} sales â€” LKR ${props.payload.revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                                                                `${value} sales — LKR ${props.payload.revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
                                                                 props.payload.name,
                                                             ]}
                                                         />
@@ -361,7 +361,7 @@ const SalesList = () => {
                                         )}
                                     </div>
 
-                                    {/* Bar Chart â€” Last 7 Days Revenue */}
+                                    {/* Bar Chart — Last 7 Days Revenue */}
                                     <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                                         <h3 className="text-base font-semibold text-gray-700 mb-4">Revenue of Last 7 Days</h3>
                                         {last7Days.some(d => d.revenue > 0) ? (
@@ -452,7 +452,7 @@ const SalesList = () => {
                                     value={search}
                                     onChange={handleSearch}
                                     placeholder="INV-000001"
-                                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none ${searchError ? 'border-red-300' : 'border-gray-300'}`}
+                                    className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none ${searchError ? 'border-red-300' : 'border-gray-300'}`}
                                 />
                             </div>
                             {searchError && (
@@ -471,7 +471,7 @@ const SalesList = () => {
                                         setStartDate(e.target.value);
                                         setCurrentPage(1);
                                     }}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                 />
                             </div>
                         </div>
@@ -488,7 +488,7 @@ const SalesList = () => {
                                         setEndDate(e.target.value);
                                         setCurrentPage(1);
                                     }}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                 />
                             </div>
                         </div>
@@ -543,7 +543,7 @@ const SalesList = () => {
                                                 key={sale._id}
                                                 className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                                             >
-                                                <td className="py-3 px-4 font-bold  text-[#026b43]">
+                                                <td className="py-3 px-4 font-bold  text-[#6753cc]">
                                                     {sale.invoiceNumber}
                                                 </td>
                                                 <td className="py-3 px-4">{sale.customerName}</td>
@@ -555,7 +555,7 @@ const SalesList = () => {
                                                     <span
                                                         className={`px-2 py-1 rounded-full text-xs font-medium ${sale.paymentMethod === 'Cash'
                                                             ? 'bg-green-100 text-green-700'
-                                                            : 'bg-[#f5d800]/25 text-[#155c27] border border-[#f5d800]/50'
+                                                            : 'bg-[#c4b5fd]/25 text-[#18243b] border border-[#c4b5fd]/50'
                                                             }`}
                                                     >
                                                         {sale.paymentMethod}

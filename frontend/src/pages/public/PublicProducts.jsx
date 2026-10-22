@@ -1,3 +1,4 @@
+import RetailOrbit from '../../components/RetailOrbit';
 ﻿import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ShoppingBag, Search, ShoppingCart, ChevronDown } from 'lucide-react';
@@ -119,27 +120,9 @@ const PublicProducts = () => {
 
     return (
         <div className="w-full bg-[var(--color-bg-primary)]">
-            <section className="relative h-[40vh] min-h-[320px] bg-gradient-to-r from-[#155c27] via-[#1a6e30] to-transparent overflow-hidden border-b-[3px] border-[#f5d800]">
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&q=80&w=2000')",
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                >
-                    <div className="absolute inset-0 hero-bg-zoom" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&q=80&w=2000')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#155c27]/85 via-[#155c27]/60 to-transparent" />
-                <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-                    <div className="max-w-2xl text-white">
-                        <span className="text-[#f5d800] font-bold tracking-widest uppercase text-sm border-l-[3px] border-[#f5d800] pl-3">{t('shop.badge')}</span>
-                        <h1 className="text-4xl md:text-[48px] font-bold mt-3" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>{t('shop.title')}</h1>
-                        <p className="text-lg text-gray-200 mt-3">
-                            {t('shop.subtitle')}
-                        </p>
-                    </div>
-                </div>
+            <section className="catalog-hero">
+                <div className="hero-mesh" aria-hidden="true" />
+                <div className="catalog-hero-inner"><div><span className="eyebrow"><span className="live-dot" />{t('shop.badge')}</span><h1>{t('shop.title')}</h1><p>{t('shop.subtitle')}</p></div><RetailOrbit compact /></div>
             </section>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -148,7 +131,7 @@ const PublicProducts = () => {
             {/* Filters */}
             <div className="shop-filter-unit flex items-center gap-4 px-4 py-0 mb-8 relative z-30 min-h-[52px] rounded-xl">
                 <div className="relative flex-1 h-[52px] flex items-center">
-                    <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-[#f5d800]" />
+                    <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-[#c4b5fd]" />
                     <input
                         type="text"
                         placeholder={t('shop.search_placeholder')}
@@ -203,7 +186,7 @@ const PublicProducts = () => {
                     <div
                         className="absolute inset-0"
                         style={{
-                            backgroundImage: 'radial-gradient(rgba(245,216,0,0.16) 1.2px, transparent 1.2px)',
+                            backgroundImage: 'radial-gradient(rgba(196,181,253,0.16) 1.2px, transparent 1.2px)',
                             backgroundSize: '16px 16px',
                         }}
                     />
@@ -211,12 +194,12 @@ const PublicProducts = () => {
                     <div
                         className="absolute inset-0"
                         style={{
-                            background: 'radial-gradient(circle at 50% 30%, rgba(245,216,0,0.2) 0%, rgba(245,216,0,0) 62%)',
+                            background: 'radial-gradient(circle at 50% 30%, rgba(196,181,253,0.2) 0%, rgba(196,181,253,0) 62%)',
                         }}
                     />
                     {/* Faint organic watermark */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-[0.06]">
-                        <svg viewBox="0 0 400 400" className="w-[600px] h-[600px] text-[#f5d800]" fill="currentColor" role="presentation" aria-hidden="true">
+                        <svg viewBox="0 0 400 400" className="w-[600px] h-[600px] text-[#c4b5fd]" fill="currentColor" role="presentation" aria-hidden="true">
                             <path d="M200 30C136 65 98 121 88 182c-11 68 12 132 79 188 6-54 26-92 62-116 36-24 78-34 129-31-37-31-56-72-56-122 0-27 6-52 18-75-43-3-82 2-120 16z" />
                         </svg>
                     </div>
@@ -239,7 +222,7 @@ const PublicProducts = () => {
                         {products.map((product, index) => (
                             <div
                                 key={product._id}
-                                className="group shop-card-reveal relative z-[1] bg-[var(--color-card-bg)] rounded-[14px] overflow-hidden shadow-sm border border-[rgba(245,216,0,0.15)] flex flex-col hover:scale-[1.03] hover:border-[#f5d800] hover:shadow-[0_10px_28px_rgba(0,0,0,0.35)]"
+                                className="group shop-card-reveal relative z-[1] bg-[var(--color-card-bg)] rounded-[14px] overflow-hidden shadow-sm border border-[rgba(196,181,253,0.15)] flex flex-col hover:scale-[1.03] hover:border-[#c4b5fd] hover:shadow-[0_10px_28px_rgba(0,0,0,0.35)]"
                                 style={{ transition: 'all 0.25s ease', transitionDelay: `${index * 50}ms` }}
                             >
                             <div className="aspect-square bg-[var(--color-bg-secondary)] relative overflow-hidden flex items-center justify-center">
@@ -268,23 +251,23 @@ const PublicProducts = () => {
                                 )}
                             </div>
                             <div className="p-5 flex flex-col flex-1">
-                                <p className="text-[10px] text-[#f5d800] font-bold uppercase tracking-[0.06em] mb-2 pb-1 border-b border-[rgba(245,216,0,0.2)]">
+                                <p className="text-[10px] text-[#c4b5fd] font-bold uppercase tracking-[0.06em] mb-2 pb-1 border-b border-[rgba(196,181,253,0.2)]">
                                     {product.category?.categoryName || 'General'}
                                 </p>
-                                <h3 className="font-semibold text-[var(--color-text-primary)] text-[16px] leading-[1.3] mb-2 truncate group-hover:text-[#f5d800] transition-colors">
+                                <h3 className="font-semibold text-[var(--color-text-primary)] text-[16px] leading-[1.3] mb-2 truncate group-hover:text-[#c4b5fd] transition-colors">
                                     {product.productName}
                                 </h3>
                                 {product.description && (
                                     <p className="text-xs text-[var(--color-text-tertiary)] mb-3 line-clamp-2">{product.description}</p>
                                 )}
                                 <div className="mt-auto flex justify-between items-center pt-3 border-t border-[var(--color-border)]">
-                                    <span className="text-[18px] font-bold text-[var(--color-text-primary)] group-hover:[text-shadow:0_0_8px_rgba(245,216,0,0.3)]">
+                                    <span className="text-[18px] font-bold text-[var(--color-text-primary)] group-hover:[text-shadow:0_0_8px_rgba(196,181,253,0.3)]">
                                         LKR {product.sellingPrice?.toLocaleString()}
                                     </span>
                                     <button
                                         onClick={() => addToCart(product)}
                                         disabled={product.isActive === false || product.currentStock <= 0}
-                                        className={`p-2.5 bg-gray-900 text-white rounded-[10px] hover:bg-primary-600 hover:scale-110 hover:border hover:border-[#f5d800] transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed ${addedToCartId === product._id ? 'animate-cart-bounce' : ''}`}
+                                        className={`p-2.5 bg-gray-900 text-white rounded-[10px] hover:bg-primary-600 hover:scale-110 hover:border hover:border-[#c4b5fd] transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed ${addedToCartId === product._id ? 'animate-cart-bounce' : ''}`}
                                         title={product.isActive === false ? t('shop_extra.product_unavailable') : t('shop_extra.add_to_cart')}
                                     >
                                         <ShoppingCart className="w-5 h-5" />
@@ -306,8 +289,8 @@ const PublicProducts = () => {
                             onClick={() => setPage(p)}
                             className={`w-10 h-10 rounded-[8px] font-medium transition-all duration-200 ${
                                 p === page
-                                    ? 'bg-[#f5d800] text-[#155c27] border-2 border-[#f5d800] font-weight-600 shadow-lg'
-                                    : 'bg-[#155c27] text-white border border-[rgba(245,216,0,0.3)] hover:bg-[#1e7a34] hover:border-[#f5d800]'
+                                    ? 'bg-[#c4b5fd] text-[#18243b] border-2 border-[#c4b5fd] font-weight-600 shadow-lg'
+                                    : 'bg-[#18243b] text-white border border-[rgba(196,181,253,0.3)] hover:bg-[#6757d9] hover:border-[#c4b5fd]'
                             }`}
                         >
                             {p}
@@ -317,8 +300,8 @@ const PublicProducts = () => {
             )}
 
             {/* In-store message */}
-            <div className="mt-16 bg-[var(--color-bg-secondary)] rounded-[16px] py-10 px-8 text-center border-2 border-[rgba(245,216,0,0.3)] border-t-2 border-t-[#f5d800]">
-                <ShoppingBag className="w-8 h-8 text-[#f5d800] mx-auto mb-4 animate-float-soft" />
+            <div className="mt-16 bg-[var(--color-bg-secondary)] rounded-[16px] py-10 px-8 text-center border-2 border-[rgba(196,181,253,0.3)] border-t-2 border-t-[#c4b5fd]">
+                <ShoppingBag className="w-8 h-8 text-[#c4b5fd] mx-auto mb-4 animate-float-soft" />
                 <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">{t('shop.visit_store')}</h3>
                 <p className="text-[var(--color-text-secondary)] max-w-md mx-auto">
                     {t('shop.visit_store_sub')}
@@ -327,7 +310,7 @@ const PublicProducts = () => {
                     href="https://www.google.com/maps/dir/?api=1&destination=6.709753,80.065837"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block mt-4 bg-[#f5d800] text-[#155c27] font-weight-600 px-6 py-3 rounded-full font-semibold hover:bg-[#e6c700] hover:scale-[1.03] transition-all duration-200"
+                    className="inline-block mt-4 bg-[#c4b5fd] text-[#18243b] font-weight-600 px-6 py-3 rounded-full font-semibold hover:bg-[#ad97f5] hover:scale-[1.03] transition-all duration-200"
                 >
                     {t('shop.get_directions')}
                 </a>

@@ -1,5 +1,6 @@
+import RetailOrbit from '../../components/RetailOrbit';
 import { useState, useEffect } from 'react';
-import { DollarSign, ShoppingCart, TrendingUp, Users, Package, AlertTriangle, Truck, ClipboardList, Tag, Layers, UserCheck, Gift } from 'lucide-react';
+import { DollarSign, ShoppingCart, TrendingUp, Users, Package, AlertTriangle, Truck, ClipboardList, Tag, Layers, UserCheck, Gift, ArrowUpRight, Sparkles } from 'lucide-react';
 import { getSalesStats } from '../../services/salesService';
 import { getAllProducts } from '../../services/productService';
 import { getAllUsers } from '../../services/userService';
@@ -30,6 +31,7 @@ const Dashboard = () => {
         activeCustomers: 0,
         totalLoyaltyPoints: 0,
     });
+    const [loadError, setLoadError] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -38,6 +40,7 @@ const Dashboard = () => {
 
     const fetchStats = async () => {
         try {
+            setLoadError(false);
             const promises = [
                 getSalesStats(),
                 getAllProducts(1, 1),
@@ -96,6 +99,7 @@ const Dashboard = () => {
             });
 
         } catch (error) {
+            setLoadError(true);
             console.error('Error fetching stats:', error);
         } finally {
             setLoading(false);
@@ -110,9 +114,9 @@ const Dashboard = () => {
             title: 'Total Sales',
             value: stats.totalSales,
             icon: ShoppingCart,
-            color: 'bg-[#1e7a34]',
-            bgColor: 'bg-[#1a6e30]',
-            textColor: 'text-[#f5d800]',
+            color: 'bg-[#6757d9]',
+            bgColor: 'bg-[#263754]',
+            textColor: 'text-[#c4b5fd]',
             link: '/admin/sales',
         });
 
@@ -176,9 +180,9 @@ const Dashboard = () => {
                 title: 'Total Users',
                 value: stats.totalUsers,
                 icon: Users,
-                color: 'bg-[#1a6e30]',
-                bgColor: 'bg-[#1a6e30]/10',
-                textColor: 'text-[#155c27]',
+                color: 'bg-[#263754]',
+                bgColor: 'bg-[#263754]/10',
+                textColor: 'text-[#18243b]',
                 link: '/admin/users',
             });
         }
@@ -263,14 +267,19 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-                <p className="text-gray-600 mt-1">
-                    Welcome back, <span className="font-semibold">{user?.name}</span> ({user?.role})
-                </p>
-            </div>
+            {loadError && <div role="alert" className="data-notice"><AlertTriangle size={18} /><span>Business data is unavailable. Check your connection and try again.</span><button type="button" onClick={() => { setLoading(true); fetchStats(); }}>Retry</button></div>}
+            <section className="workspace-hero">
+                <div className="workspace-hero-copy">
+                    <span className="eyebrow"><Sparkles size={14} /> A CLEARER VIEW OF YOUR BUSINESS</span>
+                    <h1>Welcome back, <span>{user?.name?.split(' ')[0] || 'there'}.</span></h1>
+                    <p>Your store, beautifully connected. Keep sales moving and your next decision in focus.</p>
+                    <div className="hero-actions"><Link className="button-glow" to="/admin/sales/create">Create a sale <ArrowUpRight size={17} /></Link>{(isAdmin() || isManager()) && <Link className="button-glass" to="/admin/inventory">Explore inventory</Link>}</div>
+                </div>
+                <RetailOrbit compact />
+            </section>
+            <div className="section-heading"><div><span className="section-kicker">THE BIG PICTURE</span><h2>Business overview</h2></div><span className="overview-period">{loadError ? 'Connection unavailable' : 'All-time totals'}</span></div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="stats-grid">
                 {getStatCards().map((card, index) => {
                     const Icon = card.icon;
                     const CardContent = (
@@ -279,12 +288,12 @@ const Dashboard = () => {
                                 <p className="text-sm font-medium text-gray-600 mb-1">
                                     {card.title}
                                 </p>
-                                <p className="text-3xl font-bold text-gray-800">
-                                    {card.value}
+                                <p className="metric-value">
+                                    {loadError ? '—' : card.value}
                                 </p>
                             </div>
-                            <div className={`${card.bgColor} p-4 rounded-full`}>
-                                <Icon className={`w-8 h-8 ${card.textColor}`} />
+                            <div className="metric-icon">
+                                <Icon className="w-6 h-6" />
                             </div>
                         </div>
                     );
@@ -292,7 +301,7 @@ const Dashboard = () => {
                     return (
                         <div
                             key={index}
-                            className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-100"
+                            className={`metric-card metric-tone-${index % 4}`} style={{ animationDelay: `${Math.min(index, 7) * 45}ms` }}
                         >
                             {card.link ? (
                                 <Link to={card.link} className="block h-full">
@@ -306,16 +315,24 @@ const Dashboard = () => {
                 })}
             </div>
 
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            {(isAdmin() || isManager()) && <div className="insight-grid">
+                <section className="inventory-health">
+                    <div className="health-ring" style={{ '--health-angle': `${!loadError && stats.totalProducts ? Math.round((stats.totalProducts - stats.lowStockCount) / stats.totalProducts * 360) : 0}deg` }} aria-hidden="true"><span>{loadError ? '—' : stats.totalProducts ? `${Math.round((stats.totalProducts - stats.lowStockCount) / stats.totalProducts * 100)}%` : '—'}<small>STOCK HEALTH</small></span></div>
+                    <div><span className="section-kicker">KEEP THINGS MOVING</span><h2>Room to stay ahead.</h2><p>{loadError ? 'Connect to your business data to review stock health.' : stats.totalProducts ? `${stats.lowStockCount} of ${stats.totalProducts} products are below their minimum stock level.` : 'Add your first products to start monitoring inventory health.'}</p><Link to="/admin/inventory">Review inventory <ArrowUpRight size={14} /></Link></div>
+                </section>
+                <section className="insight-prompt"><span className="insight-graphic" aria-hidden="true"><Sparkles size={32} /></span><span className="section-kicker">A LITTLE MORE CLARITY</span><h2>Your next move,<br />with more insight.</h2><p>Turn your store’s sales and stock into a clearer picture.</p><Link to={isAdmin() ? '/admin/ai-prediction' : '/admin/inventory/reports'}>{isAdmin() ? 'Explore forecasting' : 'Explore reports'}<ArrowUpRight size={15} /></Link></section>
+            </div>}
+
+            <div className="quick-actions-panel">
                 <h2 className="text-xl font-bold text-gray-800 mb-5">
                     Quick Actions
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    <Link to="/admin/sales/create" className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-[#f5d800]/10 hover:border-[#f5d800] hover:shadow-md transition-all duration-200">
-                        <div className="p-3 rounded-full bg-[#f5d800]/20 text-[#f5d800] group-hover:bg-[#f5d800]/30 transition-colors">
+                    <Link to="/admin/sales/create" className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-[#c4b5fd]/10 hover:border-[#c4b5fd] hover:shadow-md transition-all duration-200">
+                        <div className="p-3 rounded-full bg-[#c4b5fd]/20 text-[#c4b5fd] group-hover:bg-[#c4b5fd]/30 transition-colors">
                             <ShoppingCart className="w-6 h-6" />
                         </div>
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-[#f5d800] transition-colors">New Sale</span>
+                        <span className="text-sm font-medium text-gray-700 group-hover:text-[#c4b5fd] transition-colors">New Sale</span>
                     </Link>
                     {(isAdmin() || isManager()) && (
                         <>
@@ -358,11 +375,11 @@ const Dashboard = () => {
                         <span className="text-sm font-medium text-gray-700 group-hover:text-yellow-700 transition-colors">Validate Coupon</span>
                     </Link>
                     {isAdmin() && (
-                        <Link to="/admin/users/create" className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-[#1a6e30]/10 hover:border-[#1a6e30] hover:shadow-md transition-all duration-200">
-                            <div className="p-3 rounded-full bg-indigo-100 text-[#155c27] group-hover:bg-indigo-200 transition-colors">
+                        <Link to="/admin/users/create" className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-[#263754]/10 hover:border-[#263754] hover:shadow-md transition-all duration-200">
+                            <div className="p-3 rounded-full bg-indigo-100 text-[#18243b] group-hover:bg-indigo-200 transition-colors">
                                 <Users className="w-6 h-6" />
                             </div>
-                            <span className="text-sm font-medium text-gray-700 group-hover:text-[#155c27] transition-colors">Add User</span>
+                            <span className="text-sm font-medium text-gray-700 group-hover:text-[#18243b] transition-colors">Add User</span>
                         </Link>
                     )}
                 </div>

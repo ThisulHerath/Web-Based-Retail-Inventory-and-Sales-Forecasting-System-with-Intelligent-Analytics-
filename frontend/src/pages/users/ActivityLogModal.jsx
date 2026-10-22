@@ -119,7 +119,7 @@ const ActivityLogModal = ({ user, onClose }) => {
                         <select
                             value={actionFilter}
                             onChange={(e) => handleFilterChange('action', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                         >
                             <option value="">All Actions</option>
                             <option value="CREATE">Create</option>
@@ -137,7 +137,7 @@ const ActivityLogModal = ({ user, onClose }) => {
                             value={entityFilter}
                             onChange={(e) => handleFilterChange('entity', e.target.value)}
                             placeholder="Filter by entity type..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                         />
                     </div>
 
@@ -150,7 +150,7 @@ const ActivityLogModal = ({ user, onClose }) => {
                             name="from"
                             value={dateRange.from}
                             onChange={handleDateChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                         />
                     </div>
 
@@ -163,7 +163,7 @@ const ActivityLogModal = ({ user, onClose }) => {
                             name="to"
                             value={dateRange.to}
                             onChange={handleDateChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f5d800]"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c4b5fd]"
                         />
                     </div>
                 </div>
@@ -173,7 +173,7 @@ const ActivityLogModal = ({ user, onClose }) => {
                     {loading ? (
                         <div className="flex items-center justify-center h-64">
                             <div className="text-center">
-                                <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-[#f5d800] mx-auto mb-4"></div>
+                                <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-[#c4b5fd] mx-auto mb-4"></div>
                                 <p className="text-gray-500">Loading activity logs...</p>
                             </div>
                         </div>
@@ -242,9 +242,9 @@ const ActivityLogModal = ({ user, onClose }) => {
                                                 </td>
                                                 <td className="px-6 py-3 text-center">
                                                     {hasDetails ? (
-                                                        <button 
+                                                        <button
                                                             onClick={() => toggleExpand(uniqueId)}
-                                                            className={`p-1.5 rounded transition-colors ${expandedLogId === uniqueId ? 'bg-[#f5d800]/20 text-[#155c27]' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+                                                            className={`p-1.5 rounded transition-colors ${expandedLogId === uniqueId ? 'bg-[#c4b5fd]/20 text-[#18243b]' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
                                                             title={expandedLogId === uniqueId ? "Hide Details" : "View Details"}
                                                         >
                                                             {expandedLogId === uniqueId ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -306,7 +306,7 @@ const ActivityLogModal = ({ user, onClose }) => {
                 <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
                     <button
                         onClick={onClose}
-                        className="px-6 py-2 bg-[#f5d800] text-[#155c27] font-semibold rounded-lg hover:bg-[#e6c700] transition-colors"
+                        className="px-6 py-2 bg-[#c4b5fd] text-[#18243b] font-semibold rounded-lg hover:bg-[#ad97f5] transition-colors"
                     >
                         Close
                     </button>

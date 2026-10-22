@@ -8,7 +8,7 @@ const CustomPieTooltip = ({ active, payload }) => {
             <div className="bg-white p-3 rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] border border-gray-100">
                 <p className="font-bold text-gray-800 mb-1">{payload[0].name}</p>
                 <p className="text-sm text-gray-600">
-                    Predicted Sales: <span className="font-bold text-[#155c27]">{payload[0].value} units</span>
+                    Predicted Sales: <span className="font-bold text-[#18243b]">{payload[0].value} units</span>
                 </p>
             </div>
         );
@@ -24,10 +24,10 @@ const AIPrediction = () => {
     const [predicting, setPredicting] = useState(false);
     const [monthlySales, setMonthlySales] = useState([]);
     const [pieData, setPieData] = useState([]);
-    
+
     // COLORS for Pie Chart
-    const COLORS = ['#155c27', '#2e8b57', '#3cb371', '#20b2aa', '#32cd32', '#9acd32', '#f5d800'];
-    
+    const COLORS = ['#18243b', '#2e8b57', '#3cb371', '#20b2aa', '#32cd32', '#9acd32', '#c4b5fd'];
+
     const [formData, setFormData] = useState({
         item_name: '',
         day_of_week: 'Monday',
@@ -135,7 +135,7 @@ const AIPrediction = () => {
                 })
             });
             const data = await res.json();
-            
+
             if (data.status === 'success') {
                 setPredictionResult(data.predicted_sales);
             } else {
@@ -178,7 +178,7 @@ const AIPrediction = () => {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
+
                 {/* Dashboard Insights (Left 2 columns) */}
                 <div className="lg:col-span-2 space-y-4">
                     <div className="flex items-center justify-between">
@@ -187,7 +187,7 @@ const AIPrediction = () => {
                             Next 7 Days Top Forecast
                         </h2>
                     </div>
-                    
+
                     {forecast.length === 0 ? (
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
                             <p className="text-gray-500">No forecast data available.</p>
@@ -215,7 +215,7 @@ const AIPrediction = () => {
                                             </div>
                                         ))}
                                         {item.predictions.length > 4 && (
-                                            <button 
+                                            <button
                                                 onClick={() => toggleForecast(idx)}
                                                 className="w-full mt-1.5 text-xs text-center text-primary-600 hover:text-primary-800 font-medium cursor-pointer transition-colors active:scale-95 focus:outline-none py-1.5 rounded bg-primary-50/50 hover:bg-primary-50"
                                             >
@@ -246,22 +246,22 @@ const AIPrediction = () => {
                                         <ResponsiveContainer width="100%" height="100%">
                                             <BarChart data={monthlySales} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                                <XAxis 
-                                                    dataKey="month" 
-                                                    axisLine={false} 
-                                                    tickLine={false} 
-                                                    tick={{ fontSize: 12, fill: '#6b7280' }} 
-                                                    dy={10} 
+                                                <XAxis
+                                                    dataKey="month"
+                                                    axisLine={false}
+                                                    tickLine={false}
+                                                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                                                    dy={10}
                                                     tickFormatter={(val) => {
                                                         const [y, m] = val.split('-');
                                                         const date = new Date(parseInt(y), parseInt(m) - 1);
                                                         return date.toLocaleString('default', { month: 'short', year: '2-digit' });
                                                     }}
                                                 />
-                                                <YAxis 
-                                                    axisLine={false} 
-                                                    tickLine={false} 
-                                                    tick={{ fontSize: 12, fill: '#6b7280' }} 
+                                                <YAxis
+                                                    axisLine={false}
+                                                    tickLine={false}
+                                                    tick={{ fontSize: 12, fill: '#6b7280' }}
                                                     tickFormatter={(val) => `Rs.${val >= 1000 ? (val/1000).toFixed(1) + 'k' : val}`}
                                                 />
                                                 <Tooltip
@@ -274,7 +274,7 @@ const AIPrediction = () => {
                                                         return date.toLocaleString('default', { month: 'long', year: 'numeric' });
                                                     }}
                                                 />
-                                                <Bar dataKey="revenue" name="Revenue" fill="#155c27" radius={[4, 4, 0, 0]} maxBarSize={48} />
+                                                <Bar dataKey="revenue" name="Revenue" fill="#18243b" radius={[4, 4, 0, 0]} maxBarSize={48} />
                                             </BarChart>
                                         </ResponsiveContainer>
                                     </div>
@@ -330,7 +330,7 @@ const AIPrediction = () => {
                     </h2>
 
                     <form onSubmit={handlePredict} className="space-y-4 flex-1">
-                        
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
                                 <ShoppingBag className="w-4 h-4" />
@@ -408,11 +408,11 @@ const AIPrediction = () => {
                         <button
                             type="submit"
                             disabled={predicting || products.length === 0}
-                            className="w-full mt-6 bg-[#155c27] hover:bg-[#0d3d1a] disabled:bg-gray-400 disabled:cursor-not-allowed text-[#f5d800] py-2.5 rounded-lg font-semibold shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                            className="w-full mt-6 bg-[#18243b] hover:bg-[#111b30] disabled:bg-gray-400 disabled:cursor-not-allowed text-[#c4b5fd] py-2.5 rounded-lg font-semibold shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                         >
                             {predicting ? (
                                 <>
-                                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#f5d800] border-t-transparent"></div>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#c4b5fd] border-t-transparent"></div>
                                     Calculating...
                                 </>
                             ) : (

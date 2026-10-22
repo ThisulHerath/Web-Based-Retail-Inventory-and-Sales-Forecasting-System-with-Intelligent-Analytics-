@@ -95,7 +95,7 @@ const Suppliers = () => {
                         <h1 className="text-3xl font-bold text-gray-800">Suppliers</h1>
                         <p className="text-gray-600 mt-1">Manage your supplier directory</p>
                     </div>
-                    <Link to="/admin/suppliers/create" className="flex items-center gap-2 px-4 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors shadow-lg">
+                    <Link to="/admin/suppliers/create" className="flex items-center gap-2 px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors shadow-lg">
                         <Plus className="w-5 h-5" />
                         <span className="font-medium">Add Supplier</span>
                     </Link>
@@ -110,7 +110,7 @@ const Suppliers = () => {
                                 value={search}
                                 onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
                                 placeholder="Search by name or company..."
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                             />
                         </div>
                         <div className="relative">
@@ -118,7 +118,7 @@ const Suppliers = () => {
                             <select
                                 value={isActiveFilter}
                                 onChange={(e) => { setIsActiveFilter(e.target.value); setCurrentPage(1); }}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none appearance-none"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none appearance-none"
                             >
                                 <option value="">All Status</option>
                                 <option value="true">Active</option>
@@ -152,7 +152,7 @@ const Suppliers = () => {
                                         {suppliers.map((s) => (
                                             <tr key={s._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                                 <td className="py-3 px-4 font-medium text-gray-800">{s.supplierName}</td>
-                                                <td className="py-3 px-4 text-gray-600">{s.companyName || 'â€”'}</td>
+                                                <td className="py-3 px-4 text-gray-600">{s.companyName || '—'}</td>
                                                 <td className="py-3 px-4">
                                                     <div className="text-sm">
                                                         {s.email && <div className="text-gray-600">{s.email}</div>}

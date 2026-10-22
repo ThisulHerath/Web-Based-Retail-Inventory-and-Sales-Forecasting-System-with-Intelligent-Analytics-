@@ -1,3 +1,4 @@
+import AuthArtwork from '../../components/AuthArtwork';
 import ValidatedForm from '../../components/ValidatedForm';
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -7,13 +8,13 @@ import { Mail, Lock } from 'lucide-react';
 import Toast from '../../components/Toast';
 import BrandLogo from '../../components/BrandLogo';
 
-/* Floating-label input â€” label lifts above border on focus or when filled */
+/* Floating-label input — label lifts above border on focus or when filled */
 const FloatingInput = ({ id, type, label, value, onChange, icon: Icon, autoComplete, placeholder }) => {
     const [focused, setFocused] = useState(false);
     const lifted = focused || value.length > 0;
 
     return (
-        <div className="relative mt-1">
+        <div data-field className="relative mt-1">
             <div
                 className={`flex items-center border rounded-lg transition-all duration-200 ${
                     focused
@@ -124,14 +125,14 @@ const CustomerLogin = () => {
                 }
                 return;
             }
-            
+
             // Handle Remember Me functionality
             if (rememberMe) {
                 localStorage.setItem('customerRememberedEmail', email);
             } else {
                 localStorage.removeItem('customerRememberedEmail');
             }
-            
+
             navigate('/my-account');
         } finally {
             setLoading(false);
@@ -139,7 +140,7 @@ const CustomerLogin = () => {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="customer-auth min-h-screen flex">
             {toast && (
                 <Toast
                     message={['AUTH_LOCKED', 'AUTH_RATE_LIMITED'].includes(toast.code) && lockoutSeconds != null
@@ -151,8 +152,8 @@ const CustomerLogin = () => {
                 />
             )}
 
-            {/* LEFT â€” Form Panel */}
-            <div className="w-full md:w-1/2 flex flex-col justify-between bg-[var(--color-bg-secondary)] dark:bg-[var(--color-card-bg)] px-10 sm:px-16 py-10 animate-fade-in-up">
+            {/* LEFT — Form Panel */}
+            <div className="auth-form-panel w-full md:w-1/2 flex flex-col justify-between bg-[var(--color-bg-secondary)] dark:bg-[var(--color-card-bg)] px-10 sm:px-16 py-10 animate-fade-in-up">
 
                 {/* Brand */}
                 <div>
@@ -192,8 +193,8 @@ const CustomerLogin = () => {
                         {/* Remember / Staff row */}
                         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                             <label className="flex items-center gap-2 cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                                <input 
-                                    type="checkbox" 
+                                <input
+                                    type="checkbox"
                                     checked={rememberMe}
                                     onChange={(e) => {
                                         setRememberMe(e.target.checked);
@@ -201,7 +202,7 @@ const CustomerLogin = () => {
                                             localStorage.removeItem('customerRememberedEmail');
                                         }
                                     }}
-                                    className="w-3.5 h-3.5 accent-[var(--color-button-primary)] rounded cursor-pointer" 
+                                    className="w-3.5 h-3.5 accent-[var(--color-button-primary)] rounded cursor-pointer"
                                 />
                                 {t('auth.remember_me')}
                             </label>
@@ -214,7 +215,7 @@ const CustomerLogin = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[var(--color-button-primary)] text-[var(--color-button-text)] dark:bg-[var(--color-accent)] dark:text-[var(--color-button-text)] hover:bg-[var(--color-button-primary-hover)] dark:hover:bg-[#e6c700] py-3 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-[var(--color-button-primary)] text-[var(--color-button-text)] dark:bg-[var(--color-accent)] dark:text-[var(--color-button-text)] hover:bg-[var(--color-button-primary-hover)] dark:hover:bg-[#ad97f5] py-3 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? `${t('auth.sign_in')}...` : t('auth.continue')}
                         </button>
@@ -229,19 +230,10 @@ const CustomerLogin = () => {
                 </div>
 
                 {/* Footer */}
-                <p className="text-[11px] text-[var(--color-text-tertiary)] dark:text-gray-400 text-center">Â© {new Date().getFullYear()} 7 Super City</p>
+                <p className="text-[11px] text-[var(--color-text-tertiary)] dark:text-gray-400 text-center">© {new Date().getFullYear()} 7 Super City</p>
             </div>
 
-            {/* RIGHT â€” Hero Image */}
-            <div className="hidden md:block md:w-1/2 relative overflow-hidden">
-                <img
-                    src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&h=900&fit=crop&auto=format"
-                    alt="7 Super City store"
-                    className="absolute inset-0 w-full h-full object-cover"
-                />
-                {/* Subtle overlay */}
-                <div className="absolute inset-0" style={{background: `linear-gradient(to bottom right, var(--color-overlay), transparent)`}} />
-            </div>
+            <AuthArtwork />
         </div>
     );
 };

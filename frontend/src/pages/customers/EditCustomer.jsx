@@ -106,7 +106,7 @@ const EditCustomer = () => {
                                 type="text"
                                 value={formData.firstName}
                                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                 required
                             />
                         </div>
@@ -116,7 +116,7 @@ const EditCustomer = () => {
                                 type="text"
                                 value={formData.lastName}
                                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                                 required
                             />
                         </div>
@@ -128,7 +128,7 @@ const EditCustomer = () => {
                             type="text"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                             required
                         />
                     </div>
@@ -140,7 +140,7 @@ const EditCustomer = () => {
                             min="0"
                             value={formData.loyaltyPoints}
                             onChange={(e) => setFormData({ ...formData, loyaltyPoints: parseInt(e.target.value) || 0 })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] focus:border-transparent outline-none"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] focus:border-transparent outline-none"
                         />
                     </div>
 
@@ -174,7 +174,7 @@ const EditCustomer = () => {
                     <button type="button" onClick={() => navigate('/admin/customers')} className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">
                         Cancel
                     </button>
-                    <button type="submit" disabled={saving} className="flex-1 px-6 py-3 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] font-medium disabled:opacity-50">
+                    <button type="submit" disabled={saving} className="flex-1 px-6 py-3 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] font-medium disabled:opacity-50">
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>

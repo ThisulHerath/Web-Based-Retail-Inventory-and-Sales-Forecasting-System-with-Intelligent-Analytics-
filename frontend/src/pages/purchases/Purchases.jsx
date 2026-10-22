@@ -1,3 +1,4 @@
+import EmptyState from '../../components/EmptyState';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Plus, Eye, Trash2, Filter } from 'lucide-react';
@@ -142,7 +143,7 @@ const Purchases = () => {
                         <h1 className="text-3xl font-bold text-gray-800">Purchases</h1>
                         <p className="text-gray-600 mt-1">Purchase orders and inventory replenishment</p>
                     </div>
-                    <Link to="/admin/purchases/create" className="flex items-center gap-2 px-4 py-2 bg-[#f5d800] text-[#155c27] font-weight-600 rounded-lg hover:bg-[#e6c700] transition-colors shadow-lg">
+                    <Link to="/admin/purchases/create" className="flex items-center gap-2 px-4 py-2 bg-[#c4b5fd] text-[#18243b] font-weight-600 rounded-lg hover:bg-[#ad97f5] transition-colors shadow-lg">
                         <Plus className="w-5 h-5" />
                         <span className="font-medium">New Purchase</span>
                     </Link>
@@ -155,7 +156,7 @@ const Purchases = () => {
             <div className="relative">
                 <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <select value={supplierFilter} onChange={(e) => { setSupplierFilter(e.target.value); setCurrentPage(1); }}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none appearance-none">
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none appearance-none">
                     <option value="">All Suppliers</option>
                     {suppliers.map(s => <option key={s._id} value={s._id}>{s.supplierName}</option>)}
                 </select>
@@ -168,7 +169,7 @@ const Purchases = () => {
                 value={startDate}
                 max={endDate || today}
                 onChange={(e) => { setStartDate(e.target.value); setCurrentPage(1); }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
             />
         </div>
         <div>
@@ -179,7 +180,7 @@ const Purchases = () => {
                 min={startDate || undefined}
                 max={today}
                 onChange={(e) => { setEndDate(e.target.value); setCurrentPage(1); }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f5d800] outline-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c4b5fd] outline-none"
             />
         </div>
         <div>
@@ -199,7 +200,7 @@ const Purchases = () => {
                     {loading ? (
                         <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div></div>
                     ) : purchases.length === 0 ? (
-                        <div className="text-center py-12"><p className="text-gray-500">No purchases found. Create your first purchase!</p></div>
+                        <EmptyState title="No purchases yet" description="Create your first purchase to keep supplier orders and inventory connected." />
                     ) : (
                         <>
                             <div className="overflow-x-auto">
@@ -219,10 +220,10 @@ const Purchases = () => {
                                         {purchases.map((p) => (
                                             <tr key={p._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                                 <td className="py-3 px-4 font-mono text-m font-bold text-[#000000]">{p.purchaseNumber}</td>
-                                                <td className="py-3 px-4 text-gray-800">{p.supplier?.supplierName || 'â€”'}</td>
+                                                <td className="py-3 px-4 text-gray-800">{p.supplier?.supplierName || '—'}</td>
                                                 <td className="py-3 px-4 text-gray-600">{new Date(p.purchaseDate).toLocaleDateString('en-LK')}</td>
                                                 <td className="py-3 px-4">
-                                                    <span className="px-2 py-2 bg-[#1a6e3098] text-[#ffffff] rounded-full text-xs font-medium">{p.products?.length || 0} items</span>
+                                                    <span className="px-2 py-2 bg-[#26375498] text-[#ffffff] rounded-full text-xs font-medium">{p.products?.length || 0} items</span>
                                                 </td>
                                                 <td className="py-3 px-4 text-right font-semibold text-gray-800">LKR {p.totalAmount.toLocaleString('en-LK', { minimumFractionDigits: 2 })}</td>
                                                 <td className="py-3 px-4">
