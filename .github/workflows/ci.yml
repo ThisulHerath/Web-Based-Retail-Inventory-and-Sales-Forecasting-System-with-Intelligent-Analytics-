@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend tests and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Run validation tests
+        run: npm test
+      - name: Build production frontend
+        run: npm run build
+      - name: Upload frontend build
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  backend:
+    name: Backend tests and coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      NODE_ENV: test
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check JavaScript syntax
+        run: git ls-files -z -- '*.js' | xargs -0 -r -n 1 node --check
+      - name: Run backend tests with coverage
+        run: npm test -- --ci --coverage
+      - name: Upload coverage report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+          if-no-files-found: warn
+          retention-days: 7
+
+  python:
+    name: Python AI syntax
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      # Syntax only: does not unpickle the model, contact Supabase, or claim
+      # to validate forecasting/runtime dependency compatibility.
+      - name: Compile AI server
+        run: python -m py_compile backend/ai_server.py
+
+  status:
+    name: CI status
+    if: ${{ always() }}
+    needs: [frontend, backend, python]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    env:
+      FRONTEND_RESULT: ${{ needs.frontend.result }}
+      BACKEND_RESULT: ${{ needs.backend.result }}
+      PYTHON_RESULT: ${{ needs.python.result }}
+    steps:
+      - name: Require every check to pass
+        run: |
+          for result in "$FRONTEND_RESULT" "$BACKEND_RESULT" "$PYTHON_RESULT"; do
+            if [ "$result" != "success" ]; then
+              echo "One or more required CI jobs failed, were cancelled, or were skipped."
+              exit 1
+            fi
+          done

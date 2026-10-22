@@ -564,3 +564,7 @@ This project is created for **7 Super City** organization.
 [⬆ Back to top](#-7-super-city)
 
 </div>
+
+## Continuous integration
+
+GitHub Actions checks frontend tests and production builds, backend tests with coverage, and Python AI syntax on pull requests and pushes to `main`. See [.github/CI.md](.github/CI.md) for setup, artifacts, local commands, and the recommended required check. This workflow does not deploy the application.

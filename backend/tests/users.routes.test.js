@@ -137,14 +137,13 @@ describe('Users routes – input validation', () => {
         expect(r.body.errors.some((e) => e.field === 'email')).toBe(true);
     });
 
-    test('POST /api/users with password under 8 chars returns 400', async () => {
+    test('POST /api/users accepts an omitted password for server-generated credentials', async () => {
         const r = await request(app)
             .post('/api/users')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ name: 'Valid Name', email: 'user@example.com', password: '1234567' });
-        expect(r.status).toBe(400);
-        expect(r.body.code).toBe('VALIDATION_ERROR');
-        expect(r.body.errors.some((e) => e.field === 'password')).toBe(true);
+            .send({ name: 'Valid Name', email: 'user@example.com', role: 'cashier' });
+        expect(r.status).toBe(201);
+        expect(r.body.created).toBe(true);
     });
 
     test('POST /api/users with name too short returns 400', async () => {
